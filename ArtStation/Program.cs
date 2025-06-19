@@ -1,5 +1,6 @@
 
 using ArtStation.Core.Entities.Identity;
+using ArtStation.Extensions;
 using ArtStation.Repository.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,14 @@ namespace ArtStation
                 })
                 .AddEntityFrameworkStores<ArtStationDbContext>()
                 .AddDefaultTokenProviders();
+
+            builder.Services.AddIdentityServices(builder.Configuration);
+
+
+            builder.Services.AddSwaggerServices();
+
+            #region Localization
+
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -38,6 +47,9 @@ namespace ArtStation
                 options.AddSupportedCultures(supportedCultures);
                 options.AddSupportedUICultures(supportedCultures);
             });
+
+            #endregion
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
