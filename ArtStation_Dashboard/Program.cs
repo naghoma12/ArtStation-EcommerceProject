@@ -1,3 +1,6 @@
+using ArtStation.Repository.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace ArtStation_Dashboard
 {
     public class Program
@@ -5,10 +8,12 @@ namespace ArtStation_Dashboard
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            #region Services    
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddDbContext<ArtStationDbContext>(
+              options => options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
+            #endregion
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
