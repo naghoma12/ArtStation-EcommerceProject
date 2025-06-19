@@ -18,6 +18,7 @@ namespace ArtStation.Core.Entities.Identity
         public string? Image { get; set; }
         public string FCMToken { get; set; }
         public ICollection<Favourite> Favourites = new List<Favourite>();
+        public ICollection<Notification> Notifications = new List<Notification>();
 
     }
     public enum Gender
