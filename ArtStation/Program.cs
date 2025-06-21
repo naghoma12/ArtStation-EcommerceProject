@@ -2,11 +2,13 @@
 using ArtStation.Core;
 using ArtStation.Core.Entities.Identity;
 using ArtStation.Core.Repository.Contract;
+using ArtStation.Core.Services.Contract;
 using ArtStation.Extensions;
 using ArtStation.Helper;
 using ArtStation.Repository;
 using ArtStation.Repository.Data;
 using ArtStation.Repository.Repository;
+using ArtStation.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -60,11 +62,14 @@ namespace ArtStation
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             #endregion
+            builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
+            builder.Services.AddTransient<ISMSService, SMSService>();
 
             var app = builder.Build();
 
             var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(localizationOptions.Value);
+            
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
