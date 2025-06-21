@@ -7,14 +7,13 @@ using System.Threading.Tasks;
 
 namespace ArtStation.Core.Entities
 {
-    public class ProductSize : BaseEntity
+    public class ProductColor : BaseEntity
     {
         [ForeignKey(nameof(Product))]
         public int ProductId { get; set; }
         public Product? Product { get; set; }
-        public string Size { get; set; }
+        public string  Name { get; set; }
         public string Language { get; set; }
-        public decimal Price { get; set; }
-
+        public string HexCode { get; set; }
     }
 }

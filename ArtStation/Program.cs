@@ -1,7 +1,12 @@
 
+using ArtStation.Core;
 using ArtStation.Core.Entities.Identity;
+using ArtStation.Core.Repository.Contract;
 using ArtStation.Extensions;
+using ArtStation.Helper;
+using ArtStation.Repository;
 using ArtStation.Repository.Data;
+using ArtStation.Repository.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -32,8 +37,9 @@ namespace ArtStation
                 .AddDefaultTokenProviders();
 
             builder.Services.AddIdentityServices(builder.Configuration);
-
-
+            builder.Services.AddAutoMapper(typeof(MappingProfiles));
+            builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+            builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
             builder.Services.AddSwaggerServices();
 
             #region Localization

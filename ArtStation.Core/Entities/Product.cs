@@ -13,10 +13,11 @@ namespace ArtStation.Core.Entities
     {
         [MaxLength(20)]
         public string Name { get; set; }
-        public string Description { get; set; }
         public ForWhom ForWhom { get; set; }
-        public decimal Price { get; set; }
+        
         public string ShippingDetails { get; set; }
+        public int DeliveredMinDate { get; set; }
+        public int DeliveredMaxDate { get; set; }
         public string Brand { get; set; }
         public int SellersCount { get; set; }
         public string Language { get; set; }
@@ -24,6 +25,7 @@ namespace ArtStation.Core.Entities
         public int CategoryId { get; set; }
         public ICollection<ProductPhotos> ProductPhotos { get; set; } = new List<ProductPhotos>();
         public ICollection<Sale> Sales { get; set; } = new List<Sale>();
+        public ICollection<ProductColor> ProductColors { get; set; } = new List<ProductColor>();
         public ICollection<ProductFlavour> ProductFlavours { get; set; } = new List<ProductFlavour>();
         public ICollection<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
         public ICollection<Favourite> Favourites = new List<Favourite>();

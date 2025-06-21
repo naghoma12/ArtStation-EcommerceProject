@@ -35,6 +35,7 @@ namespace ArtStation.Repository.Data
         public DbSet<Sale> Sales { get; set; }
         public DbSet<ProductPhotos> ProductPhotos { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<ProductColor> ProductColors { get; set; }
         public DbSet<ProductFlavour> ProductFlavours { get; set; }
         public DbSet<Favourite> Favorites { get; set; }
         public DbSet<ProductSize> ProductSizes { get; set; }
@@ -42,7 +43,7 @@ namespace ArtStation.Repository.Data
         //public DbSet<Order> Orders { get; set; }
         //public DbSet<OrderItem> OrderItems { get; set; }
         //public DbSet<ShippingCost> ShippingCosts { get; set; }
-        //public DbSet<NotificationMessage> NotificationMessage { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
     }
 }
