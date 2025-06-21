@@ -34,5 +34,16 @@ namespace ArtStation.Controllers
             var MappedList = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(list);
             return Ok(MappedList);
         }
+
+        [HttpGet("GetById/{id}")]
+        public async Task<ActionResult<CategoryWithProducts>> GetById([FromHeader] string language, int id)
+        {
+            var category = await _categoryRepository.GetCategoryById(language, id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            return Ok(category);
+        }
     }
 }

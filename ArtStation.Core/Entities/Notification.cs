@@ -14,6 +14,7 @@ namespace ArtStation.Core.Entities
         public int UserId { get; set; }
         public AppUser AppUser { get; set; }
         public bool IsRead { get; set; }
+        public string Language { get; set; }
 
     }
 }

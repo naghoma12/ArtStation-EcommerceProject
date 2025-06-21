@@ -1,4 +1,5 @@
 ﻿using ArtStation.Core.Entities;
+using ArtStation.Core.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace ArtStation.Core.Repository.Contract
     public interface ICategoryRepository
     {
         Task<IEnumerable<Category>> GetAllCategories(string language);
-        Task<Category> GetCategoryById(string language , int id);
+        Task<CategoryWithProducts> GetCategoryById(string language , int id);
     }
 }
