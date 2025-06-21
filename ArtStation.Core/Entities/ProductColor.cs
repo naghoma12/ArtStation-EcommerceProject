@@ -13,7 +13,6 @@ namespace ArtStation.Core.Entities
         public int ProductId { get; set; }
         public Product? Product { get; set; }
         public string  Name { get; set; }
-        public string Language { get; set; }
         public string HexCode { get; set; }
     }
 }

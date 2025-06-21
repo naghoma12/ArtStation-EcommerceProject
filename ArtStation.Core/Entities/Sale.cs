@@ -15,7 +15,6 @@ namespace ArtStation.Core.Entities
 
         public Product Product { get; set; }
         public int ProductId { get; set; }
-        public string Language { get; set; }
 
     }
 }
