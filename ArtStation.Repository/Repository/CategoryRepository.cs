@@ -38,7 +38,7 @@ namespace ArtStation.Repository.Repository
                      Name = p.Name,
                      PhotoUrl = p.ProductPhotos.FirstOrDefault().Photo,
                      ReviewsNumber = p.Reviews.Count(),
-                     TotalPrice = p.ProductSizes.Min(x => x.Size.Length),
+                     TotalPrice = p.ProductSizes.Min(x => x.Price),
                      // PriceAfterSale = 
 
                  }))
