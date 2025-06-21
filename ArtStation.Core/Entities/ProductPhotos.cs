@@ -13,7 +13,8 @@ namespace ArtStation.Core.Entities
             public virtual Product Product { get; set; }
 
             public int ProductId { get; set; }
+         
 
-        
+
     }
 }
