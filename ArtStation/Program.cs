@@ -2,12 +2,15 @@
 using ArtStation.Core;
 using ArtStation.Core.Entities.Identity;
 using ArtStation.Core.Repository.Contract;
+using ArtStation.Core.Services.Contract;
 using ArtStation.Extensions;
 using ArtStation.Helper;
 using ArtStation.Repository;
 using ArtStation.Repository.Data;
 using ArtStation.Repository.Repository;
+using ArtStation.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -21,7 +24,9 @@ namespace ArtStation
 
             // Add services to the container.
             #region Services
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddDataAnnotationsLocalization()
+                .AddViewLocalization(); ;
             builder.Services.AddDbContext<ArtStationDbContext>(
                 options => options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
             builder.Services.AddIdentity<AppUser, AppRole>(
@@ -61,11 +66,44 @@ namespace ArtStation
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             #endregion
+            builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
+            builder.Services.AddTransient<ISMSService, SMSService>();
+            builder.Services.AddMemoryCache();
+
+            builder.Services.AddSingleton(typeof(IVerificationCodeService), typeof(VerificationCodeService));
+
+
+            // Error Message Appear
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var errors = context.ModelState
+                        .Where(ms => ms.Value.Errors.Count > 0)
+                        .SelectMany(ms => ms.Value.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    var result = new
+                    {
+                        status = 400,
+                        message = string.Join(" | ", errors) 
+                    };
+
+                    return new BadRequestObjectResult(result);
+                };
+            });
+
+
+
 
             var app = builder.Build();
 
-            var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
+            var localizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(localizationOptions.Value);
+            
+
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

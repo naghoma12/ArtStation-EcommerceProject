@@ -34,7 +34,7 @@ namespace ArtStation.Services
             {
                 //new Claim(ClaimTypes.GivenName, user.UserName),
                 //new Claim(ClaimTypes., user.Id),
-                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.FullName),
                 new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
 
             };
@@ -50,7 +50,7 @@ namespace ArtStation.Services
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:Issuer"],
                 audience: _configuration["JWT:Audience"],
-                expires: DateTime.UtcNow.AddDays(double.Parse(_configuration["JWT:TokenExpirationInDay"])),
+                expires: DateTime.UtcNow.AddDays(double.Parse(_configuration["JWT:DurationExpire"])),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256)
             );

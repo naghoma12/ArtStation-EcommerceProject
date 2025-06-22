@@ -44,6 +44,7 @@ namespace ArtStation.Repository.Data
         //public DbSet<OrderItem> OrderItems { get; set; }
         //public DbSet<ShippingCost> ShippingCosts { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Shipping> Shippings { get; set; }
 
     }
 }
