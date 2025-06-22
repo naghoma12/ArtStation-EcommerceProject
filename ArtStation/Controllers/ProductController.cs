@@ -2,8 +2,10 @@
 using ArtStation.Core.Entities;
 using ArtStation.Core.Helper;
 using ArtStation.Core.Repository.Contract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ArtStation.Controllers
 {
@@ -54,19 +56,24 @@ namespace ArtStation.Controllers
         }
 
         [HttpGet("GetBestSellerProducts")]
-        public async Task<IActionResult> GetBestSellerProducts([FromHeader] string language)
+        public async Task<IActionResult> GetBestSellerProducts([FromHeader] string language, int? userId)
         {
-            var products = await _productRepository.GetProductOffers(language);
+            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var products = await _productRepository.GetBestSellerProducts(language, userId);
             if (products == null || !products.Any())
             {
                 return NotFound();
             }
             return Ok(products);
-        }
 
+        }
+       
         [HttpGet("GetProductDetails")]
         public async Task<IActionResult> GetProductDetails(int id, [FromHeader] string language , int? userId)
         {
+            var user = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             var product = await _productRepository.GetProductById(language, id, userId);
             if (product == null)
             {
