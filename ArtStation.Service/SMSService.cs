@@ -28,14 +28,14 @@ namespace ArtStation.Services
             _twilio = twilio.Value;
         }
 
-        public MessageResource SendVerificationCode(string mobileNumber)
+        public MessageResource SendVerificationCode(string mobileNumber,string code)
         {
             TwilioClient.Init(_twilio.AccountSID, _twilio.AuthToken);
 
             TwilioClient.Init(_twilio.AccountSID, _twilio.AuthToken);
 
             var result = MessageResource.Create(
-                    body: "sms from art station",
+                    body: $"{code} is your verification code. For Security ,don't share code sms from art station",
                     from: new Twilio.Types.PhoneNumber(_twilio.TwilioPhoneNumber),
                     to: mobileNumber
                 );

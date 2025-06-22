@@ -9,7 +9,7 @@ namespace ArtStation.Extensions
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Lishara E-Commerce", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Art Station E-Commerce", Version = "v1" });
             });
             services.AddSwaggerGen(swagger =>
             {
@@ -18,7 +18,7 @@ namespace ArtStation.Extensions
                 {
                     Version = "v1",
                     Title = "ASP.NET 9 Web API",
-                    Description = "Lishara E-Commerce"
+                    Description = "Art Station E-Commerce"
                 });
 
                 // To Enable authorization using Swagger (JWT)    
