@@ -25,7 +25,6 @@ namespace ArtStation.Core.Entities
         [ForeignKey(nameof(AppUser))]
         public int UserId { get; set; }
         public int LikesCount { get; set; }
-        public string Language { get; set; }
 
     }
 }

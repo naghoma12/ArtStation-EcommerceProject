@@ -42,14 +42,14 @@ namespace ArtStation.Repository.Repository
                  {
                      Id = p.Id,
                      Name = p.Name,
-                     PhotoUrl = p.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault(),
+                     PhotoUrl = p.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault() ?? "",
                      ReviewsNumber = p.Reviews.Count(),
                      TotalPrice = p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0,
                      PriceAfterSale = (
                      (p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0)
                        - (
                           ((p.Sales
-                          .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.UtcNow && s.EndDate >= DateTime.UtcNow)
+                          .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
                           .OrderByDescending(s => s.Id)
                           .Select(s => (int?)s.Discount)
                           .FirstOrDefault() ?? 0) / 100m)

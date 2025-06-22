@@ -10,7 +10,6 @@ using ArtStation.DTOS;
 
 namespace ArtStation.Controllers
 {
-   
     public class CategoryController : BaseController
     {
         private readonly IUnitOfWork _unitOfWork;
