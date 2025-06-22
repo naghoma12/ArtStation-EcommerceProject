@@ -111,7 +111,7 @@ namespace ArtStation
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
