@@ -10,11 +10,11 @@ namespace ArtStation.Core.Repository.Contract
 {
     public interface IProductRepository
     {
-         Task<IEnumerable<SimpleProduct>> GetAllProducts(string language);
-        Task<IEnumerable<SimpleProduct>> GetNewProducts(string language);
+         Task<IEnumerable<SimpleProduct>> GetAllProducts(string language , int? userId);
+        Task<IEnumerable<SimpleProduct>> GetNewProducts(string language , int? userId);
         Task<IEnumerable<ProductOffers>> GetProductOffers(string language);
-        Task<IEnumerable<SimpleProduct>> GetBestSellerProducts(string language);
-        Task<ProductDetailsDTO> GetProductById(string language, int id);
+        Task<IEnumerable<SimpleProduct>> GetBestSellerProducts(string language, int? userId);
+        Task<ProductDetailsDTO> GetProductById(string language, int id, int? userId);
 
     }
 }

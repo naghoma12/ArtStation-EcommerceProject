@@ -26,7 +26,7 @@ namespace ArtStation.Repository.Repository
                 .ToListAsync();
         }
 
-        public async Task<CategoryWithProducts> GetCategoryById(string language, int id)
+        public async Task<CategoryWithProducts> GetCategoryById(string language, int id , int? userId = null)
         {
             var categories = await _context.Categories
                  .Where(c => c.Language == language
@@ -58,7 +58,7 @@ namespace ArtStation.Repository.Repository
                      ),
                      IsActive = p.IsActive,
                      AvgRating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : (float?)null,
-                     // IsFav = userId.HasValue && p.Favourites.Any(f => f.UserId == userId)
+                     IsFav = userId.HasValue && p.Favourites.Any(f => f.UserId == userId)
                  }).ToList()
                  })
                  .FirstOrDefaultAsync();

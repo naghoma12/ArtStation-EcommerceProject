@@ -35,9 +35,9 @@ namespace ArtStation.Controllers
         }
 
         [HttpGet("GetById/{id}")]
-        public async Task<ActionResult<CategoryWithProducts>> GetById([FromHeader] string language, int id)
+        public async Task<ActionResult<CategoryWithProducts>> GetById([FromHeader] string language, int id, int? userId)
         {
-            var category = await _categoryRepository.GetCategoryById(language, id);
+            var category = await _categoryRepository.GetCategoryById(language, id, userId);
             if (category == null)
             {
                 return NotFound();

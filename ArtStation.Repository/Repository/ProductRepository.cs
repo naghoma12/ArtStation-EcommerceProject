@@ -20,7 +20,7 @@ namespace ArtStation.Repository.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<SimpleProduct>> GetAllProducts(string language)
+        public async Task<IEnumerable<SimpleProduct>> GetAllProducts(string language , int? userId = null)
         {
             var products = await _context.Products
                 .Where(p => p.IsActive && !p.IsDeleted && p.Language == language)
@@ -53,13 +53,13 @@ namespace ArtStation.Repository.Repository
                 : 0,
                     IsActive = p.IsActive,
                     AvgRating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : (float?)null,
-                    IsFav = false
+                    IsFav = userId.HasValue && p.Favourites.Any(f => f.UserId == userId)
                 })
                 .ToListAsync();
             return products;
         }
 
-        public async Task<IEnumerable<SimpleProduct>> GetBestSellerProducts(string language)
+        public async Task<IEnumerable<SimpleProduct>> GetBestSellerProducts(string language, int? userId = null)
         {
                 var products = await _context.Products
                     .Where(p => p.IsActive && !p.IsDeleted && p.Language == language)
@@ -93,14 +93,14 @@ namespace ArtStation.Repository.Repository
                     : 0,
                         IsActive = p.IsActive,
                         AvgRating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : (float?)null,
-                        IsFav = false
+                        IsFav = userId.HasValue && p.Favourites.Any(f => f.UserId == userId)
                     })
                     .ToListAsync();
                 return products;
             
         }
 
-        public async Task<IEnumerable<SimpleProduct>> GetNewProducts(string language)
+        public async Task<IEnumerable<SimpleProduct>> GetNewProducts(string language, int? userId = null)
         {
             var products = await _context.Products
                 .Where(p => p.IsActive && !p.IsDeleted && p.Language == language)
@@ -134,7 +134,7 @@ namespace ArtStation.Repository.Repository
                 : 0,
                     IsActive = p.IsActive,
                     AvgRating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : (float?)null,
-                    IsFav = false
+                    IsFav = userId.HasValue && p.Favourites.Any(f => f.UserId == userId)
                 })
                 .ToListAsync();
             return products;
@@ -166,16 +166,40 @@ namespace ArtStation.Repository.Repository
 
         }
 
-        public async Task<ProductDetailsDTO> GetProductById(string language , int id)
+        public async Task<ProductDetailsDTO> GetProductById(string language, int id , int? userId = null)
         {
-            var products = _context.Products
+            var products = await _context.Products
                 .Where(p => p.IsActive && !p.IsDeleted && p.Language == language && p.Id == id)
                 .Select(p => new ProductDetailsDTO
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    Description = p.,
-                });
+                    Description = p.Description,
+                    Images = p.ProductPhotos.Select(ph => ph.Photo).ToList(),
+                    AvgRating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0,
+                    ReviewsNumber = p.Reviews.Count(),
+                    Colors = p.ProductColors.Select(c => new ColorsDTO
+                    {
+                        ColorName = c.Name,
+                        HexCode = c.HexCode
+                    }).ToList(),
+                    Sizes = p.ProductSizes.Select(s => new SizesDTO
+                    {
+                        Size = s.Size,
+                        Price = s.Price,
+                        PriceAfterSale = s.Price - (s.Price * (p.Sales
+                            .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
+                            .Select(s => (int?)s.Discount)
+                            .FirstOrDefault() ?? 0) / 100m)
+                    }).ToList(),
+                    Flavours = p.ProductFlavours.Select(f => f.Name).ToList(),
+                    ShippingDetails = p.ShippingDetails,
+                    DeliveredMinDate = p.DeliveredMinDate,
+                    DeliveredMaxDate = p.DeliveredMaxDate,
+                    Reviews = p.Reviews.ToList(),
+                    IsFav = userId.HasValue && p.Favourites.Any(f => f.UserId == userId)
+                }).FirstOrDefaultAsync();
+            return products;
         }
 
     }

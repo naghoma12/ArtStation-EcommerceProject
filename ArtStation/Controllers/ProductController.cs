@@ -20,9 +20,9 @@ namespace ArtStation.Controllers
         }
 
         [HttpGet("GetAllProducts")]
-        public async Task<IActionResult> GetAllProducts([FromHeader] string language)
+        public async Task<IActionResult> GetAllProducts([FromHeader] string language, int? userId)
         {
-                var products = await _productRepository.GetAllProducts(language);
+                var products = await _productRepository.GetAllProducts(language, userId);
                 if (products == null || !products.Any())
                 {
                     return NotFound();
@@ -32,9 +32,9 @@ namespace ArtStation.Controllers
         }
 
         [HttpGet("GetNewProducts")]
-        public async Task<IActionResult> GetNewProducts([FromHeader] string language)
+        public async Task<IActionResult> GetNewProducts([FromHeader] string language, int? userId)
         {
-            var products = await _productRepository.GetNewProducts(language);
+            var products = await _productRepository.GetNewProducts(language, userId);
             if (products == null || !products.Any())
             {
                 return NotFound();
@@ -62,6 +62,17 @@ namespace ArtStation.Controllers
                 return NotFound();
             }
             return Ok(products);
+        }
+
+        [HttpGet("GetProductDetails")]
+        public async Task<IActionResult> GetProductDetails(int id, [FromHeader] string language , int? userId)
+        {
+            var product = await _productRepository.GetProductById(language, id, userId);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return Ok(product);
         }
     }
 }
