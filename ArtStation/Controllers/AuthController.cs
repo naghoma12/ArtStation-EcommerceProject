@@ -3,12 +3,14 @@ using ArtStation.Core.Entities.Identity;
 using ArtStation.Core.Services.Contract;
 using ArtStation.Dtos.AuthDtos;
 using ArtStation.Extensions;
+using ArtStation.Resources;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ArtStation.Controllers
 {
@@ -18,47 +20,34 @@ namespace ArtStation.Controllers
     {
 
         private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManger;
+       
         private readonly RoleManager<AppRole> _roleManager;
         private readonly ITokenService _tokenService;
         private readonly IVerificationCodeService _verificationCodeService;
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly IUnitOfWork _unitOfWork;
+       
         private readonly ISMSService _smsService;
         
 
-        private readonly IMapper _mapper;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly string _apiBaseUrl;
-        public readonly string _imagepath;
+      
         public AuthController(
             UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManger,
             RoleManager<AppRole> roleManager,
             ITokenService tokenService,
             IVerificationCodeService verificationCodeService,
             SignInManager<AppUser> signInManager,
-            IUnitOfWork unitOfWork,
-         ISMSService smsService,
-            IMapper mapper,
-            IWebHostEnvironment webHostEnvironment,
-            IConfiguration configuration
+            ISMSService smsService
+         
             )
 
         {
             _userManager = userManager;
-            _signInManger = signInManger;
             _roleManager = roleManager;
             _tokenService = tokenService;
            _verificationCodeService = verificationCodeService;
             _smsService = smsService;
             _signInManager = signInManager;
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-            _webHostEnvironment = webHostEnvironment;
-            _apiBaseUrl = configuration["ApiBaseUrl"];
-            _imagepath = $"{_webHostEnvironment.WebRootPath}";
-
+           
         }
         
 
@@ -68,16 +57,27 @@ namespace ArtStation.Controllers
             var phoneExsist = await _userManager.FindByPhoneNumberAsync(smsdto.PhoneNumber);
             if (phoneExsist != null)
             {
-                return new BadRequestObjectResult(new { Message = "this phone number is exist already" });
+                return BadRequest(new
+                {
+                  message = ControllerMessages.PhoneAlreadyExists
+                });
+               
             }
             else
             {
                 var code = _verificationCodeService.GenerateCode(smsdto.PhoneNumber);
                 var result = _smsService.SendVerificationCode(smsdto.PhoneNumber, code);
                 if (!string.IsNullOrEmpty(result.ErrorMessage))
-                    return BadRequest(new { Message = "Error In Sending Code" });
+                    return BadRequest(new
+                    {
+                        message = ControllerMessages.SendCodeFailed
+                    });
 
-                return Ok(new { Message = " Sending Code Done" });
+                return Ok(
+                    new
+                    {
+                        message = ControllerMessages.SendCodeSuccess
+                    });
             }
 
            
@@ -90,7 +90,11 @@ namespace ArtStation.Controllers
             var phoneExsist = await _userManager.FindByPhoneNumberAsync(registerDto.PhoneNumber);
             if (phoneExsist != null)
             {
-                return new BadRequestObjectResult(new { Message = "this phone number is exist already" });
+                return BadRequest(new
+                {
+                    status = 400,
+                    message = ControllerMessages.PhoneAlreadyExists
+                });
             }
 
             if(!_verificationCodeService.ValidateCode(registerDto.PhoneNumber, registerDto.Code) == false)
@@ -110,7 +114,11 @@ namespace ArtStation.Controllers
                 if (!result.Succeeded)
                 {
 
-                    return BadRequest(new { message = result.Errors });
+                    return BadRequest(new
+                    {
+                        status = 400,
+                        message = string.Join(" | ", result.Errors)
+                    });
 
 
                 }
@@ -123,7 +131,11 @@ namespace ArtStation.Controllers
             }
             else
             {
-                return BadRequest(new { message = "Invalid verification code." });
+                return BadRequest(new
+                {
+                    status = 400,
+                    message = ControllerMessages.InvalidVerificationCode
+                });
             }
      
         }
@@ -134,16 +146,28 @@ namespace ArtStation.Controllers
             var phoneExsist = await _userManager.FindByPhoneNumberAsync(smsdto.PhoneNumber);
             if (phoneExsist == null)
             {
-                return  BadRequest(new { Message = "this phone number is Not exist " });
+                return  BadRequest(new
+                {
+                    status = 400,
+                    message = ControllerMessages.PhoneNotFound
+                });
             }
             else
             {
                 var code = _verificationCodeService.GenerateCode(smsdto.PhoneNumber);
                 var result = _smsService.SendVerificationCode(smsdto.PhoneNumber, code);
                 if (!string.IsNullOrEmpty(result.ErrorMessage))
-                    return BadRequest(new { Message = "Error In Sending Code" });
-
-                return Ok(new { Message = " Sending Code Done" });
+                    return BadRequest(new
+                    {
+                        status = 400,
+                        message = ControllerMessages.SendCodeFailed
+                    });
+                return Ok(
+                    new
+                    {
+                        status = 200,
+                        message = ControllerMessages.SendCodeSuccess
+                    });
             }
 
 
@@ -156,17 +180,22 @@ namespace ArtStation.Controllers
             var user = await _userManager.FindByPhoneNumberAsync(loginDto.PhoneNumber);
             if (user == null)
             {
-
-                return BadRequest(new { Message = "this phone number is Not exist " });
+                return BadRequest(new
+                {
+                    status = 400,
+                    message = ControllerMessages.PhoneNotFound
+                });
             }
-            if (user == null)
-                return Unauthorized("Invalid phone number.");
-
+          
             if (!user.PhoneNumberConfirmed)
                 return Unauthorized("Phone number not verified.");
             
             if (!_verificationCodeService.ValidateCode(loginDto.PhoneNumber, loginDto.Code))
-                return Unauthorized("Invalid or expired code.");
+                return BadRequest(new
+                {
+                    status = 400,
+                    message = ControllerMessages.InvalidVerificationCode
+                });
 
             await _signInManager.SignInAsync(user, isPersistent: false);
 
@@ -187,10 +216,19 @@ namespace ArtStation.Controllers
                 var code = _verificationCodeService.GenerateCode(smsdto.PhoneNumber);
                 var result = _smsService.SendVerificationCode(smsdto.PhoneNumber, code);
                 if (!string.IsNullOrEmpty(result.ErrorMessage))
-                    return BadRequest(new { Message = "Error In Sending Code" });
+                    return BadRequest(new
+                    {
+                        status = 400,
+                        message = ControllerMessages.SendCodeFailed
+                    });
 
-                return Ok(new { Message = " Sending Code Done" });
-            
+            return Ok(
+                new
+                {
+                    status = 200,
+                    message = ControllerMessages.SendCodeSuccess
+                });
+
 
 
         }
