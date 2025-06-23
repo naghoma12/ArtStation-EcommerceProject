@@ -2,6 +2,7 @@
 using ArtStation.Core.Helper;
 using ArtStation.Core.Repository.Contract;
 using ArtStation.Repository.Data;
+using FuzzySharp;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -202,5 +203,47 @@ namespace ArtStation.Repository.Repository
             return products;
         }
 
+        public async Task<IEnumerable<SimpleProduct>> SearchByProductName(string ProName , string language , int? userId = null)
+        {
+            var products =  _context.Products.Where(x => !x.IsDeleted && x.IsActive && x.Language == language).AsEnumerable();
+            int similarityThreshold = 100;
+
+            var listofProducts = products.Where(x => Fuzz.Ratio(x.Name, ProName) > similarityThreshold 
+            || x.Name.Trim().ToLower().Contains(ProName.Trim().ToUpper()))
+                .Select(p => new SimpleProduct
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    PhotoUrl = p.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault() ?? "",
+                    ReviewsNumber = p.Reviews.Count(),
+                    TotalPrice = p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0,
+                    PriceAfterSale = p.ProductSizes.Any()
+                ? (
+                    (p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0)
+                    - (
+                        (p.Sales
+                            .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
+                            .Any()
+                            ? (
+                                (p.Sales
+                                    .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
+                                    .OrderByDescending(s => s.Id)
+                                    .Select(s => (int?)s.Discount)
+                                    .FirstOrDefault() ?? 0)
+                            )
+                            : 0
+                        ) / 100m
+                        * (p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0)
+                    )
+                )
+                : 0,
+                    IsActive = p.IsActive,
+                    AvgRating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : (float?)null,
+                    IsFav = userId.HasValue && p.Favourites.Any(f => f.UserId == userId)
+                })
+                .ToList();
+
+            return listofProducts;
+        }
     }
 }

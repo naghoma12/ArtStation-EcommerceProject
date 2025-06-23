@@ -81,5 +81,21 @@ namespace ArtStation.Controllers
             }
             return Ok(product);
         }
+
+        [HttpGet("SearchByProductName")]
+        public async Task<IActionResult> SearchByProductName(string productName, [FromHeader] string language, int? userId)
+        {
+            if (string.IsNullOrWhiteSpace(productName))
+            {
+                return BadRequest(new { message = "Product name cannot be empty." }); //Make it Arabic also
+            }
+
+            var products = await _productRepository.SearchByProductName(productName, language, userId);
+            if (products == null || !products.Any())
+            {
+                return NotFound();
+            }
+            return Ok(products);
+        }
     }
 }

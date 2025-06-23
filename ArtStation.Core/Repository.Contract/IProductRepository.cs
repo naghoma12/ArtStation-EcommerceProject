@@ -15,6 +15,8 @@ namespace ArtStation.Core.Repository.Contract
         Task<IEnumerable<ProductOffers>> GetProductOffers(string language);
         Task<IEnumerable<SimpleProduct>> GetBestSellerProducts(string language, int? userId);
         Task<ProductDetailsDTO> GetProductById(string language, int id, int? userId);
+        Task<IEnumerable<SimpleProduct>> SearchByProductName(string productName, string
+            language, int? userId = null);
 
     }
 }
