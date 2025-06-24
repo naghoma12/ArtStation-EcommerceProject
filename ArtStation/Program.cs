@@ -52,6 +52,7 @@ namespace ArtStation
 
             builder.Services.AddIdentityServices(builder.Configuration);
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
+            builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
             builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
             builder.Services.AddScoped(typeof(IAddressRepository), typeof(AddressRepository));

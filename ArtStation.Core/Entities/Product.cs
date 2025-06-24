@@ -13,6 +13,7 @@ namespace ArtStation.Core.Entities
     {
         [MaxLength(20)]
         public string Name { get; set; }
+        public string Description { get; set; }
         public ForWhom ForWhom { get; set; }
         
         public string ShippingDetails { get; set; }

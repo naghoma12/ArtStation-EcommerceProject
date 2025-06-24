@@ -10,8 +10,8 @@ namespace ArtStation.Core.Entities
     {
         public int Id { get; set; }
 
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
-        public DateTime ModifiedDate { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime ModifiedDate { get; set; } = DateTime.Now;
 
         public bool IsDeleted { get; set; } = false;
         public bool IsActive { get; set; } = true;
