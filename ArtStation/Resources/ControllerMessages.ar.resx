@@ -120,6 +120,9 @@
   <data name="InvalidVerificationCode" xml:space="preserve">
     <value>عذرًا! رمز التحقق الذي أدخلته غير صحيح. يرجى المحاولة مرة أخرى أو طلب رمز جديد.</value>
   </data>
+  <data name="PhoneNumberIsTaken" xml:space="preserve">
+    <value>هذا الرقم مستخدم بالفعل.</value>
+  </data>
   <data name="PhoneAlreadyExists" xml:space="preserve">
     <value>رقم الهاتف مسجل بالفعل. يرجى استخدام رقم مختلف أو تسجيل الدخول</value>
   </data>
@@ -131,5 +134,47 @@
   </data>
   <data name="SendCodeSuccess" xml:space="preserve">
     <value>تم إرسال رمز التحقق بنجاح.</value>
+  </data>
+  <data name="Unauthorized" xml:space="preserve">
+    <value>أنت غير مصرح لك بالوصول</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>هذا المستخدم غير موجود.</value>
+  </data>
+  <data name="EmailAlreadyInUse" xml:space="preserve">
+    <value>البريد الإلكتروني موجود مسبقًا.</value>
+  </data>
+  <data name="UserDataUpdatedSucessfully" xml:space="preserve">
+    <value>تم تحديث ملفك الشخصي بنجاح.</value>
+  </data>
+  <data name="FailedToUpdateUserData" xml:space="preserve">
+    <value> حدث خطأ فى حفظ البيانات. الرجاء المحاولة لاحقًا.</value>
+  </data>
+  <data name="SomethingWrong" xml:space="preserve">
+    <value>حدث خطأ ما. الرجاء المحاولة لاحقًا.</value>
+  </data>
+  <data name="PhotoUpdatedSucessfully" xml:space="preserve">
+    <value>تم تحديث صورة الحساب بنجاح.</value>
+  </data>
+  <data name="AddressAddedSucessfully" xml:space="preserve">
+    <value>تم إضافة العنوان بنجاح!</value>
+  </data>
+  <data name="AddressAddedFailed" xml:space="preserve">
+    <value>فشل إضافة العنوان! يرجى المحاولة مرة أخرى.</value>
+  </data>
+  <data name="AddressEditFailed" xml:space="preserve">
+    <value>فشل تعديل العنوان! يرجى المحاولة مرة أخرى.</value>
+  </data>
+  <data name="AddressEditSuccessfully" xml:space="preserve">
+    <value>تم تعديل العنوان بنجاح!</value>
+  </data>
+  <data name="AddressNotFound" xml:space="preserve">
+    <value>عذرًا، لا يمكن العثور على هذا العنوان.</value>
+  </data>
+  <data name="AddressLoadedFailed" xml:space="preserve">
+    <value>حدث خطأ أثناء تحميل العناوين. أعد المحاولة لاحقاً</value>
+  </data>
+  <data name="PhotoUploadedFailed" xml:space="preserve">
+    <value>حدث خطأ أثناء رفع صورة الحساب، يرجى المحاولة مرة أخرى.</value>
   </data>
 </root>

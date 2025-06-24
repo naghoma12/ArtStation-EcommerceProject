@@ -5,10 +5,12 @@ using ArtStation.Core.Repository.Contract;
 using ArtStation.Core.Services.Contract;
 using ArtStation.Extensions;
 using ArtStation.Helper;
+using ArtStation.Middlewares;
 using ArtStation.Repository;
 using ArtStation.Repository.Data;
 using ArtStation.Repository.Repository;
 using ArtStation.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +20,7 @@ namespace ArtStation
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +28,14 @@ namespace ArtStation
             #region Services
             builder.Services.AddControllers()
                 .AddDataAnnotationsLocalization()
-                .AddViewLocalization(); ;
+                .AddViewLocalization()
+                //.AddJsonOptions(options =>
+                //{
+                //    options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+                //})
+                ;
+            builder.Services.AddScoped<IAuthorizationMiddlewareResultHandler, ValidationAuthorization>();
+            ;
             builder.Services.AddDbContext<ArtStationDbContext>(
                 options => options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
             builder.Services.AddIdentity<AppUser, AppRole>(
@@ -45,6 +54,7 @@ namespace ArtStation
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
             builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
+            builder.Services.AddScoped(typeof(IAddressRepository), typeof(AddressRepository));
             builder.Services.AddSwaggerServices();
 
             #region Localization
@@ -85,19 +95,23 @@ namespace ArtStation
 
                     var result = new
                     {
-                        status = 400,
+                      
                         message = string.Join(" | ", errors) 
                     };
 
                     return new BadRequestObjectResult(result);
                 };
             });
-
-
-
+          
 
             var app = builder.Build();
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbcontext = scope.ServiceProvider.GetRequiredService<ArtStationDbContext>();
+                await AppSeeding.SeedShippingCost(dbcontext); 
+            }
 
+            HandlerPhoto.Initialize(app.Environment);
             var localizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(localizationOptions.Value);
             
@@ -113,6 +127,7 @@ namespace ArtStation
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
+         
 
 
             app.MapControllers();

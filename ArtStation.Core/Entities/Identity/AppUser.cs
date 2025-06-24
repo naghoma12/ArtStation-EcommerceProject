@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,10 +10,11 @@ namespace ArtStation.Core.Entities.Identity
 {
     public enum Gender
     {
+        [EnumMember(Value = "male")]
         Male = 1,
-        ذكر = 1,
-        Female = 2,
-        أنثى = 2
+
+        [EnumMember(Value = "female")]
+        Female = 2
     }
     public class AppUser : IdentityUser<int>
     {

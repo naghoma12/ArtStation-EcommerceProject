@@ -16,7 +16,7 @@ namespace ArtStation.Core.Entities.Identity
         public string AddressDetails { get; set; }
         public decimal? Lat { get; set; }
         public decimal? Long { get; set; }
-        public string AppUserId { get; set; }
+        public int AppUserId { get; set; }
         public AppUser AppUser { get; set; }
     }
 }

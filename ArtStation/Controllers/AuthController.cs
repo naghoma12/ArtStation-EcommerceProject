@@ -92,7 +92,7 @@ namespace ArtStation.Controllers
             {
                 return BadRequest(new
                 {
-                    status = 400,
+                   
                     message = ControllerMessages.PhoneAlreadyExists
                 });
             }
@@ -116,7 +116,7 @@ namespace ArtStation.Controllers
 
                     return BadRequest(new
                     {
-                        status = 400,
+                       
                         message = string.Join(" | ", result.Errors)
                     });
 
@@ -133,7 +133,7 @@ namespace ArtStation.Controllers
             {
                 return BadRequest(new
                 {
-                    status = 400,
+                    
                     message = ControllerMessages.InvalidVerificationCode
                 });
             }
