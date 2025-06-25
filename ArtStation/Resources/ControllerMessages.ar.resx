@@ -177,4 +177,10 @@
   <data name="PhotoUploadedFailed" xml:space="preserve">
     <value>حدث خطأ أثناء رفع صورة الحساب، يرجى المحاولة مرة أخرى.</value>
   </data>
+  <data name="CountryAddedSuccessfully" xml:space="preserve">
+    <value>تم إضافة الدولة بنجاح.</value>
+  </data>
+  <data name="CountryFailedToAdd" xml:space="preserve">
+    <value>فشل في إضافة الدولة.</value>
+  </data>
 </root>

@@ -177,7 +177,10 @@
   <data name="PhotoUploadedFailed" xml:space="preserve">
     <value />
   </data>
-  <data name="InvalidFullName" xml:space="preserve">
+  <data name="CountryAddedSuccessfully" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CountryFailedToAdd" xml:space="preserve">
     <value />
   </data>
 </root>

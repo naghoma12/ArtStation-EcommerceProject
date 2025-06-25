@@ -124,7 +124,7 @@ namespace ArtStation.Controllers
                 }
                 return Ok(new UserDto()
                 {
-                    UserName = user.FullName.Split(' ')[0],
+                    UserName = user.FullName,
                     Token = await _tokenService.CreateTokenAsync(user)
                 });
               
@@ -148,7 +148,7 @@ namespace ArtStation.Controllers
             {
                 return  BadRequest(new
                 {
-                    status = 400,
+                    
                     message = ControllerMessages.PhoneNotFound
                 });
             }
@@ -159,13 +159,13 @@ namespace ArtStation.Controllers
                 if (!string.IsNullOrEmpty(result.ErrorMessage))
                     return BadRequest(new
                     {
-                        status = 400,
+                     
                         message = ControllerMessages.SendCodeFailed
                     });
                 return Ok(
                     new
                     {
-                        status = 200,
+                      
                         message = ControllerMessages.SendCodeSuccess
                     });
             }
@@ -182,7 +182,7 @@ namespace ArtStation.Controllers
             {
                 return BadRequest(new
                 {
-                    status = 400,
+                   
                     message = ControllerMessages.PhoneNotFound
                 });
             }
@@ -193,7 +193,7 @@ namespace ArtStation.Controllers
             if (!_verificationCodeService.ValidateCode(loginDto.PhoneNumber, loginDto.Code))
                 return BadRequest(new
                 {
-                    status = 400,
+                    
                     message = ControllerMessages.InvalidVerificationCode
                 });
 
@@ -201,7 +201,8 @@ namespace ArtStation.Controllers
 
             return Ok(new UserDto()
             {
-                UserName = user.FullName.Split(' ')[0],
+                UserName = user.FullName,
+
                 Token = await _tokenService.CreateTokenAsync(user)
             });
         }
@@ -218,14 +219,14 @@ namespace ArtStation.Controllers
                 if (!string.IsNullOrEmpty(result.ErrorMessage))
                     return BadRequest(new
                     {
-                        status = 400,
+                      
                         message = ControllerMessages.SendCodeFailed
                     });
 
             return Ok(
                 new
                 {
-                    status = 200,
+                   
                     message = ControllerMessages.SendCodeSuccess
                 });
 

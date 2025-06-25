@@ -117,6 +117,24 @@ namespace ArtStation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string CountryAddedSuccessfully {
+            get {
+                return ResourceManager.GetString("CountryAddedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string CountryFailedToAdd {
+            get {
+                return ResourceManager.GetString("CountryFailedToAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string EmailAlreadyInUse {
             get {
                 return ResourceManager.GetString("EmailAlreadyInUse", resourceCulture);
@@ -129,15 +147,6 @@ namespace ArtStation.Resources {
         public static string FailedToUpdateUserData {
             get {
                 return ResourceManager.GetString("FailedToUpdateUserData", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string InvalidFullName {
-            get {
-                return ResourceManager.GetString("InvalidFullName", resourceCulture);
             }
         }
         

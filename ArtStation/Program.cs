@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 
 namespace ArtStation
 {
@@ -49,6 +50,15 @@ namespace ArtStation
                 })
                 .AddEntityFrameworkStores<ArtStationDbContext>()
                 .AddDefaultTokenProviders();
+
+
+            //Redis Connection
+            builder.Services.AddSingleton<IConnectionMultiplexer>((provider) =>
+            {
+                var connection = builder.Configuration.GetConnectionString("Redis");
+                return ConnectionMultiplexer.Connect(connection);
+            });
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
 
             builder.Services.AddIdentityServices(builder.Configuration);
             builder.Services.AddAutoMapper(typeof(MappingProfiles));

@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ArtStation.Dtos.UserDtos
 {
-    public class UserProfilePhotoDto
+    public class CountryDto
     {
         [Required(ErrorMessageResourceType = typeof(Messages),
-             ErrorMessageResourceName = "RequiredField")]
-        public IFormFile Photo { get; set; }
+    ErrorMessageResourceName = "RequiredField")]
+        public string Country { get; set; }
     }
 }
