@@ -19,8 +19,8 @@ namespace ArtStation.Dtos.AuthDtos
       ErrorMessageResourceName = "InvalidFullName")]
         public string FullName { get; set; }
 
-        [Required(ErrorMessageResourceType = typeof(Messages),
-       ErrorMessageResourceName = "RequiredField")]
-        public string Code { get; set; }
+       // [Required(ErrorMessageResourceType = typeof(Messages),
+       //ErrorMessageResourceName = "RequiredField")]
+        public string? Code { get; set; }
     }
 }

@@ -96,48 +96,79 @@ namespace ArtStation.Controllers
                     message = ControllerMessages.PhoneAlreadyExists
                 });
             }
-
-            if(!_verificationCodeService.ValidateCode(registerDto.PhoneNumber, registerDto.Code) == false)
+            var user = new AppUser()
             {
-                var user = new AppUser()
-                {
 
-                    FullName = registerDto.FullName,
-                    PhoneNumber = registerDto.PhoneNumber,
-                    UserName = registerDto.PhoneNumber,
-                    PhoneNumberConfirmed = true,
+                FullName = registerDto.FullName,
+                PhoneNumber = registerDto.PhoneNumber,
+                UserName = registerDto.PhoneNumber,
+                PhoneNumberConfirmed = true,
 
-                };
+            };
 
-                var result = await _userManager.CreateAsync(user);
-                var resultRole = await _userManager.AddToRoleAsync(user, "Customer");
-                if (!result.Succeeded)
-                {
-
-                    return BadRequest(new
-                    {
-                       
-                        message = string.Join(" | ", result.Errors)
-                    });
-
-
-                }
-                return Ok(new UserDto()
-                {
-                    UserName = user.FullName,
-                    Token = await _tokenService.CreateTokenAsync(user)
-                });
-              
-            }
-            else
+            var result = await _userManager.CreateAsync(user);
+            var resultRole = await _userManager.AddToRoleAsync(user, "Customer");
+            if (!result.Succeeded)
             {
+
                 return BadRequest(new
                 {
-                    
-                    message = ControllerMessages.InvalidVerificationCode
+
+                    message = string.Join(" | ", result.Errors)
                 });
+
+
             }
-     
+            return Ok(new UserDto()
+            {
+                UserName = user.FullName,
+                Token = await _tokenService.CreateTokenAsync(user)
+            });
+
+            //if(!_verificationCodeService.ValidateCode(registerDto.PhoneNumber, registerDto.Code) == false)
+            //{
+            //    var user = new AppUser()
+            //    {
+
+            //        FullName = registerDto.FullName,
+            //        PhoneNumber = registerDto.PhoneNumber,
+            //        UserName = registerDto.PhoneNumber,
+            //        PhoneNumberConfirmed = true,
+
+            //    };
+
+            //    var result = await _userManager.CreateAsync(user);
+            //    var resultRole = await _userManager.AddToRoleAsync(user, "Customer");
+            //    if (!result.Succeeded)
+            //    {
+
+            //        return BadRequest(new
+            //        {
+
+            //            message = string.Join(" | ", result.Errors)
+            //        });
+
+
+            //    }
+            //    return Ok(new UserDto()
+            //    {
+            //        UserName = user.FullName,
+            //        Token = await _tokenService.CreateTokenAsync(user)
+            //    });
+
+            //}
+            //else
+            //{
+            //    return BadRequest(new
+            //    {
+
+            //        message = ControllerMessages.InvalidVerificationCode
+            //    });
+            //}
+
+
+
+
         }
 
         [HttpPost("sendLoginCode")]
@@ -186,25 +217,36 @@ namespace ArtStation.Controllers
                     message = ControllerMessages.PhoneNotFound
                 });
             }
-          
-            if (!user.PhoneNumberConfirmed)
-                return Unauthorized("Phone number not verified.");
-            
-            if (!_verificationCodeService.ValidateCode(loginDto.PhoneNumber, loginDto.Code))
-                return BadRequest(new
-                {
-                    
-                    message = ControllerMessages.InvalidVerificationCode
-                });
-
-            await _signInManager.SignInAsync(user, isPersistent: false);
-
-            return Ok(new UserDto()
+            else
             {
-                UserName = user.FullName,
+                await _signInManager.SignInAsync(user, isPersistent: false);
 
-                Token = await _tokenService.CreateTokenAsync(user)
-            });
+                return Ok(new UserDto()
+                {
+                    UserName = user.FullName,
+
+                    Token = await _tokenService.CreateTokenAsync(user)
+                });
+            }
+          
+            //if (!user.PhoneNumberConfirmed)
+            //    return Unauthorized("Phone number not verified.");
+            
+            //if (!_verificationCodeService.ValidateCode(loginDto.PhoneNumber, loginDto.Code))
+            //    return BadRequest(new
+            //    {
+                    
+            //        message = ControllerMessages.InvalidVerificationCode
+            //    });
+
+            //await _signInManager.SignInAsync(user, isPersistent: false);
+
+            //return Ok(new UserDto()
+            //{
+            //    UserName = user.FullName,
+
+            //    Token = await _tokenService.CreateTokenAsync(user)
+            //});
         }
 
 
