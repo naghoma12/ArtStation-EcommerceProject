@@ -90,6 +90,15 @@ namespace ArtStation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string ProductNameSearch {
+            get {
+                return ResourceManager.GetString("ProductNameSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string SendCodeFailed {
             get {
                 return ResourceManager.GetString("SendCodeFailed", resourceCulture);

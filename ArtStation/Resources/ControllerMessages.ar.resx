@@ -126,6 +126,9 @@
   <data name="PhoneNotFound" xml:space="preserve">
     <value>رقم الهاتف غير مسجل في النظام.</value>
   </data>
+  <data name="ProductNameSearch" xml:space="preserve">
+    <value>اسم المنتج لا يمكن أن يكون فارغًا.</value>
+  </data>
   <data name="SendCodeFailed" xml:space="preserve">
     <value>فشل في إرسال رمز التحقق. يرجى المحاولة مرة أخرى لاحقًا.</value>
   </data>

@@ -127,6 +127,9 @@ Please try again or request a new code. </value>
   <data name="PhoneNotFound" xml:space="preserve">
     <value>This phone number is not registered.</value>
   </data>
+  <data name="ProductNameSearch" xml:space="preserve">
+    <value>Product name cannot be empty.</value>
+  </data>
   <data name="SendCodeFailed" xml:space="preserve">
     <value>Failed to send the verification code. Please try again later.</value>
   </data>

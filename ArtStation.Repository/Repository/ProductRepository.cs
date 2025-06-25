@@ -21,229 +21,172 @@ namespace ArtStation.Repository.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<SimpleProduct>> GetAllProducts(string language , int? userId = null)
+        private SimpleProduct MapToSimpleProduct(Product p, int? userId)
         {
-            var products = await _context.Products
+            var basePrice = p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0;
+            var activeSale = p.Sales
+                .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
+                .OrderByDescending(s => s.Id)
+                .FirstOrDefault();
+            var discount = activeSale?.Discount ?? 0;
+            var priceAfterSale = basePrice - (discount / 100m * basePrice);
+
+            return new SimpleProduct
+            {
+                Id = p.Id,
+                Name = p.Name,
+                PhotoUrl = p.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault() ?? "",
+                ReviewsNumber = p.Reviews.Count,
+                TotalPrice = basePrice,
+                PriceAfterSale = priceAfterSale,
+                IsActive = p.IsActive,
+                AvgRating = p.Reviews.Any() ? (float?)p.Reviews.Average(r => r.Rating) : 0,
+                IsFav = userId.HasValue && p.Favourites.Any(f => f.UserId == userId.Value)
+            };
+        }
+        public async Task<IEnumerable<SimpleProduct>> GetAllProducts(string language, int? userId = null)
+        {
+            var rawProducts = await _context.Products
                 .Where(p => p.IsActive && !p.IsDeleted && p.Language == language)
-                .Select(p => new SimpleProduct
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    PhotoUrl = p.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault() ?? "",
-                    ReviewsNumber = p.Reviews.Count(),
-                    TotalPrice = p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0,
-                    PriceAfterSale = p.ProductSizes.Any()
-                ? (
-                    (p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0)
-                    - (
-                        (p.Sales
-                            .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
-                            .Any()
-                            ? (
-                                (p.Sales
-                                    .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
-                                    .OrderByDescending(s => s.Id)
-                                    .Select(s => (int?)s.Discount)
-                                    .FirstOrDefault() ?? 0)
-                            )
-                            : 0
-                        ) / 100m
-                        * (p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0)
-                    )
-                )
-                : 0,
-                    IsActive = p.IsActive,
-                    AvgRating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : (float?)null,
-                    IsFav = userId.HasValue && p.Favourites.Any(f => f.UserId == userId)
-                })
+                .Include(p => p.ProductSizes)
+                .Include(p => p.ProductPhotos)
+                .Include(p => p.Reviews)
+                .Include(p => p.Sales)
                 .ToListAsync();
+
+            var products = rawProducts.Select(p => MapToSimpleProduct(p, userId));
+
             return products;
         }
 
         public async Task<IEnumerable<SimpleProduct>> GetBestSellerProducts(string language, int? userId = null)
         {
-                var products = await _context.Products
-                    .Where(p => p.IsActive && !p.IsDeleted && p.Language == language)
-                    .OrderByDescending(x => x.SellersCount)
-                    .Select(p => new SimpleProduct
-                    {
-                        Id = p.Id,
-                        Name = p.Name,
-                        PhotoUrl = p.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault() ?? "",
-                        ReviewsNumber = p.Reviews.Count(),
-                        TotalPrice = p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0,
-                        PriceAfterSale = p.ProductSizes.Any()
-                    ? (
-                        (p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0)
-                        - (
-                            (p.Sales
-                                .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
-                                .Any()
-                                ? (
-                                    (p.Sales
-                                        .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
-                                        .OrderByDescending(s => s.Id)
-                                        .Select(s => (int?)s.Discount)
-                                        .FirstOrDefault() ?? 0)
-                                )
-                                : 0
-                            ) / 100m
-                            * (p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0)
-                        )
-                    )
-                    : 0,
-                        IsActive = p.IsActive,
-                        AvgRating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : (float?)null,
-                        IsFav = userId.HasValue && p.Favourites.Any(f => f.UserId == userId)
-                    })
-                    .ToListAsync();
-                return products;
-            
+            var rawProducts = await _context.Products
+                .Where(p => p.IsActive && !p.IsDeleted && p.Language == language)
+                .Include(p => p.ProductSizes)
+                .Include(p => p.ProductPhotos)
+                .Include(p => p.Reviews)
+                .Include(p => p.Sales)
+                .OrderByDescending(p => p.SellersCount)
+                .ToListAsync();
+
+            var products = rawProducts.Select(p => MapToSimpleProduct(p, userId));
+
+            return products;
         }
 
         public async Task<IEnumerable<SimpleProduct>> GetNewProducts(string language, int? userId = null)
         {
-            var products = await _context.Products
+            var rawProducts = await _context.Products
                 .Where(p => p.IsActive && !p.IsDeleted && p.Language == language)
+                .Include(p => p.ProductSizes)
+                .Include(p => p.ProductPhotos)
+                .Include(p => p.Reviews)
+                .Include(p => p.Sales)
                 .OrderByDescending(p => p.CreatedDate)
-                .Select(p => new SimpleProduct
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    PhotoUrl = p.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault() ?? "",
-                    ReviewsNumber = p.Reviews.Count(),
-                    TotalPrice = p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0,
-                    PriceAfterSale = p.ProductSizes.Any()
-                ? (
-                    (p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0)
-                    - (
-                        (p.Sales
-                            .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
-                            .Any()
-                            ? (
-                                (p.Sales
-                                    .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
-                                    .OrderByDescending(s => s.Id)
-                                    .Select(s => (int?)s.Discount)
-                                    .FirstOrDefault() ?? 0)
-                            )
-                            : 0
-                        ) / 100m
-                        * (p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0)
-                    )
-                )
-                : 0,
-                    IsActive = p.IsActive,
-                    AvgRating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : (float?)null,
-                    IsFav = userId.HasValue && p.Favourites.Any(f => f.UserId == userId)
-                })
                 .ToListAsync();
+
+            var products = rawProducts.Select(p => MapToSimpleProduct(p, userId));
+
             return products;
         }
 
         public async Task<IEnumerable<ProductOffers>> GetProductOffers(string language)
         {
-            var products = await _context.Sales
-                .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now
-                  && s.EndDate >= DateTime.Now)
-                .Include(p => p.Product)
-                .ThenInclude(p => p.ProductPhotos)
-                .ThenInclude(p => p.Product.ProductSizes)
-                .Where( p => p.Product.IsActive && !p.Product.IsDeleted && p.Product.Language == language)
-                .Select(p => new ProductOffers
-                {
-                    Image = p.Product.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault() ?? "",
-                    PriceAfterSale = p.Product.ProductSizes.Any()
-                        ? (
-                            (p.Product.ProductSizes.Min(x => (decimal?)x.Price) ?? 0)
-                            - (
-                                (p.Discount / 100m)
-                                * (p.Product.ProductSizes.Min(x => (decimal?)x.Price) ?? 0)
-                            )
-                        )
-                        : 0
-                }).ToListAsync();
-            return products;
+            var sales = await _context.Sales
+                .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
+                .Include(s => s.Product)
+                    .ThenInclude(p => p.ProductPhotos)
+                .Include(s => s.Product)
+                    .ThenInclude(p => p.ProductSizes)
+                .Where(s => s.Product != null && s.Product.IsActive && !s.Product.IsDeleted && s.Product.Language == language)
+                .ToListAsync();
 
+            var offers = sales.Select(s =>
+            {
+                var basePrice = s.Product.ProductSizes.Min(x => (decimal?)x.Price) ?? 0;
+                var discount = s.Discount;
+                var priceAfterSale = basePrice - (discount / 100m * basePrice);
+
+                return new ProductOffers
+                {
+                    Image = s.Product.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault() ?? "",
+                    PriceAfterSale = priceAfterSale,
+                    
+                };
+            });
+
+            return offers;
         }
 
-        public async Task<ProductDetailsDTO> GetProductById(string language, int id , int? userId = null)
+        public async Task<ProductDetailsDTO> GetProductById(string language, int id, int? userId = null)
         {
-            var products = await _context.Products
+            var product = await _context.Products
                 .Where(p => p.IsActive && !p.IsDeleted && p.Language == language && p.Id == id)
-                .Select(p => new ProductDetailsDTO
+                .Include(p => p.ProductPhotos)
+                .Include(p => p.Reviews)
+                .Include(p => p.ProductColors)
+                .Include(p => p.ProductSizes)
+                .Include(p => p.Sales)
+                .FirstOrDefaultAsync();
+
+            if (product == null)
+                return null;
+
+            var activeSale = product.Sales
+                .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
+                .OrderByDescending(s => s.Id)
+                .FirstOrDefault();
+
+            var discount = activeSale?.Discount ?? 0;
+
+            return new ProductDetailsDTO
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Images = product.ProductPhotos.Select(ph => ph.Photo).ToList(),
+                AvgRating = product.Reviews.Any() ? product.Reviews.Average(r => r.Rating) : 0,
+                ReviewsNumber = product.Reviews.Count,
+                Colors = product.ProductColors.Select(c => new ColorsDTO
                 {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Description = p.Description,
-                    Images = p.ProductPhotos.Select(ph => ph.Photo).ToList(),
-                    AvgRating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0,
-                    ReviewsNumber = p.Reviews.Count(),
-                    Colors = p.ProductColors.Select(c => new ColorsDTO
-                    {
-                        ColorName = c.Name,
-                        HexCode = c.HexCode
-                    }).ToList(),
-                    Sizes = p.ProductSizes.Select(s => new SizesDTO
-                    {
-                        Size = s.Size,
-                        Price = s.Price,
-                        PriceAfterSale = s.Price - (s.Price * (p.Sales
-                            .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
-                            .Select(s => (int?)s.Discount)
-                            .FirstOrDefault() ?? 0) / 100m)
-                    }).ToList(),
-                    Flavours = p.ProductFlavours.Select(f => f.Name).ToList(),
-                    ShippingDetails = p.ShippingDetails,
-                    DeliveredMinDate = p.DeliveredMinDate,
-                    DeliveredMaxDate = p.DeliveredMaxDate,
-                    Reviews = p.Reviews.ToList(),
-                    IsFav = userId.HasValue && p.Favourites.Any(f => f.UserId == userId)
-                }).FirstOrDefaultAsync();
-            return products;
+                    ColorName = c.Name,
+                    HexCode = c.HexCode
+                }).ToList(),
+                Sizes = product.ProductSizes.Select(s => new SizesDTO
+                {
+                    Size = s.Size,
+                    Price = s.Price,
+                    PriceAfterSale = s.Price - (s.Price * discount / 100m)
+                }).ToList(),
+                Flavours = product.ProductFlavours.Select(f => f.Name).ToList(),
+                ShippingDetails = product.ShippingDetails,
+                DeliveredMinDate = product.DeliveredMinDate,
+                DeliveredMaxDate = product.DeliveredMaxDate,
+                Reviews = product.Reviews.ToList(),
+                IsFav = userId.HasValue && product.Favourites.Any(f => f.UserId == userId.Value)
+            };
         }
 
-        public async Task<IEnumerable<SimpleProduct>> SearchByProductName(string ProName , string language , int? userId = null)
+        public async Task<IEnumerable<SimpleProduct>> SearchByProductName(string proName, string language, int? userId = null)
         {
-            var products =  _context.Products.Where(x => !x.IsDeleted && x.IsActive && x.Language == language).AsEnumerable();
-            int similarityThreshold = 100;
+            var dbProducts = await _context.Products
+                .Where(p => !p.IsDeleted && p.IsActive && p.Language == language &&
+                            p.Name.ToLower().Contains(proName.ToLower())) 
+                .Include(p => p.ProductPhotos)
+                .Include(p => p.Reviews)
+                .Include(p => p.ProductSizes)
+                .Include(p => p.Sales)
+                .ToListAsync();
 
-            var listofProducts = products.Where(x => Fuzz.Ratio(x.Name, ProName) > similarityThreshold 
-            || x.Name.Trim().ToLower().Contains(ProName.Trim().ToUpper()))
-                .Select(p => new SimpleProduct
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    PhotoUrl = p.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault() ?? "",
-                    ReviewsNumber = p.Reviews.Count(),
-                    TotalPrice = p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0,
-                    PriceAfterSale = p.ProductSizes.Any()
-                ? (
-                    (p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0)
-                    - (
-                        (p.Sales
-                            .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
-                            .Any()
-                            ? (
-                                (p.Sales
-                                    .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
-                                    .OrderByDescending(s => s.Id)
-                                    .Select(s => (int?)s.Discount)
-                                    .FirstOrDefault() ?? 0)
-                            )
-                            : 0
-                        ) / 100m
-                        * (p.ProductSizes.Min(x => (decimal?)x.Price) ?? 0)
-                    )
-                )
-                : 0,
-                    IsActive = p.IsActive,
-                    AvgRating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : (float?)null,
-                    IsFav = userId.HasValue && p.Favourites.Any(f => f.UserId == userId)
-                })
-                .ToList();
+            int similarityThreshold = 70;
+            var matchedProducts = dbProducts
+                .Where(p =>
+                    Fuzz.Ratio(p.Name, proName) > similarityThreshold ||
+                    p.Name.Trim().ToLower().Contains(proName.Trim().ToLower()))
+                .Select(p => MapToSimpleProduct(p, userId)).ToList();
 
-            return listofProducts;
+            return matchedProducts;
         }
     }
 }

@@ -126,6 +126,9 @@
   <data name="PhoneNotFound" xml:space="preserve">
     <value />
   </data>
+  <data name="ProductNameSearch" xml:space="preserve">
+    <value />
+  </data>
   <data name="SendCodeFailed" xml:space="preserve">
     <value />
   </data>
