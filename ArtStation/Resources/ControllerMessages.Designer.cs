@@ -225,9 +225,27 @@ namespace ArtStation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string GetAddressSucessfull {
+            get {
+                return ResourceManager.GetString("GetAddressSucessfull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string GetCartSucessfully {
             get {
                 return ResourceManager.GetString("GetCartSucessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string GetUserDataSuccess {
+            get {
+                return ResourceManager.GetString("GetUserDataSuccess", resourceCulture);
             }
         }
         
@@ -255,6 +273,15 @@ namespace ArtStation.Resources {
         public static string ItemFailedToAddedInCart {
             get {
                 return ResourceManager.GetString("ItemFailedToAddedInCart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string LoginSuccessfull {
+            get {
+                return ResourceManager.GetString("LoginSuccessfull", resourceCulture);
             }
         }
         
@@ -300,6 +327,15 @@ namespace ArtStation.Resources {
         public static string PhotoUploadedFailed {
             get {
                 return ResourceManager.GetString("PhotoUploadedFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string RegisterSuccessfull {
+            get {
+                return ResourceManager.GetString("RegisterSuccessfull", resourceCulture);
             }
         }
         

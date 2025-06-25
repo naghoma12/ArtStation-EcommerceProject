@@ -216,4 +216,16 @@
   <data name="ItemFailedToAddedInCart" xml:space="preserve">
     <value />
   </data>
+  <data name="LoginSuccessfull" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RegisterSuccessfull" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GetUserDataSuccess" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GetAddressSucessfull" xml:space="preserve">
+    <value />
+  </data>
 </root>

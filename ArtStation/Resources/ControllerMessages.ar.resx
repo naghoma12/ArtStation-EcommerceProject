@@ -216,4 +216,16 @@
   <data name="ItemFailedToAddedInCart" xml:space="preserve">
     <value>فشل في إضافة المنتج إلى العربة.</value>
   </data>
+  <data name="LoginSuccessfull" xml:space="preserve">
+    <value>تم تسجيل الدخول بنجاح</value>
+  </data>
+  <data name="RegisterSuccessfull" xml:space="preserve">
+    <value>تم التسجيل بنجاح.</value>
+  </data>
+  <data name="GetUserDataSuccess" xml:space="preserve">
+    <value>تم جلب بيانات المستخدم بنجاح.</value>
+  </data>
+  <data name="GetAddressSucessfull" xml:space="preserve">
+    <value>تم جلب العنوان بنجاح</value>
+  </data>
 </root>

@@ -59,7 +59,8 @@ namespace ArtStation.Controllers
             {
                 return BadRequest(new
                 {
-                  message = ControllerMessages.PhoneAlreadyExists
+                  message = ControllerMessages.PhoneAlreadyExists,
+                    data = (object?)null
                 });
                
             }
@@ -70,13 +71,15 @@ namespace ArtStation.Controllers
                 if (!string.IsNullOrEmpty(result.ErrorMessage))
                     return BadRequest(new
                     {
-                        message = ControllerMessages.SendCodeFailed
+                        message = ControllerMessages.SendCodeFailed,
+                        data = (object?)null
                     });
 
                 return Ok(
                     new
                     {
-                        message = ControllerMessages.SendCodeSuccess
+                        message = ControllerMessages.SendCodeSuccess,
+                        data = (object?)null
                     });
             }
 
@@ -93,7 +96,8 @@ namespace ArtStation.Controllers
                 return BadRequest(new
                 {
                    
-                    message = ControllerMessages.PhoneAlreadyExists
+                    message = ControllerMessages.PhoneAlreadyExists,
+                    data = (object?)null
                 });
             }
             var user = new AppUser()
@@ -119,11 +123,17 @@ namespace ArtStation.Controllers
 
 
             }
-            return Ok(new UserDto()
-            {
-                UserName = user.FullName,
-                Token = await _tokenService.CreateTokenAsync(user)
-            });
+            return Ok(
+               new
+               {
+                   message = ControllerMessages.RegisterSuccessfull,
+                   data = new UserDto()
+                   {
+                       UserName = user.FullName,
+
+                       Token = await _tokenService.CreateTokenAsync(user)
+                   }
+               });
 
             //if(!_verificationCodeService.ValidateCode(registerDto.PhoneNumber, registerDto.Code) == false)
             //{
@@ -180,7 +190,8 @@ namespace ArtStation.Controllers
                 return  BadRequest(new
                 {
                     
-                    message = ControllerMessages.PhoneNotFound
+                    message = ControllerMessages.PhoneNotFound,
+                    data = (object?)null
                 });
             }
             else
@@ -191,13 +202,15 @@ namespace ArtStation.Controllers
                     return BadRequest(new
                     {
                      
-                        message = ControllerMessages.SendCodeFailed
+                        message = ControllerMessages.SendCodeFailed,
+                        data = (object?)null
                     });
                 return Ok(
                     new
                     {
                       
-                        message = ControllerMessages.SendCodeSuccess
+                        message = ControllerMessages.SendCodeSuccess,
+                        data = (object?)null
                     });
             }
 
@@ -214,19 +227,25 @@ namespace ArtStation.Controllers
                 return BadRequest(new
                 {
                    
-                    message = ControllerMessages.PhoneNotFound
+                    message = ControllerMessages.PhoneNotFound,
+                    data = (object?)null
                 });
             }
             else
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
 
-                return Ok(new UserDto()
-                {
-                    UserName = user.FullName,
+                return Ok(
+                  new
+                  {
+                      message=ControllerMessages.LoginSuccessfull,
+                      data = new UserDto()
+                      {
+                          UserName = user.FullName,
 
-                    Token = await _tokenService.CreateTokenAsync(user)
-                });
+                          Token = await _tokenService.CreateTokenAsync(user)
+                      }
+                  });
             }
           
             //if (!user.PhoneNumberConfirmed)
@@ -262,14 +281,16 @@ namespace ArtStation.Controllers
                     return BadRequest(new
                     {
                       
-                        message = ControllerMessages.SendCodeFailed
+                        message = ControllerMessages.SendCodeFailed,
+                        data = (object?)null
                     });
 
             return Ok(
                 new
                 {
                    
-                    message = ControllerMessages.SendCodeSuccess
+                    message = ControllerMessages.SendCodeSuccess,
+                    data = (object?)null
                 });
 
 

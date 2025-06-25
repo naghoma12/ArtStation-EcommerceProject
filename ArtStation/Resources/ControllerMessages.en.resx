@@ -217,4 +217,16 @@ Please try again or request a new code. </value>
   <data name="ItemFailedToAddedInCart" xml:space="preserve">
     <value>Failed to add item to cart.</value>
   </data>
+  <data name="LoginSuccessfull" xml:space="preserve">
+    <value>Login Sucess!</value>
+  </data>
+  <data name="RegisterSuccessfull" xml:space="preserve">
+    <value>Registration completed successfully.</value>
+  </data>
+  <data name="GetUserDataSuccess" xml:space="preserve">
+    <value>User data retrieved successfully.</value>
+  </data>
+  <data name="GetAddressSucessfull" xml:space="preserve">
+    <value>Address retrieved successfully.</value>
+  </data>
 </root>
