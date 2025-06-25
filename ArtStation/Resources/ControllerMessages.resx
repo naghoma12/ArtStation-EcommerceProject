@@ -201,4 +201,19 @@
   <data name="ChooseAddressDeliveryFailed" xml:space="preserve">
     <value />
   </data>
+  <data name="GetCartSucessfully" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CartEmpty" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CartLoadedFailed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ItemAddedSuccessfully" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ItemFailedToAddedInCart" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -12,7 +12,7 @@ namespace ArtStation.Core.Repository.Contract
         Task<Cart> GetCartAsync(string id);
         Task<Cart> AddCartAsync(Cart cart);
         Task<bool> DeleteCartAsync(string id);
-        Task<Cart> DeleteItemAsync(string id);
+        Task<Cart> DeleteItemAsync(string cartId,string id);
     
         Task<Cart> ChooseDeliveryAddress(string cartId, int addressId);
     }

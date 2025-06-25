@@ -201,4 +201,19 @@
   <data name="ChooseAddressDeliveryFailed" xml:space="preserve">
     <value>فشل في اختيار عنوان التوصيل.</value>
   </data>
+  <data name="GetCartSucessfully" xml:space="preserve">
+    <value>تم استرجاع العربة بنجاح.</value>
+  </data>
+  <data name="CartEmpty" xml:space="preserve">
+    <value>العربة فارغه.</value>
+  </data>
+  <data name="CartLoadedFailed" xml:space="preserve">
+    <value>فشل في تحميل العربة.</value>
+  </data>
+  <data name="ItemAddedSuccessfully" xml:space="preserve">
+    <value>تمت إضافة المنتج إلى العربة بنجاح.</value>
+  </data>
+  <data name="ItemFailedToAddedInCart" xml:space="preserve">
+    <value>فشل في إضافة المنتج إلى العربة.</value>
+  </data>
 </root>

@@ -126,6 +126,15 @@ namespace ArtStation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string CartEmpty {
+            get {
+                return ResourceManager.GetString("CartEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string CartItemDeletedFailed {
             get {
                 return ResourceManager.GetString("CartItemDeletedFailed", resourceCulture);
@@ -138,6 +147,15 @@ namespace ArtStation.Resources {
         public static string CartItemDeletedSucessfully {
             get {
                 return ResourceManager.GetString("CartItemDeletedSucessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string CartLoadedFailed {
+            get {
+                return ResourceManager.GetString("CartLoadedFailed", resourceCulture);
             }
         }
         
@@ -207,9 +225,36 @@ namespace ArtStation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string GetCartSucessfully {
+            get {
+                return ResourceManager.GetString("GetCartSucessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string InvalidVerificationCode {
             get {
                 return ResourceManager.GetString("InvalidVerificationCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string ItemAddedSuccessfully {
+            get {
+                return ResourceManager.GetString("ItemAddedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string ItemFailedToAddedInCart {
+            get {
+                return ResourceManager.GetString("ItemFailedToAddedInCart", resourceCulture);
             }
         }
         

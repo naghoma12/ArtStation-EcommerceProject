@@ -6,7 +6,7 @@ namespace ArtStation.Dtos.CartDtos
     {
         public string Id { get; set; } 
 
-        public List<CartItem>? CartItems { get; set; } = new List<CartItem>();
+        public List<CartItemDto>? CartItems { get; set; } = new List<CartItemDto>();
       
     }
 }

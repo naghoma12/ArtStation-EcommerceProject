@@ -53,6 +53,7 @@ namespace ArtStation.Helper
 
             CreateMap<Cart, CartDto>().ReverseMap();
             CreateMap<Address, DeliveryAddress>().ReverseMap();
+            CreateMap<CartItem, CartItemDto>().ReverseMap();
         }
     }
 }

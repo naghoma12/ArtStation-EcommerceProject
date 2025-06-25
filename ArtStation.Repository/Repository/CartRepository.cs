@@ -42,8 +42,8 @@ namespace ArtStation.Repository.Repository
                 TotalItems = cart.CartItems?.Count ?? 0,
                 TotalPriceBeforeDiscount = cart.CartItems?.Sum(item => item.Price * item.Quantity) ?? 0,
                 ShippingPrice = 0.0M, 
-                TotalPriceAfterDiscount = cart.CartItems?.Sum(item => item.PriceAfterSale * item.Quantity) ?? 0,
-                FinalTotal = (cart.CartItems?.Sum(item => item.PriceAfterSale??item.Price * item.Quantity) ?? 0) + 0.0M 
+                TotalPriceAfterDiscount = cart.CartItems?.Sum(item => (item.PriceAfterSale==0?item.Price:item.PriceAfterSale) * item.Quantity) ?? 0,
+                FinalTotal = (cart.CartItems?.Sum(item => (item.PriceAfterSale==0?item.Price : item.PriceAfterSale) * item.Quantity) ?? 0) + 0.0M 
             };
             var customercart = await _database.StringSetAsync(cart.Id, JsonSerializer.Serialize(cart), TimeSpan.FromDays(2));
             if (customercart is false)
@@ -55,17 +55,32 @@ namespace ArtStation.Repository.Repository
 
         public async Task<bool> DeleteCartAsync(string cartId)
         {
+
             return await _database.KeyDeleteAsync(cartId);
 
         }
 
-        public async Task<Cart> DeleteItemAsync(string id)
+        public async Task<Cart> DeleteItemAsync(string cartId,string id)
         {
-            var cart=await GetCartAsync(id);
+            var cart=await GetCartAsync(cartId);
+            cart.CartSummary = new CartSummary
+            {
+                TotalItems = cart.CartItems?.Count ?? 0,
+                TotalPriceBeforeDiscount = cart.CartItems?.Sum(item => item.Price * item.Quantity) ?? 0,
+                ShippingPrice = 0.0M,
+                TotalPriceAfterDiscount = cart.CartItems?.Sum(item => (item.PriceAfterSale == 0 ? item.Price : item.PriceAfterSale) * item.Quantity) ?? 0,
+                FinalTotal = (cart.CartItems?.Sum(item => (item.PriceAfterSale == 0 ? item.Price : item.PriceAfterSale) * item.Quantity) ?? 0) 
+            };
             cart.CartItems.Remove(cart.CartItems.FirstOrDefault(x => x.ItemId == id));
+
             if(cart.CartItems.Count == 0)
             {
                 await DeleteCartAsync(id);
+                return null;
+            }
+            var customercart = await _database.StringSetAsync(cart.Id, JsonSerializer.Serialize(cart), TimeSpan.FromDays(2));
+            if (customercart is false)
+            {
                 return null;
             }
             return cart is null ? null : await AddCartAsync(cart);
@@ -79,6 +94,7 @@ namespace ArtStation.Repository.Repository
             var shipping = await _unitOfWork.Repository<Shipping>().GetByIdAsync(address.ShippingId);
             cart.Address = _mapper.Map<DeliveryAddress>(address);
             cart.CartSummary.ShippingPrice = shipping.Cost;
+            cart.CartSummary.FinalTotal = cart.CartSummary.FinalTotal + shipping.Cost;
             cart.Address.City = shipping.City;
             return cart;
         }
