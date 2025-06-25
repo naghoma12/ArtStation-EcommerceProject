@@ -183,4 +183,22 @@
   <data name="CountryFailedToAdd" xml:space="preserve">
     <value>فشل في إضافة الدولة.</value>
   </data>
+  <data name="FailedToDeleteCart" xml:space="preserve">
+    <value>فشل فى حذف السله</value>
+  </data>
+  <data name="CartClearedSuccessfully" xml:space="preserve">
+    <value>تم تفريغ السلة بنجاح.</value>
+  </data>
+  <data name="CartItemDeletedSucessfully" xml:space="preserve">
+    <value>تمت إزالة المنتج من السلة بنجاح.</value>
+  </data>
+  <data name="CartItemDeletedFailed" xml:space="preserve">
+    <value>فشل في إزالة المنتج من السلة.</value>
+  </data>
+  <data name="ChooseAddressDeliverySucessfully" xml:space="preserve">
+    <value>تم اختيار عنوان التوصيل بنجاح.</value>
+  </data>
+  <data name="ChooseAddressDeliveryFailed" xml:space="preserve">
+    <value>فشل في اختيار عنوان التوصيل.</value>
+  </data>
 </root>

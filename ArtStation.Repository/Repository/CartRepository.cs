@@ -63,6 +63,11 @@ namespace ArtStation.Repository.Repository
         {
             var cart=await GetCartAsync(id);
             cart.CartItems.Remove(cart.CartItems.FirstOrDefault(x => x.ItemId == id));
+            if(cart.CartItems.Count == 0)
+            {
+                await DeleteCartAsync(id);
+                return null;
+            }
             return cart is null ? null : await AddCartAsync(cart);
         }
 

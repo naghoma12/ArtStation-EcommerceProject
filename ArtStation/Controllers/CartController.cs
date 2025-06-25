@@ -4,7 +4,9 @@ using ArtStation.Core.Repository.Contract;
 using ArtStation.Core.Roles;
 using ArtStation.Dtos.CartDtos;
 using ArtStation.Repository.Repository;
+using ArtStation.Resources;
 using AutoMapper;
+using FirebaseAdmin.Messaging;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -80,24 +82,24 @@ namespace ArtStation.Controllers
 
         }
      
-        [HttpDelete("DeleteCartAsync")]
+        [HttpDelete("DeleteCart")]
         public async Task<IActionResult> DeleteCartAsync([FromQuery] string id)
         {
             try
             {
                 if (string.IsNullOrEmpty(id))
                 {
-                    return BadRequest("The cartId field is required.");
+                    return BadRequest(new {message= ControllerMessages.FailedToDeleteCart });
                 }
 
-                // Delete the cart from Redis (or your database)
+               
                 bool deleted = await _cartRepository.DeleteCartAsync(id);
                 if (!deleted)
                 {
-                    return NotFound("Cart not found or could not be deleted.");
+                    return NotFound(ControllerMessages.FailedToDeleteCart);
                 }
 
-                return Ok();
+                return Ok(new {message=ControllerMessages.CartClearedSuccessfully});
             }
             catch (Exception ex)
             {
@@ -113,19 +115,22 @@ namespace ArtStation.Controllers
             {
                 if (string.IsNullOrEmpty(id))
                 {
-                    return BadRequest("The itemId field is required.");
+                    return BadRequest(new {message=ControllerMessages.CartItemDeletedFailed});
                 }
                 // Delete the item from the cart
                 var updatedCart = await _cartRepository.DeleteItemAsync(id);
                 if (updatedCart == null)
                 {
-                    return NotFound("Item not found in the cart.");
+                    return NotFound(new { message = ControllerMessages.CartItemDeletedFailed });
                 }
-                return Ok(updatedCart);
+                return Ok(new {
+                    message = ControllerMessages.CartItemDeletedSucessfully ,
+                    updatedCart}
+                );
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new { message = ControllerMessages.CartItemDeletedFailed });
             }
 
         }
@@ -137,19 +142,20 @@ namespace ArtStation.Controllers
             {
                 if (string.IsNullOrEmpty(cartId) || addressId <= 0)
                 {
-                    return BadRequest("The cartId and addressId fields are required.");
+                    return BadRequest(new {message=ControllerMessages.ChooseAddressDeliveryFailed});
                 }
                 // Choose the delivery address for the cart
                 var updatedCart = await _cartRepository.ChooseDeliveryAddress(cartId, addressId);
                 if (updatedCart == null)
                 {
-                    return NotFound("Cart not found or could not update delivery address.");
+                    return NotFound(new { message = ControllerMessages.ChooseAddressDeliveryFailed });
                 }
-                return Ok(updatedCart);
+                return Ok(new { message = ControllerMessages.ChooseAddressDeliverySucessfully ,
+                    updatedCart });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return BadRequest(new { message = ControllerMessages.ChooseAddressDeliveryFailed });
             }
         }
         }

@@ -117,6 +117,51 @@ namespace ArtStation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string CartClearedSuccessfully {
+            get {
+                return ResourceManager.GetString("CartClearedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string CartItemDeletedFailed {
+            get {
+                return ResourceManager.GetString("CartItemDeletedFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string CartItemDeletedSucessfully {
+            get {
+                return ResourceManager.GetString("CartItemDeletedSucessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string ChooseAddressDeliveryFailed {
+            get {
+                return ResourceManager.GetString("ChooseAddressDeliveryFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string ChooseAddressDeliverySucessfully {
+            get {
+                return ResourceManager.GetString("ChooseAddressDeliverySucessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string CountryAddedSuccessfully {
             get {
                 return ResourceManager.GetString("CountryAddedSuccessfully", resourceCulture);
@@ -138,6 +183,15 @@ namespace ArtStation.Resources {
         public static string EmailAlreadyInUse {
             get {
                 return ResourceManager.GetString("EmailAlreadyInUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string FailedToDeleteCart {
+            get {
+                return ResourceManager.GetString("FailedToDeleteCart", resourceCulture);
             }
         }
         

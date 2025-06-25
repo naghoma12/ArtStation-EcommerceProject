@@ -184,4 +184,22 @@ Please try again or request a new code. </value>
   <data name="CountryFailedToAdd" xml:space="preserve">
     <value>Failed to add country.</value>
   </data>
+  <data name="FailedToDeleteCart" xml:space="preserve">
+    <value>Failed to delete the cart. Cart may not exist.</value>
+  </data>
+  <data name="CartClearedSuccessfully" xml:space="preserve">
+    <value>Cart cleared successfully.</value>
+  </data>
+  <data name="CartItemDeletedSucessfully" xml:space="preserve">
+    <value>Item removed from cart successfully.</value>
+  </data>
+  <data name="CartItemDeletedFailed" xml:space="preserve">
+    <value>Failed to remove item from cart.</value>
+  </data>
+  <data name="ChooseAddressDeliverySucessfully" xml:space="preserve">
+    <value>Delivery address selected successfully.</value>
+  </data>
+  <data name="ChooseAddressDeliveryFailed" xml:space="preserve">
+    <value>Failed to select delivery address.</value>
+  </data>
 </root>
