@@ -10,17 +10,11 @@ namespace ArtStation.Core.Entities.Cart
     {
         public string ItemId { get; set; } = Guid.NewGuid().ToString();
         public int ProductId { get; set; }
-        public string ProductName { get; set; }
-    
-        public string PhotoUrl { get; set; }
       
-        public string? Color { get; set; }
-        public string? Size { get; set; }
-        public decimal Price { get; set; }
-       
-        public decimal? PriceAfterSale { get; set; } = 0.0m;
-
-      
+        public string? ColorId { get; set; }
+        public string? SizeId { get; set; }
+        public string? FlavourId { get; set; }
+     
         public int Quantity { get; set; }
     }
 }
