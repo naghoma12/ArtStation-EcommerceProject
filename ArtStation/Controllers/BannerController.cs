@@ -4,7 +4,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ArtStation.Dtos;
-using ArtStation.Resources;
+
+using ArtStation.Core.Resources;
 
 namespace ArtStation.Controllers
 {

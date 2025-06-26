@@ -3,7 +3,8 @@ using ArtStation.Core.Entities.Identity;
 using ArtStation.Core.Services.Contract;
 using ArtStation.Dtos.AuthDtos;
 using ArtStation.Extensions;
-using ArtStation.Resources;
+
+using ArtStation.Core.Resources;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;

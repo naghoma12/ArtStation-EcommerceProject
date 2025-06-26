@@ -28,7 +28,7 @@ namespace ArtStation.Helper
          string.IsNullOrWhiteSpace(src.FullName)
              ? null
              : src.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries).Skip(1).FirstOrDefault()))
-     .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => EnumHelper.GetEnumMemberValue(src.Gender)))
+     .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.GetLocalizedDisplayName()))
      .ForMember(dest => dest.Birthday, opt => opt.MapFrom(src =>
          src.BirthDay.HasValue ? src.BirthDay.Value.ToString("yyyy-MM-dd") : null))
      .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))

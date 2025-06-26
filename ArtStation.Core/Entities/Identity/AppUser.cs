@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using ArtStation.Core.Resources;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -10,11 +12,11 @@ namespace ArtStation.Core.Entities.Identity
 {
     public enum Gender
     {
-        [EnumMember(Value = "male")]
-        Male = 1,
+        [Display(Name = "Male", ResourceType = typeof(Messages))]
+        Male ,
 
-        [EnumMember(Value = "female")]
-        Female = 2
+        [Display(Name = "Female", ResourceType = typeof(Messages))]
+        Female 
     }
     public class AppUser : IdentityUser<int>
     {

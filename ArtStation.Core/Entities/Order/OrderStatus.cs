@@ -1,25 +1,25 @@
-﻿using System;
+﻿using ArtStation.Core.Resources;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
+using Twilio.TwiML.Messaging;
 
 namespace ArtStation.Core.Entities.Order
 {
     public enum OrderStatus
     {
-        [EnumMember(Value = "قيد المعاينة")]
-        Pending,
-		[EnumMember(Value = "قيد التنفيذ")]
-        InProgress,
-		[EnumMember(Value = "تم الشحن")]
-        Shipping,
-		[EnumMember(Value = "تم الاستلام")]
-        Deliverd,
-		[EnumMember(Value = "تم الالغاء")]
-        Cancelled,
-        [EnumMember(Value = "تم التجهيز")]
-        Ready,
+        [Display(Name = "Placed", ResourceType = typeof(Messages))]
+        Placed,
+
+        [Display(Name = "Shipped", ResourceType = typeof(Messages))]
+        Shipped,
+
+        [Display(Name = "Delivered", ResourceType = typeof(Messages))]
+        Delivered
     }
 }

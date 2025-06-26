@@ -6,7 +6,8 @@ using ArtStation.Dtos.AuthDtos;
 using ArtStation.Dtos.UserDtos;
 using ArtStation.Extensions;
 using ArtStation.Helper;
-using ArtStation.Resources;
+
+using ArtStation.Core.Resources;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

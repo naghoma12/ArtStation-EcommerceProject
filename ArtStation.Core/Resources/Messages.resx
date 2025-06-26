@@ -117,13 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Deliverd" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value />
+  </data>
   <data name="InvalidFullName" xml:space="preserve">
-    <value>يرجى إدخال الاسم الأول والاسم الأخير، مفصولين بمسافة واحدة فقط</value>
+    <value />
   </data>
   <data name="InvalidPhoneNumber" xml:space="preserve">
-    <value>يجب أن يبدأ رقم الهاتف بـ +20 ويكون مكونًا من 13 رقمًا</value>
+    <value />
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Placed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Ready" xml:space="preserve">
+    <value />
   </data>
   <data name="RequiredField" xml:space="preserve">
-    <value>هذا الحقل مطلوب</value>
+    <value />
+  </data>
+  <data name="Shipped" xml:space="preserve">
+    <value />
   </data>
 </root>

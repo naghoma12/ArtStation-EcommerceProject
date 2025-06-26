@@ -1,4 +1,5 @@
 ﻿using ArtStation.Core.Entities.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Runtime.Serialization;
 
@@ -31,6 +32,13 @@ namespace ArtStation.Helper
             return Enum.TryParse(typeof(Gender), input, true, out var result)
                 ? (Gender?)result
                 : null;
+        }
+
+        public static string GetLocalizedDisplayName(this Enum value)
+        {
+            var member = value.GetType().GetMember(value.ToString()).FirstOrDefault();
+            var attr = member?.GetCustomAttribute<DisplayAttribute>();
+            return attr?.GetName() ?? value.ToString();
         }
     }
 }

@@ -25,7 +25,7 @@ namespace ArtStation.Core.Entities.Order
 
         public string CustomerEmail { get; set; }
         public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
-        public OrderStatus Status { get; set; } = OrderStatus.Pending;
+        public OrderStatus Status { get; set; } = OrderStatus.Placed;
         //public OrderReady StatusReady { get; set; } = OrderReady.NotReady;
         public Address ShippingAddress { get; set; }
         public int? ShippingId { get; set; }

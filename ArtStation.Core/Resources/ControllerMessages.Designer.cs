@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ArtStation.Resources {
+namespace ArtStation.Core.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace ArtStation.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ArtStation.Resources.ControllerMessages", typeof(ControllerMessages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ArtStation.Core.Resources.ControllerMessages", typeof(ControllerMessages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -216,6 +216,15 @@ namespace ArtStation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string Deliverd {
+            get {
+                return ResourceManager.GetString("Deliverd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string EmailAlreadyInUse {
             get {
                 return ResourceManager.GetString("EmailAlreadyInUse", resourceCulture);
@@ -372,6 +381,15 @@ namespace ArtStation.Resources {
         public static string SendCodeSuccess {
             get {
                 return ResourceManager.GetString("SendCodeSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Shipped {
+            get {
+                return ResourceManager.GetString("Shipped", resourceCulture);
             }
         }
         

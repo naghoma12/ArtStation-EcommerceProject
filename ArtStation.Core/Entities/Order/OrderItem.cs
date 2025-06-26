@@ -24,7 +24,7 @@ namespace ArtStation.Core.Entities.Order
 
         public ProductItemDetails ProductItem { get; set; }
         public int OrderId { get; set; }
-        public OrderItemStatus OrderItemStatus { get; set; } = OrderItemStatus.Pending;
+        public OrderItemStatus OrderItemStatus { get; set; } = OrderItemStatus.Placed;
         private decimal totalprice;
 
         public decimal TotalPrice

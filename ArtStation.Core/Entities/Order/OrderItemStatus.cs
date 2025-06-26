@@ -1,5 +1,7 @@
-﻿using System;
+﻿using ArtStation.Core.Resources;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -9,15 +11,12 @@ namespace ArtStation.Core.Entities.Order
 {
     public enum OrderItemStatus
     {
-      
-        [EnumMember(Value = "قيد المعاينة")]
-        Pending,
-        [EnumMember(Value = "قيد التنفيذ")]
-        InProgress,
-        [EnumMember(Value = "تم التجهيز")]
+
+        [Display(Name = "Placed", ResourceType = typeof(Messages))]
+        Placed,
+        [Display(Name = "Ready", ResourceType = typeof(Messages))]
         Ready,
-        [EnumMember(Value = "تم إالغاء")]
-        Cancelled
+     
     }
 
 }

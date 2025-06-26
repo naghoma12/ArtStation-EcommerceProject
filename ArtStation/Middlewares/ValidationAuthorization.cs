@@ -1,4 +1,5 @@
-﻿using ArtStation.Resources;
+﻿
+using ArtStation.Core.Resources;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Localization;

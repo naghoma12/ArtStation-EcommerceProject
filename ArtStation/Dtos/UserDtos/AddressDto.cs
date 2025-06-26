@@ -1,6 +1,7 @@
 ﻿using ArtStation.Core.Entities.Identity;
 using ArtStation.Core.Entities;
-using ArtStation.Resources;
+
+using ArtStation.Core.Resources;
 using System.ComponentModel.DataAnnotations;
 
 namespace ArtStation.Dtos.UserDtos

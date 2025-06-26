@@ -4,7 +4,8 @@ using ArtStation.Core.Repository.Contract;
 using ArtStation.Core.Roles;
 using ArtStation.Dtos.CartDtos;
 using ArtStation.Repository.Repository;
-using ArtStation.Resources;
+
+using ArtStation.Core.Resources;
 using AutoMapper;
 using FirebaseAdmin.Messaging;
 using Microsoft.AspNetCore.Authorization;
