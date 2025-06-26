@@ -120,19 +120,88 @@
   <data name="InvalidVerificationCode" xml:space="preserve">
     <value />
   </data>
+  <data name="PhoneNumberIsTaken" xml:space="preserve">
+    <value />
+  </data>
   <data name="PhoneAlreadyExists" xml:space="preserve">
     <value />
   </data>
   <data name="PhoneNotFound" xml:space="preserve">
     <value />
   </data>
-  <data name="ProductNameSearch" xml:space="preserve">
-    <value />
-  </data>
   <data name="SendCodeFailed" xml:space="preserve">
     <value />
   </data>
   <data name="SendCodeSuccess" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Unauthorized" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EmailAlreadyInUse" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UserDataUpdatedSucessfully" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FailedToUpdateUserData" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SomethingWrong" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PhotoUpdatedSucessfully" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AddressAddedSucessfully" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AddressAddedFailed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AddressEditFailed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AddressEditSuccessfully" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AddressNotFound" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AddressLoadedFailed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PhotoUploadedFailed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CountryAddedSuccessfully" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CountryFailedToAdd" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FailedToDeleteCart" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CartClearedSuccessfully" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CartItemDeletedSucessfully" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CartItemDeletedFailed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ChooseAddressDeliverySucessfully" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ChooseAddressDeliveryFailed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ProductNameSearch" xml:space="preserve">
     <value />
   </data>
 </root>

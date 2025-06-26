@@ -1,0 +1,167 @@
+[
+  {
+    "City": "Sharqia",
+    "Cost": 70,
+    "ShippingTime": "2-3 days"
+  },
+  {
+    "City": "Zagazig",
+    "Cost": 70,
+    "ShippingTime": "2-3 days"
+  },
+  {
+    "City": "Port Said",
+    "Cost": 70,
+    "ShippingTime": "2-3 days"
+  },
+  {
+    "City": "Ismailia",
+    "Cost": 70,
+    "ShippingTime": "2-3 days"
+  },
+  {
+    "City": "Suez",
+    "Cost": 70,
+    "ShippingTime": "2-3 days"
+  },
+  {
+    "City": "New Valley",
+    "Cost": 90,
+    "ShippingTime": "4-5 days"
+  },
+  {
+    "City": "Sharm El-Sheikh",
+    "Cost": 90,
+    "ShippingTime": "4-5 days"
+  },
+  {
+    "City": "Hurghada",
+    "Cost": 90,
+    "ShippingTime": "4-5 days"
+  },
+  {
+    "City": "Fayoum",
+    "Cost": 80,
+    "ShippingTime": "3-4 days"
+  },
+  {
+    "City": "Beni Suef",
+    "Cost": 80,
+    "ShippingTime": "3-4 days"
+  },
+  {
+    "City": "Minya",
+    "Cost": 80,
+    "ShippingTime": "3-4 days"
+  },
+  {
+    "City": "Assiut",
+    "Cost": 80,
+    "ShippingTime": "3-4 days"
+  },
+  {
+    "City": "Sohag",
+    "Cost": 80,
+    "ShippingTime": "3-4 days"
+  },
+  {
+    "City": "Qena",
+    "Cost": 80,
+    "ShippingTime": "3-4 days"
+  },
+  {
+    "City": "Luxor",
+    "Cost": 85,
+    "ShippingTime": "3-4 days"
+  },
+  {
+    "City": "Aswan",
+    "Cost": 85,
+    "ShippingTime": "3-4 days"
+  },
+  {
+    "City": "Cairo / Giza",
+    "Cost": 50,
+    "ShippingTime": "1-2 days"
+  },
+  {
+    "City": "New Cities",
+    "Cost": 50,
+    "ShippingTime": "1-2 days"
+  },
+  {
+    "City": "Sheikh Zayed / October",
+    "Cost": 50,
+    "ShippingTime": "1-2 days"
+  },
+  {
+    "City": "Gardens (October / Haram)",
+    "Cost": 50,
+    "ShippingTime": "1-2 days"
+  },
+  {
+    "City": "Badr / Madinaty / Shorouk",
+    "Cost": 50,
+    "ShippingTime": "1-2 days"
+  },
+  {
+    "City": "10th of Ramadan",
+    "Cost": 70,
+    "ShippingTime": "2-3 days"
+  },
+  {
+    "City": "Alexandria",
+    "Cost": 70,
+    "ShippingTime": "2-3 days"
+  },
+  {
+    "City": "Marsa Matrouh",
+    "Cost": 90,
+    "ShippingTime": "4-5 days"
+  },
+  {
+    "City": "Siwa",
+    "Cost": 100,
+    "ShippingTime": "4-5 days"
+  },
+  {
+    "City": "Menoufia",
+    "Cost": 70,
+    "ShippingTime": "2-3 days"
+  },
+  {
+    "City": "Dakahlia",
+    "Cost": 75,
+    "ShippingTime": "2-3 days"
+  },
+  {
+    "City": "Tanta",
+    "Cost": 70,
+    "ShippingTime": "2-3 days"
+  },
+  {
+    "City": "Damanhour",
+    "Cost": 75,
+    "ShippingTime": "2-3 days"
+  },
+  {
+    "City": "Beheira",
+    "Cost": 75,
+    "ShippingTime": "2-3 days"
+  },
+  {
+    "City": "Mansoura",
+    "Cost": 70,
+    "ShippingTime": "2-3 days"
+  },
+  {
+    "City": "Damietta",
+    "Cost": 75,
+    "ShippingTime": "2-3 days"
+  },
+  {
+    "City": "Kafr El-Sheikh",
+    "Cost": 75,
+    "ShippingTime": "2-3 days"
+  }
+]

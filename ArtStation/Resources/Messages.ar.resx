@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="InvalidFullName" xml:space="preserve">
+    <value>يرجى إدخال الاسم الأول والاسم الأخير، مفصولين بمسافة واحدة فقط</value>
+  </data>
   <data name="InvalidPhoneNumber" xml:space="preserve">
     <value>يجب أن يبدأ رقم الهاتف بـ +20 ويكون مكونًا من 13 رقمًا</value>
   </data>

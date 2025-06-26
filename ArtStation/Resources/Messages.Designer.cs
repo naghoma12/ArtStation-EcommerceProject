@@ -63,6 +63,15 @@ namespace ArtStation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string InvalidFullName {
+            get {
+                return ResourceManager.GetString("InvalidFullName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string InvalidPhoneNumber {
             get {
                 return ResourceManager.GetString("InvalidPhoneNumber", resourceCulture);

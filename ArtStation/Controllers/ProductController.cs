@@ -27,30 +27,77 @@ namespace ArtStation.Controllers
         public async Task<IActionResult> GetAllProducts([FromHeader] string language, int? userId)
         {
                 var products = await _productRepository.GetAllProducts(language, userId);
-                return Ok(products);
-
+                if (products == null || !products.Any())
+                {
+                return Ok(new
+                {
+                    Message = "No products found.",
+                    List = products
+                });
+                }
+                return Ok(new
+                {
+                    Message = "List of Products.",
+                    List = products
+                });
         }
 
         [HttpGet("GetNewProducts")]
         public async Task<IActionResult> GetNewProducts([FromHeader] string language, int? userId)
         {
             var products = await _productRepository.GetNewProducts(language, userId);
-            return Ok(products);
+            if (products == null || !products.Any())
+            {
+                return Ok(new
+                {
+                    Message = "No products found.",
+                    List = products
+                });
+            }
+            return Ok(new
+            {
+                Message = "List of Products.",
+                List = products
+            });
         }
 
         [HttpGet("GetProductOffers")]
         public async Task<IActionResult> GetProductOffers([FromHeader] string language)
         {
-            var products = await _productRepository.GetProductOffers(language);
-            return Ok(products);
+            var offers = await _productRepository.GetProductOffers(language);
+            if (offers == null || !offers.Any())
+            {
+                return Ok(new
+                {
+                    Message = "No Offers found.",
+                    List = offers
+                });
+            }
+            return Ok(new
+            {
+                Message = "List of Offers.",
+                List = offers
+            });
         }
 
         [HttpGet("GetBestSellerProducts")]
         public async Task<IActionResult> GetBestSellerProducts([FromHeader] string language, int? userId)
         {
             var products = await _productRepository.GetBestSellerProducts(language, userId);
-            
-            return Ok(products);
+
+            if (products == null || !products.Any())
+            {
+                return Ok(new
+                {
+                    Message = "No products found.",
+                    List = products
+                });
+            }
+            return Ok(new
+            {
+                Message = "List of Products.",
+                List = products
+            });
 
         }
        
@@ -58,7 +105,15 @@ namespace ArtStation.Controllers
         public async Task<IActionResult> GetProductDetails(int id, [FromHeader] string language , int? userId)
         {
             var product = await _productRepository.GetProductById(language, id, userId);
-            return Ok(product);
+            if (product == null)
+            {
+                return NotFound(new { Message = $"There is no product with this ID : {id}" });
+            }
+            return Ok(new
+            {
+                Message = "Product found successfully.",
+                Product = product
+            });
         }
 
         [HttpGet("SearchByProductName")]
@@ -68,11 +123,23 @@ namespace ArtStation.Controllers
             {
                 return BadRequest(new 
                 { 
-                    message = ControllerMessages.ProductNameSearch
+                    Message = ControllerMessages.ProductNameSearch
                 }); 
             }
             var products = await _productRepository.SearchByProductName(productName, language, userId);
-            return Ok(products);
+            if (products == null || !products.Any())
+            {
+                return Ok(new
+                {
+                    Message = "No products with this name.",
+                    List = products
+                });
+            }
+            return Ok(new
+            {
+                Message = "List of Products.",
+                List = products
+            });
         }
     }
 }

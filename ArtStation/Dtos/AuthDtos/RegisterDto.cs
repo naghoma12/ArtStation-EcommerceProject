@@ -14,6 +14,9 @@ namespace ArtStation.Dtos.AuthDtos
 
         [Required(ErrorMessageResourceType = typeof(Messages),
        ErrorMessageResourceName = "RequiredField")]
+        [RegularExpression(@"^\S+\s\S+.*$",
+      ErrorMessageResourceType = typeof(Messages),
+      ErrorMessageResourceName = "InvalidFullName")]
         public string FullName { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(Messages),

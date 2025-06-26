@@ -43,6 +43,7 @@ namespace ArtStation.Repository.Data
         //public DbSet<Order> Orders { get; set; }
         //public DbSet<OrderItem> OrderItems { get; set; }
         //public DbSet<ShippingCost> ShippingCosts { get; set; }
+        public DbSet<Address> Address { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Shipping> Shippings { get; set; }
 

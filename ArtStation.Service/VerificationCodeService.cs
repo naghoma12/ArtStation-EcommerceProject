@@ -19,7 +19,7 @@ namespace ArtStation.Services
 
         public string GenerateCode(string phone)
         {
-            var code = new Random().Next(100000, 999999).ToString();
+            var code = new Random().Next(1000, 9999).ToString();
             _cache.Set(phone, code, TimeSpan.FromMinutes(5));
             return code;
         }

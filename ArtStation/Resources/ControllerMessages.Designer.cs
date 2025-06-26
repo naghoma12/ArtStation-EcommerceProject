@@ -63,6 +63,150 @@ namespace ArtStation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string AddressAddedFailed {
+            get {
+                return ResourceManager.GetString("AddressAddedFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string AddressAddedSucessfully {
+            get {
+                return ResourceManager.GetString("AddressAddedSucessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string AddressEditFailed {
+            get {
+                return ResourceManager.GetString("AddressEditFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string AddressEditSuccessfully {
+            get {
+                return ResourceManager.GetString("AddressEditSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string AddressLoadedFailed {
+            get {
+                return ResourceManager.GetString("AddressLoadedFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string AddressNotFound {
+            get {
+                return ResourceManager.GetString("AddressNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string CartClearedSuccessfully {
+            get {
+                return ResourceManager.GetString("CartClearedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string CartItemDeletedFailed {
+            get {
+                return ResourceManager.GetString("CartItemDeletedFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string CartItemDeletedSucessfully {
+            get {
+                return ResourceManager.GetString("CartItemDeletedSucessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string ChooseAddressDeliveryFailed {
+            get {
+                return ResourceManager.GetString("ChooseAddressDeliveryFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string ChooseAddressDeliverySucessfully {
+            get {
+                return ResourceManager.GetString("ChooseAddressDeliverySucessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string CountryAddedSuccessfully {
+            get {
+                return ResourceManager.GetString("CountryAddedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string CountryFailedToAdd {
+            get {
+                return ResourceManager.GetString("CountryFailedToAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string EmailAlreadyInUse {
+            get {
+                return ResourceManager.GetString("EmailAlreadyInUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string FailedToDeleteCart {
+            get {
+                return ResourceManager.GetString("FailedToDeleteCart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string FailedToUpdateUserData {
+            get {
+                return ResourceManager.GetString("FailedToUpdateUserData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string InvalidVerificationCode {
             get {
                 return ResourceManager.GetString("InvalidVerificationCode", resourceCulture);
@@ -90,6 +234,33 @@ namespace ArtStation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string PhoneNumberIsTaken {
+            get {
+                return ResourceManager.GetString("PhoneNumberIsTaken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string PhotoUpdatedSucessfully {
+            get {
+                return ResourceManager.GetString("PhotoUpdatedSucessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string PhotoUploadedFailed {
+            get {
+                return ResourceManager.GetString("PhotoUploadedFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string ProductNameSearch {
             get {
                 return ResourceManager.GetString("ProductNameSearch", resourceCulture);
@@ -111,6 +282,42 @@ namespace ArtStation.Resources {
         public static string SendCodeSuccess {
             get {
                 return ResourceManager.GetString("SendCodeSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string SomethingWrong {
+            get {
+                return ResourceManager.GetString("SomethingWrong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Unauthorized {
+            get {
+                return ResourceManager.GetString("Unauthorized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string UserDataUpdatedSucessfully {
+            get {
+                return ResourceManager.GetString("UserDataUpdatedSucessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string UserNotFound {
+            get {
+                return ResourceManager.GetString("UserNotFound", resourceCulture);
             }
         }
     }
