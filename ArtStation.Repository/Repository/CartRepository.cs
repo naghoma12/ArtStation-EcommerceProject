@@ -96,6 +96,11 @@ namespace ArtStation.Repository.Repository
             cart.CartSummary.ShippingPrice = shipping.Cost;
             cart.CartSummary.FinalTotal = cart.CartSummary.FinalTotal + shipping.Cost;
             cart.Address.City = shipping.City;
+            var customercart = await _database.StringSetAsync(cart.Id, JsonSerializer.Serialize(cart), TimeSpan.FromDays(2));
+            if (customercart is false)
+            {
+                return null;
+            }
             return cart;
         }
     }
