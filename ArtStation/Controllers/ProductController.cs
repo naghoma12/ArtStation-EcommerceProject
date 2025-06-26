@@ -24,9 +24,13 @@ namespace ArtStation.Controllers
         }
 
         [HttpGet("GetAllProducts")]
-        public async Task<IActionResult> GetAllProducts([FromHeader] string language, int? userId)
+        public async Task<IActionResult> GetAllProducts(string? token)
         {
-                var products = await _productRepository.GetAllProducts(language, userId);
+            int? userId = Utility.CheckToken(token);
+            var language = Request.Headers["Accept-Language"].ToString();
+            if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))
+                language = "en";
+            var products = await _productRepository.GetAllProducts(language, userId);
                 if (products == null || !products.Any())
                 {
                 return Ok(new
@@ -43,8 +47,12 @@ namespace ArtStation.Controllers
         }
 
         [HttpGet("GetNewProducts")]
-        public async Task<IActionResult> GetNewProducts([FromHeader] string language, int? userId)
+        public async Task<IActionResult> GetNewProducts( string? token)
         {
+            int? userId = Utility.CheckToken(token);
+            var language = Request.Headers["Accept-Language"].ToString();
+            if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))
+                language = "en";
             var products = await _productRepository.GetNewProducts(language, userId);
             if (products == null || !products.Any())
             {
@@ -62,8 +70,11 @@ namespace ArtStation.Controllers
         }
 
         [HttpGet("GetProductOffers")]
-        public async Task<IActionResult> GetProductOffers([FromHeader] string language)
+        public async Task<IActionResult> GetProductOffers()
         {
+            var language = Request.Headers["Accept-Language"].ToString();
+            if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))
+                language = "en";
             var offers = await _productRepository.GetProductOffers(language);
             if (offers == null || !offers.Any())
             {
@@ -81,8 +92,12 @@ namespace ArtStation.Controllers
         }
 
         [HttpGet("GetBestSellerProducts")]
-        public async Task<IActionResult> GetBestSellerProducts([FromHeader] string language, int? userId)
+        public async Task<IActionResult> GetBestSellerProducts(string? token)
         {
+            var language = Request.Headers["Accept-Language"].ToString();
+            if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))
+                language = "en";
+            int? userId = Utility.CheckToken(token);
             var products = await _productRepository.GetBestSellerProducts(language, userId);
 
             if (products == null || !products.Any())
@@ -102,8 +117,12 @@ namespace ArtStation.Controllers
         }
        
         [HttpGet("GetProductDetails")]
-        public async Task<IActionResult> GetProductDetails(int id, [FromHeader] string language , int? userId)
+        public async Task<IActionResult> GetProductDetails(int id, string? token)
         {
+            int? userId = Utility.CheckToken(token);
+            var language = Request.Headers["Accept-Language"].ToString();
+            if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))
+                language = "en";
             var product = await _productRepository.GetProductById(language, id, userId);
             if (product == null)
             {
@@ -117,8 +136,13 @@ namespace ArtStation.Controllers
         }
 
         [HttpGet("SearchByProductName")]
-        public async Task<IActionResult> SearchByProductName(string? productName, [FromHeader] string language, int? userId)
+        public async Task<IActionResult> SearchByProductName(string? productName, string? token)
         {
+            int? userId = Utility.CheckToken(token);
+            var language = Request.Headers["Accept-Language"].ToString();
+
+            if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))
+                language = "en";
             if (string.IsNullOrWhiteSpace(productName))
             {
                 return BadRequest(new 

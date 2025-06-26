@@ -32,17 +32,17 @@ namespace ArtStation.Controllers
         {
             try
             {
-                var user = await _user.GetUserAsync(User);
-                if (user == null)
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                if (userId == null)
                 {
-                    return BadRequest("لا يوجد مستخدم بهذا الكود"); // localization
+                    return BadRequest("There is no Users with this Id"); // localization
                 }
                 var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
                 if (product == null)
                 {
-                    return BadRequest("لا يوجد منتج بهذا الكود"); // localization
+                    return BadRequest("There is no Products with this Id"); // localization
                 }
-                var Fav = await _fav.GetFavoriteAsync(productId, user.Id);
+                var Fav = await _fav.GetFavoriteAsync(productId, userId);
                 if (Fav != null)
                 {
                     return BadRequest("هذا المنتج مضاف الى المفضله بالفعل"); // localization
@@ -52,7 +52,7 @@ namespace ArtStation.Controllers
                     Favourite favorite = new Favourite()
                     {
                         ProductId = productId,
-                        UserId = user.Id
+                        UserId = userId
                     };
                     _unitOfWork.Repository<Favourite>().Add(favorite);
                     var count = await _unitOfWork.Complet();
@@ -116,16 +116,19 @@ namespace ArtStation.Controllers
         }
 
         [HttpGet("GetAllFavorites")]
-        public async Task<IActionResult> GetAllFavouriteProducts(string language)
+        public async Task<IActionResult> GetAllFavouriteProducts()
         {
             try
             {
-                var user = await _user.GetUserAsync(User);
-                if (user == null)
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                if (userId == null)
                 {
                     return BadRequest("لا يوجد مستخدم بهذا الكود"); //localization
                 }
-                var list = await _fav.FavouriteProducts(language, user.Id);
+                var language = Request.Headers["Accept-Language"].ToString();
+                if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))
+                    language = "en";
+                var list = await _fav.FavouriteProducts(language, userId);
                 return Ok(list);
             }
             catch (Exception ex)

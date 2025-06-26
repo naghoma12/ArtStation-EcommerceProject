@@ -1,7 +1,10 @@
 ﻿using ArtStation.Core.Entities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,6 +34,23 @@ namespace ArtStation.Core.Helper
                 AvgRating = p.Reviews.Any() ? (float?)p.Reviews.Average(r => r.Rating) : 0,
                 IsFav = userId.HasValue && p.Favourites.Any(f => f.UserId == userId.Value)
             };
+        }
+
+
+        public static int? CheckToken(string? token )
+        {
+            int? userId = null;
+            if (!string.IsNullOrEmpty(token))
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+
+                userId = int.Parse(jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
+                              ?? jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value);
+                return userId;
+            }
+            return userId;
         }
     }
 }
