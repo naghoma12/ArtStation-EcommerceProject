@@ -234,10 +234,15 @@
   <data name="BannersNotFound" xml:space="preserve">
     <value />
   </data>
+
   <data name="Shipped" xml:space="preserve">
     <value />
   </data>
   <data name="Deliverd" xml:space="preserve">
+    <value />
+  </data>
+	<data name="ProductNameSearch" xml:space="preserve">
+
     <value />
   </data>
 </root>

@@ -2,6 +2,7 @@
 using ArtStation.Core.Entities;
 using ArtStation.Core.Helper;
 using ArtStation.Core.Repository.Contract;
+using ArtStation.Core.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,8 @@ namespace ArtStation.Controllers
         private readonly IProductRepository _productRepository;
         private readonly IUnitOfWork unitOfWork;
 
-        public ProductController(IProductRepository productRepository, IUnitOfWork unitOfWork)
+        public ProductController(IProductRepository productRepository, IUnitOfWork unitOfWork
+            )
         {
             _productRepository = productRepository;
             this.unitOfWork = unitOfWork;
@@ -27,10 +29,17 @@ namespace ArtStation.Controllers
                 var products = await _productRepository.GetAllProducts(language, userId);
                 if (products == null || !products.Any())
                 {
-                    return NotFound();
+                return Ok(new
+                {
+                    Message = "No products found.",
+                    List = products
+                });
                 }
-                return Ok(products);
-
+                return Ok(new
+                {
+                    Message = "List of Products.",
+                    List = products
+                });
         }
 
         [HttpGet("GetNewProducts")]
@@ -39,63 +48,98 @@ namespace ArtStation.Controllers
             var products = await _productRepository.GetNewProducts(language, userId);
             if (products == null || !products.Any())
             {
-                return NotFound();
+                return Ok(new
+                {
+                    Message = "No products found.",
+                    List = products
+                });
             }
-            return Ok(products);
+            return Ok(new
+            {
+                Message = "List of Products.",
+                List = products
+            });
         }
 
         [HttpGet("GetProductOffers")]
         public async Task<IActionResult> GetProductOffers([FromHeader] string language)
         {
-            var products = await _productRepository.GetProductOffers(language);
-            if (products == null || !products.Any())
+            var offers = await _productRepository.GetProductOffers(language);
+            if (offers == null || !offers.Any())
             {
-                return NotFound();
+                return Ok(new
+                {
+                    Message = "No Offers found.",
+                    List = offers
+                });
             }
-            return Ok(products);
+            return Ok(new
+            {
+                Message = "List of Offers.",
+                List = offers
+            });
         }
 
         [HttpGet("GetBestSellerProducts")]
         public async Task<IActionResult> GetBestSellerProducts([FromHeader] string language, int? userId)
         {
-            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
             var products = await _productRepository.GetBestSellerProducts(language, userId);
+
             if (products == null || !products.Any())
             {
-                return NotFound();
+                return Ok(new
+                {
+                    Message = "No products found.",
+                    List = products
+                });
             }
-            return Ok(products);
+            return Ok(new
+            {
+                Message = "List of Products.",
+                List = products
+            });
 
         }
        
         [HttpGet("GetProductDetails")]
         public async Task<IActionResult> GetProductDetails(int id, [FromHeader] string language , int? userId)
         {
-            var user = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
             var product = await _productRepository.GetProductById(language, id, userId);
             if (product == null)
             {
-                return NotFound();
+                return NotFound(new { Message = $"There is no product with this ID : {id}" });
             }
-            return Ok(product);
+            return Ok(new
+            {
+                Message = "Product found successfully.",
+                Product = product
+            });
         }
 
         [HttpGet("SearchByProductName")]
-        public async Task<IActionResult> SearchByProductName(string productName, [FromHeader] string language, int? userId)
+        public async Task<IActionResult> SearchByProductName(string? productName, [FromHeader] string language, int? userId)
         {
             if (string.IsNullOrWhiteSpace(productName))
             {
-                return BadRequest(new { message = "Product name cannot be empty." }); //Make it Arabic also
+                return BadRequest(new 
+                { 
+                    Message = ControllerMessages.ProductNameSearch
+                }); 
             }
-
             var products = await _productRepository.SearchByProductName(productName, language, userId);
             if (products == null || !products.Any())
             {
-                return NotFound();
+                return Ok(new
+                {
+                    Message = "No products with this name.",
+                    List = products
+                });
             }
-            return Ok(products);
+            return Ok(new
+            {
+                Message = "List of Products.",
+                List = products
+            });
         }
     }
 }

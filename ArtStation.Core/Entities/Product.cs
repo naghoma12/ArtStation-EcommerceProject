@@ -11,17 +11,26 @@ namespace ArtStation.Core.Entities
 {
     public class Product: BaseEntity
     {
-        [MaxLength(20)]
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public ForWhom ForWhom { get; set; }
-        
-        public string ShippingDetails { get; set; }
+        [MaxLength(30)]
+        public string NameAR { get; set; }
+        [MaxLength(30)]
+        public string NameEN { get; set; }
+        [MaxLength(1000)]
+        public string DescriptionAR { get; set; }
+        [MaxLength(1000)]
+        public string DescriptionEN { get; set; }
+        //  public ForWhom ForWhom { get; set; }
+        [MaxLength(150)]
+        public string ShippingDetailsAR { get; set; }
+        [MaxLength(150)]
+        public string ShippingDetailsEN { get; set; }
         public int DeliveredMinDate { get; set; }
         public int DeliveredMaxDate { get; set; }
-        public string Brand { get; set; }
+        [MaxLength(50)]
+        public string BrandAR { get; set; }
+        [MaxLength(50)]
+        public string BrandEN { get; set; }
         public int SellersCount { get; set; }
-        public string Language { get; set; }
         public Category Category { get; set; }
         public int CategoryId { get; set; }
         public ICollection<ProductPhotos> ProductPhotos { get; set; } = new List<ProductPhotos>();

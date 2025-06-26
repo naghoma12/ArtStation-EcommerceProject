@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace ArtStation.Core.Repository.Contract
 {
-    public interface ICategoryRepository
+    public interface IFavouriteRepository
     {
-        Task<IEnumerable<CategoryDTO>> GetAllCategories(string language);
-        Task<CategoryWithProducts> GetCategoryById(string language , int id , int? userId);
+        Task<Favourite> GetFavoriteAsync(int ProductId, int UserId);
+        Task<IEnumerable<SimpleProduct>> FavouriteProducts(string language , int UserId);
     }
 }

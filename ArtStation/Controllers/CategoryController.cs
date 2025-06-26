@@ -30,8 +30,18 @@ namespace ArtStation.Controllers
         public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetAll([FromHeader] string language)
         {
             var list = await _categoryRepository.GetAllCategories(language);
-            var MappedList = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(list);
-            return Ok(MappedList);
+            if (list == null || !list.Any())
+            {
+                return Ok(new {
+                    Message = "No categories found." ,
+                    List = list
+                });
+            }
+            return Ok(new
+            {
+                Message = "List of Categories .",
+                List = list
+            });
         }
 
         [HttpGet("GetById/{id}")]
@@ -40,9 +50,13 @@ namespace ArtStation.Controllers
             var category = await _categoryRepository.GetCategoryById(language, id, userId);
             if (category == null)
             {
-                return NotFound();
+                return NotFound(new { Message = $"There is no category with this ID : {id}" });
             }
-            return Ok(category);
+            return Ok(new
+            {
+                Message = "Category found successfully.",
+                Category = category
+            });
         }
     }
 }
