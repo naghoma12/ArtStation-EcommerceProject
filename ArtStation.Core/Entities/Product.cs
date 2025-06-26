@@ -38,7 +38,7 @@ namespace ArtStation.Core.Entities
         public ICollection<ProductColor> ProductColors { get; set; } = new List<ProductColor>();
         public ICollection<ProductFlavour> ProductFlavours { get; set; } = new List<ProductFlavour>();
         public ICollection<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
-        public ICollection<Favourite> Favourites = new List<Favourite>();
+        public  ICollection<Favourite> Favourites { get; set; } = new List<Favourite>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
 
     }

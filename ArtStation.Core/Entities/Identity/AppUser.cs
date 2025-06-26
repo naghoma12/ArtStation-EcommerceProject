@@ -31,8 +31,8 @@ namespace ArtStation.Core.Entities.Identity
 
         public IList<Address> Addresses { get; set; }
 
-        public ICollection<Favourite> Favourites = new List<Favourite>();
-        public ICollection<Notification> Notifications = new List<Notification>();
+        public ICollection<Favourite> Favourites { get; set; } = new List<Favourite>();
+        public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
     }
  

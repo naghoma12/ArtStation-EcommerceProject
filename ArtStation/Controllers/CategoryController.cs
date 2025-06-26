@@ -6,7 +6,9 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ArtStation.DTOS;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using ArtStation.Core.Helper;
 
 namespace ArtStation.Controllers
 {
@@ -27,8 +29,12 @@ namespace ArtStation.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetAll([FromHeader] string language)
+        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetAll()
         {
+            var language = Request.Headers["Accept-Language"].ToString();
+
+            if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))
+                language = "en";
             var list = await _categoryRepository.GetAllCategories(language);
             if (list == null || !list.Any())
             {
@@ -45,8 +51,12 @@ namespace ArtStation.Controllers
         }
 
         [HttpGet("GetById/{id}")]
-        public async Task<ActionResult<CategoryWithProducts>> GetById([FromHeader] string language, int id, int? userId)
+        public async Task<ActionResult<CategoryWithProducts>> GetById(int id, string? token)
         {
+            int? userId = Utility.CheckToken(token);
+            var language = Request.Headers["Accept-Language"].ToString();
+            if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))
+                language = "en";
             var category = await _categoryRepository.GetCategoryById(language, id, userId);
             if (category == null)
             {

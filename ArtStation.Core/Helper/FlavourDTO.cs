@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace ArtStation.Core.Helper
 {
-    public class ColorsDTO
+    public class FlavourDTO
     {
         public int Id { get; set; }
-        public string ColorName { get; set; }
-        public string HexCode { get; set; }
+        public string Name { get; set; }
     }
 }

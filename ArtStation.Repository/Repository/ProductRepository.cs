@@ -30,6 +30,7 @@ namespace ArtStation.Repository.Repository
                 .Include(p => p.ProductPhotos)
                 .Include(p => p.Reviews)
                 .Include(p => p.Sales)
+                .Include(p => p.Favourites)
                 .ToListAsync();
 
             var products = rawProducts.Select(p => Utility.MapToSimpleProduct(p, userId , language));
@@ -45,6 +46,7 @@ namespace ArtStation.Repository.Repository
                 .Include(p => p.ProductPhotos)
                 .Include(p => p.Reviews)
                 .Include(p => p.Sales)
+                .Include(p => p.Favourites)
                 .OrderByDescending(p => p.SellersCount)
                 .ToListAsync();
 
@@ -61,6 +63,7 @@ namespace ArtStation.Repository.Repository
                 .Include(p => p.ProductPhotos)
                 .Include(p => p.Reviews)
                 .Include(p => p.Sales)
+                .Include(p => p.Favourites)
                 .OrderByDescending(p => p.CreatedDate)
                 .ToListAsync();
 
@@ -105,7 +108,9 @@ namespace ArtStation.Repository.Repository
                 .Include(p => p.Reviews)
                 .Include(p => p.ProductColors)
                 .Include(p => p.ProductSizes)
+                .Include(p => p.ProductFlavours)
                 .Include(p => p.Sales)
+                .Include(p => p.Favourites)
                 .FirstOrDefaultAsync();
 
             if (product == null)
@@ -128,16 +133,22 @@ namespace ArtStation.Repository.Repository
                 ReviewsNumber = product.Reviews.Count,
                 Colors = product.ProductColors.Select(c => new ColorsDTO
                 {
+                    Id = c.Id,
                     ColorName = language == "en" ? c.NameEN : c.NameAR,
                     HexCode = c.HexCode
                 }).ToList(),
                 Sizes = product.ProductSizes.Select(s => new SizesDTO
                 {
+                    Id = s.Id,
                     Size = language == "en" ? s.SizeEN : s.SizeAR,
                     Price = s.Price,
                     PriceAfterSale = s.Price - (s.Price * discount / 100m)
                 }).ToList(),
-                Flavours = product.ProductFlavours.Select(f => language == "en" ? f.NameEN : f.NameAR).ToList(),
+                Flavours = product.ProductFlavours.Select(f => new FlavourDTO
+                {
+                   Id = f.Id,
+                    Name = language == "en" ? f.NameEN : f.NameAR
+                }).ToList(),
                 ShippingDetails = language == "en" ?  product.ShippingDetailsEN : product.ShippingDetailsAR,
                 DeliveredMinDate = product.DeliveredMinDate,
                 DeliveredMaxDate = product.DeliveredMaxDate,
@@ -156,6 +167,7 @@ namespace ArtStation.Repository.Repository
                 .Include(p => p.Reviews)
                 .Include(p => p.ProductSizes)
                 .Include(p => p.Sales)
+                .Include(p => p.Favourites)
                 .ToListAsync();
 
             int similarityThreshold = 70;

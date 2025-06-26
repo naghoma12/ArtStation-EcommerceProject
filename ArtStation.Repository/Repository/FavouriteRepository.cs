@@ -19,53 +19,9 @@ namespace ArtStation.Repository.Repository
         {
             _context = context;
         }
-
-        //public async Task<IEnumerable<SimpleProduct>> FavouriteProducts(string language, int UserId)
-        //{
-        //    var favProducts = await _context.Favorites
-        //        .Where(x => !x.IsDeleted && x.UserId ==  UserId
-        //        && x.Product.Language == language)
-        //        .Include(x => x.Product)
-        //        .Select(p => new SimpleProduct
-        //        {
-        //            Id = p.Product.Id,
-        //            Name = p.Product.Name,
-        //            PhotoUrl = p.Product.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault() ?? "",
-        //            ReviewsNumber = p.Product.Reviews.Count(),
-        //            TotalPrice = p.Product.ProductSizes.Min(x => (decimal?)x.Price) ?? 0,
-        //            PriceAfterSale = p.Product.ProductSizes.Any()
-        //        ? (
-        //            (p.Product.ProductSizes.Min(x => (decimal?)x.Price) ?? 0)
-        //            - (
-        //                (p.Product.Sales
-        //                    .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
-        //                    .Any()
-        //                    ? (
-        //                        (p.Product.Sales
-        //                            .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
-        //                            .OrderByDescending(s => s.Id)
-        //                            .Select(s => (int?)s.Discount)
-        //                            .FirstOrDefault() ?? 0)
-        //                    )
-        //                    : 0
-        //                ) / 100m
-        //                * (p.Product.ProductSizes.Min(x => (decimal?)x.Price) ?? 0)
-        //            )
-        //        )
-        //        : 0,
-        //            IsActive = p.Product.IsActive,
-        //            AvgRating = p.Product.Reviews.Any() ? p.Product.Reviews.Average(r => r.Rating) : (float?)null,
-        //            IsFav = p.Product.Favourites.Any(f => f.UserId == UserId)
-        //        })
-        //        .ToListAsync();
-
-        //    return favProducts;
-
-        //}
-
         public async Task<IEnumerable<SimpleProduct>> FavouriteProducts(string language, int userId)
         {
-            var favData = await _context.Favorites
+            var favData = await  _context.Favorites
                 .Where(x => !x.IsDeleted && x.UserId == userId)
                 .Include(x => x.Product)
                     .ThenInclude(p => p.ProductSizes)
@@ -105,7 +61,7 @@ namespace ArtStation.Repository.Repository
                     PriceAfterSale = priceAfterSale,
                     IsActive = p.IsActive,
                     AvgRating = p.Reviews.Any() ? (float?)p.Reviews.Average(r => r.Rating) : 0,
-                    IsFav = p.Favourites.Any(f => f.UserId == userId)
+                    IsFav = true
                 };
             });
 
