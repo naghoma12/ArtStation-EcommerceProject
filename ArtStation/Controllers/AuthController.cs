@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using ArtStation.Core.Roles;
 
 namespace ArtStation.Controllers
 {
@@ -91,96 +92,104 @@ namespace ArtStation.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> VerifyCode(RegisterDto registerDto)
         {
-            var phoneExsist = await _userManager.FindByPhoneNumberAsync(registerDto.PhoneNumber);
-            if (phoneExsist != null)
-            {
-                return BadRequest(new
+             try
                 {
-                   
-                    message = ControllerMessages.PhoneAlreadyExists,
-                    data = (object?)null
-                });
-            }
-            var user = new AppUser()
-            {
+                    var phoneExsist = await _userManager.FindByPhoneNumberAsync(registerDto.PhoneNumber);
+                    if (phoneExsist != null)
+                    {
+                        return BadRequest(new
+                        {
+                            message = ControllerMessages.PhoneAlreadyExists,
+                            data = (object?)null
+                        });
+                    }
 
-                FullName = registerDto.FullName,
-                PhoneNumber = registerDto.PhoneNumber,
-                UserName = registerDto.PhoneNumber,
-                PhoneNumberConfirmed = true,
+                    var user = new AppUser()
+                    {
+                        FullName = registerDto.FullName,
+                        PhoneNumber = registerDto.PhoneNumber,
+                        UserName = registerDto.PhoneNumber,
+                        PhoneNumberConfirmed = true
+                    };
 
-            };
+                    var result = await _userManager.CreateAsync(user);
 
-            var result = await _userManager.CreateAsync(user);
-            var resultRole = await _userManager.AddToRoleAsync(user, "Customer");
-            if (!result.Succeeded)
-            {
+                    if (!result.Succeeded)
+                    {
+                        return BadRequest(new
+                        {
+                            message = string.Join(" | ", result.Errors),
+                            data = (object?)null
+                        });
+                    }
 
-                return BadRequest(new
+                    var resultRole = await _userManager.AddToRoleAsync(user, Roles.Customer);
+
+                    return Ok(new
+                    {
+                        message = ControllerMessages.RegisterSuccessfull,
+                        data = new UserDto()
+                        {
+                            UserName = user.FullName,
+                            Token = await _tokenService.CreateTokenAsync(user)
+                        }
+                    });
+                }
+                catch (Exception ex)
                 {
+                    return StatusCode(500, new
+                    {
+                        message = "حدث خطأ غير متوقع أثناء عملية التسجيل.",
+                        error = ex.Message,
+                        data = (object?)null
+                    });
+                }
 
-                    message = string.Join(" | ", result.Errors)
-                });
+                //if(!_verificationCodeService.ValidateCode(registerDto.PhoneNumber, registerDto.Code) == false)
+                //{
+                //    var user = new AppUser()
+                //    {
+
+                //        FullName = registerDto.FullName,
+                //        PhoneNumber = registerDto.PhoneNumber,
+                //        UserName = registerDto.PhoneNumber,
+                //        PhoneNumberConfirmed = true,
+
+                //    };
+
+                //    var result = await _userManager.CreateAsync(user);
+                //    var resultRole = await _userManager.AddToRoleAsync(user, "Customer");
+                //    if (!result.Succeeded)
+                //    {
+
+                //        return BadRequest(new
+                //        {
+
+                //            message = string.Join(" | ", result.Errors)
+                //        });
+
+
+                //    }
+                //    return Ok(new UserDto()
+                //    {
+                //        UserName = user.FullName,
+                //        Token = await _tokenService.CreateTokenAsync(user)
+                //    });
+
+                //}
+                //else
+                //{
+                //    return BadRequest(new
+                //    {
+
+                //        message = ControllerMessages.InvalidVerificationCode
+                //    });
+                //}
+
+
 
 
             }
-            return Ok(
-               new
-               {
-                   message = ControllerMessages.RegisterSuccessfull,
-                   data = new UserDto()
-                   {
-                       UserName = user.FullName,
-
-                       Token = await _tokenService.CreateTokenAsync(user)
-                   }
-               });
-
-            //if(!_verificationCodeService.ValidateCode(registerDto.PhoneNumber, registerDto.Code) == false)
-            //{
-            //    var user = new AppUser()
-            //    {
-
-            //        FullName = registerDto.FullName,
-            //        PhoneNumber = registerDto.PhoneNumber,
-            //        UserName = registerDto.PhoneNumber,
-            //        PhoneNumberConfirmed = true,
-
-            //    };
-
-            //    var result = await _userManager.CreateAsync(user);
-            //    var resultRole = await _userManager.AddToRoleAsync(user, "Customer");
-            //    if (!result.Succeeded)
-            //    {
-
-            //        return BadRequest(new
-            //        {
-
-            //            message = string.Join(" | ", result.Errors)
-            //        });
-
-
-            //    }
-            //    return Ok(new UserDto()
-            //    {
-            //        UserName = user.FullName,
-            //        Token = await _tokenService.CreateTokenAsync(user)
-            //    });
-
-            //}
-            //else
-            //{
-            //    return BadRequest(new
-            //    {
-
-            //        message = ControllerMessages.InvalidVerificationCode
-            //    });
-            //}
-
-
-
-
-        }
 
         [HttpPost("sendLoginCode")]
         public async Task<IActionResult> SendLoginCode(SendSMSDto smsdto)
@@ -222,40 +231,48 @@ namespace ArtStation.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            var user = await _userManager.FindByPhoneNumberAsync(loginDto.PhoneNumber);
-            if (user == null)
+            try
             {
-                return BadRequest(new
+                var user = await _userManager.FindByPhoneNumberAsync(loginDto.PhoneNumber);
+
+                if (user == null)
                 {
-                   
-                    message = ControllerMessages.PhoneNotFound,
+                    return BadRequest(new
+                    {
+                        message = ControllerMessages.PhoneNotFound,
+                        data = (object?)null
+                    });
+                }
+
+                await _signInManager.SignInAsync(user, isPersistent: false);
+
+                return Ok(new
+                {
+                    message = ControllerMessages.LoginSuccessfull,
+                    data = new UserDto()
+                    {
+                        UserName = user.FullName,
+                        Token = await _tokenService.CreateTokenAsync(user)
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "حدث خطأ غير متوقع أثناء تسجيل الدخول.",
+                    error = ex.Message,
                     data = (object?)null
                 });
             }
-            else
-            {
-                await _signInManager.SignInAsync(user, isPersistent: false);
 
-                return Ok(
-                  new
-                  {
-                      message=ControllerMessages.LoginSuccessfull,
-                      data = new UserDto()
-                      {
-                          UserName = user.FullName,
-
-                          Token = await _tokenService.CreateTokenAsync(user)
-                      }
-                  });
-            }
-          
             //if (!user.PhoneNumberConfirmed)
             //    return Unauthorized("Phone number not verified.");
-            
+
             //if (!_verificationCodeService.ValidateCode(loginDto.PhoneNumber, loginDto.Code))
             //    return BadRequest(new
             //    {
-                    
+
             //        message = ControllerMessages.InvalidVerificationCode
             //    });
 
