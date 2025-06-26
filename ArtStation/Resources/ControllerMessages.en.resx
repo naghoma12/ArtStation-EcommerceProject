@@ -229,4 +229,10 @@ Please try again or request a new code. </value>
   <data name="GetAddressSucessfull" xml:space="preserve">
     <value>Address retrieved successfully.</value>
   </data>
+  <data name="BannersSucess" xml:space="preserve">
+    <value>Banners Retrived Successfully</value>
+  </data>
+  <data name="BannersNotFound" xml:space="preserve">
+    <value>No Banners Exsist</value>
+  </data>
 </root>

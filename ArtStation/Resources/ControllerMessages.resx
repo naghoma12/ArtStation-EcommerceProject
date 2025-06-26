@@ -228,4 +228,10 @@
   <data name="GetAddressSucessfull" xml:space="preserve">
     <value />
   </data>
+  <data name="BannersSucess" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BannersNotFound" xml:space="preserve">
+    <value />
+  </data>
 </root>

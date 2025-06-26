@@ -117,6 +117,24 @@ namespace ArtStation.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string BannersNotFound {
+            get {
+                return ResourceManager.GetString("BannersNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string BannersSucess {
+            get {
+                return ResourceManager.GetString("BannersSucess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string CartClearedSuccessfully {
             get {
                 return ResourceManager.GetString("CartClearedSuccessfully", resourceCulture);

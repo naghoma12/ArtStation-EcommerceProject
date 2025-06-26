@@ -228,4 +228,10 @@
   <data name="GetAddressSucessfull" xml:space="preserve">
     <value>تم جلب العنوان بنجاح</value>
   </data>
+  <data name="BannersSucess" xml:space="preserve">
+    <value>تم استرجاع بنجاح </value>
+  </data>
+  <data name="BannersNotFound" xml:space="preserve">
+    <value>لا يوجد </value>
+  </data>
 </root>

@@ -1,6 +1,7 @@
 ﻿using ArtStation.Core.Entities;
 using ArtStation.Core.Entities.Cart;
 using ArtStation.Core.Entities.Identity;
+using ArtStation.Dtos;
 using ArtStation.Dtos.AuthDtos;
 using ArtStation.Dtos.CartDtos;
 using ArtStation.Dtos.UserDtos;
@@ -54,6 +55,7 @@ namespace ArtStation.Helper
             CreateMap<Cart, CartDto>().ReverseMap();
             CreateMap<Address, DeliveryAddress>().ReverseMap();
             CreateMap<CartItem, CartItemDto>().ReverseMap();
+            CreateMap<Banner, BannerDto>().ReverseMap();
         }
     }
 }
