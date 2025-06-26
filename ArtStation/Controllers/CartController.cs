@@ -36,52 +36,81 @@ namespace ArtStation.Controllers
             _mapper = mapper;
             _addressRepository = addressRepository;
         }
-  
-        [HttpGet]
-        public async Task<IActionResult> GetCart(string? cartId)
-        {
-            var userId = User.Identity.IsAuthenticated
-                ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                : null;
-         
-            var cart = new Cart();
-            if (userId != null)
-            {
-                cart = await _cartRepository.GetCartAsync($"UserCart:{userId}");
-                if (cart == null)
-                {
-                    return Ok(new Cart($"UserCart:{userId}"));
-                }
-            }
-            else
-            {
-                cart = await _cartRepository.GetCartAsync(cartId);
-                if (cart == null)
-                {
-                    return Ok(new Cart(cartId));
-                }
-            }
 
-            return Ok(cart);
+        [HttpGet]
+        public async Task<IActionResult> GetCart()
+        {
+            try
+            {
+                var userId = User.Identity.IsAuthenticated
+                    ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                    : null;
+
+                Cart cart;
+
+                if (userId != null)
+                {
+                    cart = await _cartRepository.GetCartAsync($"UserCart:{userId}");
+                    if (cart == null || cart.CartItems == null || !cart.CartItems.Any())
+                    {
+                        return Ok(new
+                        {
+                            message = ControllerMessages.CartEmpty, 
+                            data = new Cart($"UserCart:{userId}")
+                        });
+                    }
+
+                    return Ok(new
+                    {
+                        message = ControllerMessages.GetCartSucessfully,
+                        data = cart
+                    });
+                }
+               
+                else
+                {
+                    return BadRequest(new
+                    {
+                        message = ControllerMessages.CartLoadedFailed ,
+                        data = new[] { "User is not authenticated." }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = ControllerMessages.CartLoadedFailed, 
+                    data = (object?)null
+                });
+            }
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> AddCart([FromBody]CartDto cartDto)
+        public async Task<IActionResult> AddCart([FromBody] CartDto cartDto)
         {
-            //var address=await _addressRepository.GetByIdAsync((int)cartDto.AddressId);
-            //var userId = _userManager.GetUserId(User);
-            //var cartadd = await _cartRepository.GetCartAsync(userId);
-            var cart =_mapper.Map<Cart>(cartDto);
-            //cart.Address = address;
-            var CreateOrUpdateBasket = await _cartRepository.AddCartAsync(cart);
-           
-            return Ok(CreateOrUpdateBasket);
-
-         
-
+            try
+            {
+                var cart = _mapper.Map<Cart>(cartDto);
+                 var createOrUpdateBasket = await _cartRepository.AddCartAsync(cart);
+                return Ok(new
+                {
+                    message = ControllerMessages.ItemAddedSuccessfully,
+                    data = createOrUpdateBasket
+                });
+              
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    message = ControllerMessages.ItemFailedToAddedInCart,
+                    data = (object?)null
+                });
+            }
         }
-     
+
         [HttpDelete("DeleteCart")]
         public async Task<IActionResult> DeleteCartAsync([FromQuery] string id)
         {
@@ -89,39 +118,52 @@ namespace ArtStation.Controllers
             {
                 if (string.IsNullOrEmpty(id))
                 {
-                    return BadRequest(new {message= ControllerMessages.FailedToDeleteCart });
+                    return BadRequest(new {message= ControllerMessages.FailedToDeleteCart ,
+                        data = (object?)null
+                    });
                 }
 
                
                 bool deleted = await _cartRepository.DeleteCartAsync(id);
                 if (!deleted)
                 {
-                    return NotFound(ControllerMessages.FailedToDeleteCart);
+                    return NotFound(new { message = ControllerMessages.FailedToDeleteCart , 
+                        data = (object?)null });
                 }
 
-                return Ok(new {message=ControllerMessages.CartClearedSuccessfully});
+                return Ok(new {message=ControllerMessages.CartClearedSuccessfully,
+                    data = (object?)null
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return Ok(new
+                {
+                    message = ControllerMessages.FailedToDeleteCart,
+                    data = (object?)null
+                });
             }
         }
 
 
         [HttpDelete("DeleteItem")]
-        public async Task<IActionResult> DeleteItemAsync([FromQuery] string id)
+        public async Task<IActionResult> DeleteItemAsync([FromQuery] string cartId, [FromQuery] string itemId)
         {
             try
             {
-                if (string.IsNullOrEmpty(id))
+                if (string.IsNullOrEmpty(cartId) || string.IsNullOrEmpty(itemId))
                 {
-                    return BadRequest(new {message=ControllerMessages.CartItemDeletedFailed});
+                    return BadRequest(new {message=ControllerMessages.CartItemDeletedFailed,
+                        data = (object?)null
+                    });
                 }
-                // Delete the item from the cart
-                var updatedCart = await _cartRepository.DeleteItemAsync(id);
+               
+                var updatedCart = await _cartRepository.DeleteItemAsync(cartId,itemId);
                 if (updatedCart == null)
                 {
-                    return NotFound(new { message = ControllerMessages.CartItemDeletedFailed });
+                    return NotFound(new { message = ControllerMessages.CartItemDeletedFailed ,
+                        data = (object?)null
+                    });
                 }
                 return Ok(new {
                     message = ControllerMessages.CartItemDeletedSucessfully ,
@@ -130,7 +172,11 @@ namespace ArtStation.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = ControllerMessages.CartItemDeletedFailed });
+                return BadRequest(new
+                {
+                    message = ControllerMessages.CartItemDeletedFailed,
+                    data = (object?)null
+                });
             }
 
         }
@@ -142,20 +188,31 @@ namespace ArtStation.Controllers
             {
                 if (string.IsNullOrEmpty(cartId) || addressId <= 0)
                 {
-                    return BadRequest(new {message=ControllerMessages.ChooseAddressDeliveryFailed});
+                    return BadRequest(new {message=ControllerMessages.ChooseAddressDeliveryFailed,
+                
+                         data = (object?)null
+                    
+                });
                 }
-                // Choose the delivery address for the cart
-                var updatedCart = await _cartRepository.ChooseDeliveryAddress(cartId, addressId);
+                   var updatedCart = await _cartRepository.ChooseDeliveryAddress(cartId, addressId);
                 if (updatedCart == null)
                 {
-                    return NotFound(new { message = ControllerMessages.ChooseAddressDeliveryFailed });
+                    return NotFound(new { message = ControllerMessages.ChooseAddressDeliveryFailed,
+             
+                         data = (object?)null
+                   
+                });
                 }
                 return Ok(new { message = ControllerMessages.ChooseAddressDeliverySucessfully ,
                     updatedCart });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ControllerMessages.ChooseAddressDeliveryFailed });
+                return BadRequest(new { message = ControllerMessages.ChooseAddressDeliveryFailed,
+                 
+                     data = (object?)null
+                 
+            });
             }
         }
         }

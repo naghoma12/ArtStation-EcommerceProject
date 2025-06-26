@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ArtStation.Repository.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class tables : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,7 +34,7 @@ namespace ArtStation.Repository.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Gender = table.Column<int>(type: "int", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BirthDay = table.Column<DateOnly>(type: "date", nullable: true),
                     Nationality = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -60,14 +60,33 @@ namespace ArtStation.Repository.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Banners",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Banners", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NameAR = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NameEN = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -79,7 +98,7 @@ namespace ArtStation.Repository.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Shipping",
+                name: "Shippings",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -94,7 +113,7 @@ namespace ArtStation.Repository.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Shipping", x => x.Id);
+                    table.PrimaryKey("PK_Shippings", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -209,12 +228,13 @@ namespace ArtStation.Repository.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TitleAR = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TitleEN = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ContentAR = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ContentEN = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     AppUserId = table.Column<int>(type: "int", nullable: false),
                     IsRead = table.Column<bool>(type: "bit", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -237,14 +257,17 @@ namespace ArtStation.Repository.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    ForWhom = table.Column<int>(type: "int", nullable: false),
-                    ShippingDetails = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NameAR = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    NameEN = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    DescriptionAR = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    DescriptionEN = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    ShippingDetailsAR = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    ShippingDetailsEN = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     DeliveredMinDate = table.Column<int>(type: "int", nullable: false),
                     DeliveredMaxDate = table.Column<int>(type: "int", nullable: false),
-                    Brand = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BrandAR = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    BrandEN = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     SellersCount = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -274,8 +297,7 @@ namespace ArtStation.Repository.Data.Migrations
                     AddressDetails = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Lat = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Long = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    AppUserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AppUserId1 = table.Column<int>(type: "int", nullable: false),
+                    AppUserId = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -285,15 +307,15 @@ namespace ArtStation.Repository.Data.Migrations
                 {
                     table.PrimaryKey("PK_Address", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Address_AspNetUsers_AppUserId1",
-                        column: x => x.AppUserId1,
+                        name: "FK_Address_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Address_Shipping_ShippingId",
+                        name: "FK_Address_Shippings_ShippingId",
                         column: x => x.ShippingId,
-                        principalTable: "Shipping",
+                        principalTable: "Shippings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -334,7 +356,8 @@ namespace ArtStation.Repository.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NameAR = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    NameEN = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     HexCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -359,8 +382,8 @@ namespace ArtStation.Repository.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NameAR = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    NameEN = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -408,7 +431,8 @@ namespace ArtStation.Repository.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    Size = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SizeAR = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    SizeEN = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -437,7 +461,6 @@ namespace ArtStation.Repository.Data.Migrations
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     LikesCount = table.Column<int>(type: "int", nullable: false),
-                    Language = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -487,9 +510,9 @@ namespace ArtStation.Repository.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Address_AppUserId1",
+                name: "IX_Address_AppUserId",
                 table: "Address",
-                column: "AppUserId1");
+                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Address_ShippingId",
@@ -613,6 +636,9 @@ namespace ArtStation.Repository.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Banners");
+
+            migrationBuilder.DropTable(
                 name: "Favorites");
 
             migrationBuilder.DropTable(
@@ -637,7 +663,7 @@ namespace ArtStation.Repository.Data.Migrations
                 name: "Sales");
 
             migrationBuilder.DropTable(
-                name: "Shipping");
+                name: "Shippings");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

@@ -30,18 +30,17 @@ namespace ArtStation.Controllers
         public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetAll([FromHeader] string language)
         {
             var list = await _categoryRepository.GetAllCategories(language);
-            var MappedList = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(list);
-            if (MappedList == null || !MappedList.Any())
+            if (list == null || !list.Any())
             {
                 return Ok(new {
                     Message = "No categories found." ,
-                    List = MappedList
+                    List = list
                 });
             }
             return Ok(new
             {
                 Message = "List of Categories .",
-                List = MappedList
+                List = list
             });
         }
 

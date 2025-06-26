@@ -202,7 +202,40 @@ Please try again or request a new code. </value>
   <data name="ChooseAddressDeliveryFailed" xml:space="preserve">
     <value>Failed to select delivery address.</value>
   </data>
-  <data name="ProductNameSearch" xml:space="preserve">
+  <data name="GetCartSucessfully" xml:space="preserve">
+    <value>Cart retrieved successfully.</value>
+  </data>
+  <data name="CartEmpty" xml:space="preserve">
+    <value>Your Cart is empty.</value>
+  </data>
+  <data name="CartLoadedFailed" xml:space="preserve">
+    <value>Failed to load cart.</value>
+  </data>
+  <data name="ItemAddedSuccessfully" xml:space="preserve">
+    <value>Item added to cart successfully.</value>
+  </data>
+  <data name="ItemFailedToAddedInCart" xml:space="preserve">
+    <value>Failed to add item to cart.</value>
+  </data>
+  <data name="LoginSuccessfull" xml:space="preserve">
+    <value>Login Sucess!</value>
+  </data>
+  <data name="RegisterSuccessfull" xml:space="preserve">
+    <value>Registration completed successfully.</value>
+  </data>
+  <data name="GetUserDataSuccess" xml:space="preserve">
+    <value>User data retrieved successfully.</value>
+  </data>
+  <data name="GetAddressSucessfull" xml:space="preserve">
+    <value>Address retrieved successfully.</value>
+  </data>
+  <data name="BannersSucess" xml:space="preserve">
+    <value>Banners Retrived Successfully</value>
+  </data>
+  <data name="BannersNotFound" xml:space="preserve">
+    <value>No Banners Exsist</value>
+  </data>
+	<data name="ProductNameSearch" xml:space="preserve">
     <value>Product name cannot be empty.</value>
   </data>
 </root>

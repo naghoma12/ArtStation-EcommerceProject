@@ -8,10 +8,10 @@ namespace ArtStation.Core.Entities
 {
     public class Category : BaseEntity
     {
-        public string Name { get; set; }
+        public string NameAR { get; set; }
+        public string NameEN { get; set; }
         public string Image { get; set; }
 
-        public string Language { get; set; }
         public ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

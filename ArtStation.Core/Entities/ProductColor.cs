@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,10 @@ namespace ArtStation.Core.Entities
         [ForeignKey(nameof(Product))]
         public int ProductId { get; set; }
         public Product? Product { get; set; }
-        public string  Name { get; set; }
+        [MaxLength(30)]
+        public string  NameAR { get; set; }
+        [MaxLength(30)]
+        public string NameEN { get; set; }
         public string HexCode { get; set; }
     }
 }

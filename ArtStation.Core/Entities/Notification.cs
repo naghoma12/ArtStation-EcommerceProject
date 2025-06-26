@@ -9,12 +9,13 @@ namespace ArtStation.Core.Entities
 {
     public class Notification: BaseEntity
     {
-        public string Title { get; set; }
-        public string Content { get; set; }
+        public string TitleAR { get; set; }
+        public string TitleEN { get; set; }
+        public string ContentAR { get; set; }
+        public string ContentEN { get; set; }
         public int UserId { get; set; }
         public AppUser AppUser { get; set; }
         public bool IsRead { get; set; }
-        public string Language { get; set; }
 
     }
 }

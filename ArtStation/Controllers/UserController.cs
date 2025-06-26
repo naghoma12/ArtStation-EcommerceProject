@@ -45,15 +45,17 @@ namespace ArtStation.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 if (user is null)
                 {
-                    return NotFound(new { Message = ControllerMessages.UserNotFound });
+                    return NotFound(new { Message = ControllerMessages.UserNotFound ,
+                    data=(object?)null});
                 }
 
                 var userData = _mapper.Map<AppUser, UserProfileDto>(user);
-                return Ok(userData);
+                userData.Photo= userData.Photo!=null ? "Images/Users/" + userData.Photo : null;
+                return Ok(new { message=ControllerMessages.GetUserDataSuccess,data= userData });
             }
             catch (Exception)
             {
-                return BadRequest(new { message = ControllerMessages.SomethingWrong });
+                return BadRequest(new { message = ControllerMessages.SomethingWrong, data = (object?)null  });
             }
         }
 
@@ -67,14 +69,14 @@ namespace ArtStation.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null)
                 {
-                    return NotFound(new { message = ControllerMessages.UserNotFound });
+                    return NotFound(new { message = ControllerMessages.UserNotFound , data = (object?)null });
                 }
 
                 var phoneExsist = await _userManager.FindByPhoneNumberAsync(updateUserProfile.PhoneNumber);
 
                 if (updateUserProfile.PhoneNumber != user.PhoneNumber && phoneExsist != null)
                 {
-                    return BadRequest(new { Message = ControllerMessages.PhoneNumberIsTaken });
+                    return BadRequest(new { Message = ControllerMessages.PhoneNumberIsTaken, data = (object?)null  });
                 }
 
                 if (!string.IsNullOrEmpty(updateUserProfile.Email))
@@ -82,7 +84,7 @@ namespace ArtStation.Controllers
                     var emailExsist = await _userManager.FindByEmailAsync(updateUserProfile.Email);
                     if (updateUserProfile.Email != user.Email && emailExsist != null)
                     {
-                        return BadRequest(new { Message = ControllerMessages.EmailAlreadyInUse });
+                        return BadRequest(new { Message = ControllerMessages.EmailAlreadyInUse , data = (object?)null });
                     }
                 }
 
@@ -91,16 +93,23 @@ namespace ArtStation.Controllers
 
                 if (result.Succeeded)
                 {
-                    return Ok(new { message = ControllerMessages.UserDataUpdatedSucessfully });
+                    return Ok(new { message = ControllerMessages.UserDataUpdatedSucessfully
+                    ,
+                        data = (object?)null
+                    });
                 }
                 else
                 {
-                    return BadRequest(new { message = ControllerMessages.FailedToUpdateUserData });
+                    return BadRequest(new { message = ControllerMessages.FailedToUpdateUserData,
+                        data = (object?)null
+                    });
                 }
             }
             catch (Exception)
             {
-                return BadRequest(new { message = ControllerMessages.SomethingWrong });
+                return BadRequest(new { message = ControllerMessages.SomethingWrong,
+                    data = (object?)null
+                });
             }
         }
 
@@ -114,7 +123,9 @@ namespace ArtStation.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null)
                 {
-                    return NotFound(new { Message = ControllerMessages.UserNotFound });
+                    return NotFound(new { Message = ControllerMessages.UserNotFound,
+                        data = (object?)null
+                    });
                 }
 
                 string photoName;
@@ -131,16 +142,22 @@ namespace ArtStation.Controllers
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
-                    return Ok(new { message = ControllerMessages.PhotoUpdatedSucessfully });
+                    return Ok(new { message = ControllerMessages.PhotoUpdatedSucessfully,
+                        data = (object?)null
+                    });
                 }
                 else
                 {
-                    return BadRequest(new { Message = ControllerMessages.PhotoUploadedFailed });
+                    return BadRequest(new { Message = ControllerMessages.PhotoUploadedFailed,
+                        data = (object?)null
+                    });
                 }
             }
             catch (Exception)
             {
-                return BadRequest(new { message = ControllerMessages.SomethingWrong });
+                return BadRequest(new { message = ControllerMessages.SomethingWrong,
+                    data = (object?)null
+                });
             }
         }
 
@@ -153,7 +170,9 @@ namespace ArtStation.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null)
                 {
-                    return NotFound(new { Message = ControllerMessages.UserNotFound });
+                    return NotFound(new { Message = ControllerMessages.UserNotFound,
+                        data = (object?)null
+                    });
                 }
 
                
@@ -162,16 +181,22 @@ namespace ArtStation.Controllers
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
-                    return Ok(new { message = ControllerMessages.CountryAddedSuccessfully});
+                    return Ok(new { message = ControllerMessages.CountryAddedSuccessfully,
+                        data = (object?)null
+                    });
                 }
                 else
                 {
-                    return BadRequest(new { Message = ControllerMessages.CountryFailedToAdd});
+                    return BadRequest(new { Message = ControllerMessages.CountryFailedToAdd,
+                        data = (object?)null
+                    });
                 }
             }
             catch (Exception)
             {
-                return BadRequest(new { message = ControllerMessages.SomethingWrong });
+                return BadRequest(new { message = ControllerMessages.SomethingWrong,
+                    data = (object?)null
+                });
             }
         }
 
@@ -185,14 +210,16 @@ namespace ArtStation.Controllers
             {
                 return Ok(new
                 {
-                    Message = ControllerMessages.AddressAddedSucessfully
+                    Message = ControllerMessages.AddressAddedSucessfully,
+                    data = (object?)null
                 });
 
             }
             else
                 return BadRequest(new
                 {
-                    Message = ControllerMessages.AddressAddedFailed
+                    Message = ControllerMessages.AddressAddedFailed,
+                    data = (object?)null
                 });
 
 
@@ -216,14 +243,16 @@ namespace ArtStation.Controllers
                 {
                     return Ok(new
                     {
-                        Message = ControllerMessages.AddressEditSuccessfully
+                        Message = ControllerMessages.AddressEditSuccessfully,
+                        data = (object?)null
                     });
 
                 }
                 else
                     return BadRequest(new
                     {
-                        Message = ControllerMessages.AddressEditFailed
+                        Message = ControllerMessages.AddressEditFailed,
+                        data = (object?)null
                     });
 
             }
@@ -232,7 +261,8 @@ namespace ArtStation.Controllers
 
                 return BadRequest(new
                 {
-                    Message = ControllerMessages.AddressEditFailed
+                    Message = ControllerMessages.AddressEditFailed,
+                    data = (object?)null
                 });
 
             }
@@ -249,17 +279,20 @@ namespace ArtStation.Controllers
                 var address = await _unitOfWork.Repository<Address>().GetByIdAsync(id);
                 if (address == null)
                 {
-                    return NotFound(new { Message = ControllerMessages.AddressNotFound });
+                    return NotFound(new { Message = ControllerMessages.AddressNotFound,
+                        data = (object?)null
+                    });
                 }
 
                 var addressmaped = _mapper.Map<Address, AddressDtoUseId>(address);
-                return Ok(addressmaped);
+                return Ok(new { message =ControllerMessages.GetAddressSucessfull, data = addressmaped });
             }
             catch (Exception)
             {
                 return BadRequest(new
                 {
-                    Message = ControllerMessages.AddressNotFound
+                    Message = ControllerMessages.AddressNotFound,
+                    data = (object?)null
                 });
 
 
@@ -281,11 +314,13 @@ namespace ArtStation.Controllers
 
                 if (addressesMapped.Count() != 0)
                 {
-                    return Ok(addressesMapped);
+                    return Ok(new { message = ControllerMessages.GetAddressSucessfull, data = addressesMapped });
 
                 }
                 else
-                    return NotFound(new { Message = ControllerMessages.AddressLoadedFailed  });
+                    return NotFound(new { Message = ControllerMessages.AddressLoadedFailed,
+                        data = (object?)null
+                    });
 
             }
             catch (Exception)
@@ -293,7 +328,8 @@ namespace ArtStation.Controllers
 
                 return BadRequest(new
                 {
-                    Message = ControllerMessages.AddressLoadedFailed
+                    Message = ControllerMessages.AddressLoadedFailed,
+                    data = (object?)null
                 });
             }
 

@@ -10,7 +10,7 @@ namespace ArtStation.Core.Repository.Contract
 {
     public interface ICategoryRepository
     {
-        Task<IEnumerable<Category>> GetAllCategories(string language);
+        Task<IEnumerable<CategoryDTO>> GetAllCategories(string language);
         Task<CategoryWithProducts> GetCategoryById(string language , int id , int? userId);
     }
 }

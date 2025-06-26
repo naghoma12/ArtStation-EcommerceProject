@@ -66,17 +66,16 @@ namespace ArtStation.Repository.Repository
         public async Task<IEnumerable<SimpleProduct>> FavouriteProducts(string language, int userId)
         {
             var favData = await _context.Favorites
-                .Where(x => !x.IsDeleted && x.UserId == userId && x.Product.Language == language)
+                .Where(x => !x.IsDeleted && x.UserId == userId)
                 .Include(x => x.Product)
                     .ThenInclude(p => p.ProductSizes)
                 .Include(x => x.Product.ProductPhotos)
                 .Include(x => x.Product.Reviews)
                 .Include(x => x.Product.Sales)
-                .Include(x => x.Product.Favourites)
                 .Select(f => new
                 {
                     f.Product.Id,
-                    f.Product.Name,
+                    Name = language== "en"? f.Product.NameEN : f.Product.NameAR,
                     PhotoUrl = f.Product.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault(),
                     Reviews = f.Product.Reviews,
                     Sizes = f.Product.ProductSizes,

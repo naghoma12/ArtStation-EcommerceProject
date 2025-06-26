@@ -12,8 +12,8 @@ namespace ArtStation.Dtos.AuthDtos
             ErrorMessageResourceName = "InvalidPhoneNumber")]
         public string PhoneNumber { get; set; }
 
-        [Required(ErrorMessageResourceType = typeof(Messages),
-             ErrorMessageResourceName = "RequiredField")]
-        public string Code { get; set; }
+        //[Required(ErrorMessageResourceType = typeof(Messages),
+        //     ErrorMessageResourceName = "RequiredField")]
+        public string? Code { get; set; }
     }
 }
