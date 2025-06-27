@@ -10,6 +10,7 @@ namespace ArtStation.Core.Repository.Contract
     public  interface ICartRepository
     {
         Task<Cart> GetCartAsync(string id);
+      
         Task<Cart> AddCartAsync(Cart cart);
         Task<bool> DeleteCartAsync(string id);
         Task<Cart> DeleteItemAsync(string cartId,string id);

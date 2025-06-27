@@ -18,7 +18,7 @@ namespace ArtStation.Repository.Repository
         }
         public async Task<IEnumerable<Address?>> GetAllUserAddress(int userId)
         {
-            var addresses = await _context.Address.Where(a => a.AppUserId == userId).ToListAsync();
+            var addresses = await _context.Addresses.Where(a => a.AppUserId == userId).ToListAsync();
             return addresses ?? new List<Address>();
         }
     }

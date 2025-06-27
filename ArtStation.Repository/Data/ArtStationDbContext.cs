@@ -27,7 +27,9 @@ namespace ArtStation.Repository.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+      
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+           
         }
 
         public DbSet<Product> Products { get; set; }
@@ -43,7 +45,7 @@ namespace ArtStation.Repository.Data
         //public DbSet<Order> Orders { get; set; }
         //public DbSet<OrderItem> OrderItems { get; set; }
         //public DbSet<ShippingCost> ShippingCosts { get; set; }
-        public DbSet<Address> Address { get; set; }
+        public DbSet<Address> Addresses { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Shipping> Shippings { get; set; }
         public DbSet<Banner> Banners { get; set; }

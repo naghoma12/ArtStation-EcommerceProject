@@ -60,25 +60,6 @@ namespace ArtStation.Repository.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Banners",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Order = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Banners", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
@@ -285,40 +266,7 @@ namespace ArtStation.Repository.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Address",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShippingId = table.Column<int>(type: "int", nullable: false),
-                    AddressDetails = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Lat = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Long = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    AppUserId = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Address", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Address_AspNetUsers_AppUserId",
-                        column: x => x.AppUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Address_Shippings_ShippingId",
-                        column: x => x.ShippingId,
-                        principalTable: "Shippings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+           
 
             migrationBuilder.CreateTable(
                 name: "Favorites",
@@ -509,15 +457,7 @@ namespace ArtStation.Repository.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Address_AppUserId",
-                table: "Address",
-                column: "AppUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Address_ShippingId",
-                table: "Address",
-                column: "ShippingId");
+        
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -617,8 +557,7 @@ namespace ArtStation.Repository.Data.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Address");
+           
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -635,8 +574,7 @@ namespace ArtStation.Repository.Data.Migrations
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
 
-            migrationBuilder.DropTable(
-                name: "Banners");
+         
 
             migrationBuilder.DropTable(
                 name: "Favorites");

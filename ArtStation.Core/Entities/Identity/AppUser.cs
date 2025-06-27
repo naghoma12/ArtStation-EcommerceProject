@@ -29,7 +29,7 @@ namespace ArtStation.Core.Entities.Identity
         public string? Image { get; set; }
         public string FCMToken { get; set; } = string.Empty;
 
-        public IList<Address> Addresses { get; set; }
+        public IList<Address>? Address { get; set; } =new List<Address>();
 
         public ICollection<Favourite> Favourites { get; set; } = new List<Favourite>();
         public ICollection<Notification> Notifications { get; set; } = new List<Notification>();

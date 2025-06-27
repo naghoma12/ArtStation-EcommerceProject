@@ -14,6 +14,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using StackExchange.Redis;
 using System.Security.Claims;
+using ArtStation.Core;
+using ArtStation.Core.Entities;
+using System.Globalization;
+using ArtStation.Core.Services.Contract;
+using Twilio.TwiML.Messaging;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ArtStation.Controllers
 {
@@ -23,23 +29,75 @@ namespace ArtStation.Controllers
     [ApiController]
     public class CartController : ControllerBase
     {
+       
         private readonly ICartRepository _cartRepository;
         private readonly UserManager<AppUser> _userManager;
         private readonly IMapper _mapper;
-        private readonly IAddressRepository _addressRepository;
+        private readonly ICartService _cartService;
 
         public CartController(ICartRepository cartRepository
             ,UserManager<AppUser> userManager,IMapper mapper,
-            IAddressRepository addressRepository)
+           ICartService cartService
+            )
         {
             _cartRepository = cartRepository;
            _userManager = userManager;
             _mapper = mapper;
-            _addressRepository = addressRepository;
+            _cartService = cartService;
         }
 
-        [HttpGet]
+        [HttpGet("GetBeforeAdd")]
         public async Task<IActionResult> GetCart()
+        {
+            try
+            {
+                var userId = User.Identity.IsAuthenticated
+                    ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                    : null;
+
+                Cart cart;
+
+                if (userId != null)
+                {
+                    cart = await _cartRepository.GetCartAsync($"UserCart:{userId}");
+                    if (cart == null || cart.CartItems == null || !cart.CartItems.Any())
+                    {
+                        return Ok(new
+                        {
+                            message = ControllerMessages.CartEmpty,
+                            data = new Cart($"UserCart:{userId}")
+                        });
+                    }
+
+                    return Ok(new
+                    {
+                        message = ControllerMessages.GetCartSucessfully,
+                        data = cart
+                    });
+                }
+
+                else
+                {
+                    return BadRequest(new
+                    {
+                        message = ControllerMessages.CartLoadedFailed,
+                        data  = (object?)null
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = ControllerMessages.CartLoadedFailed,
+                    data = (object?)null
+                });
+            }
+        }
+
+
+        [HttpGet("GetAllCartData")]
+        public async Task<IActionResult> GetAllCartData()
         {
             try
             {
@@ -60,11 +118,11 @@ namespace ArtStation.Controllers
                             data = new Cart($"UserCart:{userId}")
                         });
                     }
-
+                    var cartReturnDto=await _cartService.MapCartToReturnDto(cart, CultureInfo.CurrentCulture.Name);
                     return Ok(new
                     {
                         message = ControllerMessages.GetCartSucessfully,
-                        data = cart
+                        data = cartReturnDto
                     });
                 }
                
@@ -89,11 +147,11 @@ namespace ArtStation.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddCart([FromBody] CartDto cartDto)
+        public async Task<IActionResult> AddCart([FromBody] CartDto cartdto)
         {
             try
             {
-                var cart = _mapper.Map<Cart>(cartDto);
+                var cart = _mapper.Map<Cart>(cartdto);
                  var createOrUpdateBasket = await _cartRepository.AddCartAsync(cart);
                 return Ok(new
                 {
@@ -160,16 +218,20 @@ namespace ArtStation.Controllers
                 }
                
                 var updatedCart = await _cartRepository.DeleteItemAsync(cartId,itemId);
+                
                 if (updatedCart == null)
                 {
                     return NotFound(new { message = ControllerMessages.CartItemDeletedFailed ,
                         data = (object?)null
                     });
                 }
-                return Ok(new {
-                    message = ControllerMessages.CartItemDeletedSucessfully ,
-                    updatedCart}
-                );
+                var cartReturnDto = await _cartService.MapCartToReturnDto(updatedCart, CultureInfo.CurrentUICulture.Name);
+                return Ok(new
+                {
+                    message = ControllerMessages.CartItemDeletedSucessfully,
+                    data = cartReturnDto
+                });
+              
             }
             catch (Exception ex)
             {
@@ -204,8 +266,14 @@ namespace ArtStation.Controllers
                    
                 });
                 }
-                return Ok(new { message = ControllerMessages.ChooseAddressDeliverySucessfully ,
-                    updatedCart });
+                var cartReturnDto = await _cartService.MapCartToReturnDto(updatedCart, CultureInfo.CurrentUICulture.Name);
+                return Ok(new
+                {
+                     message = ControllerMessages.ChooseAddressDeliverySucessfully,
+                    data = cartReturnDto
+                });
+
+               
             }
             catch (Exception ex)
             {
@@ -216,5 +284,9 @@ namespace ArtStation.Controllers
             });
             }
         }
-        }
+
+       
+    }
+
+
 }

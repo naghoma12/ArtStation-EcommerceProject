@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace ArtStation.Core.Entities.Order
 {
-    public class Order
+    public class Order:BaseEntity
     {
         public Order()
         {
 
         }
-        public Order(string customerEmail, Address shippingAddress, decimal subTotal, ICollection<OrderItem> orderItems, Shipping shippingCost)
+        public Order(string customerEmail, int addressId, decimal subTotal, ICollection<OrderItem> orderItems, Shipping shippingCost)
         {
             CustomerEmail = customerEmail;
-            ShippingAddress = shippingAddress;
+            addressId=addressId;
             SubTotal = subTotal;
             OrderItems = orderItems;
             Shipping = shippingCost;
@@ -27,7 +27,7 @@ namespace ArtStation.Core.Entities.Order
         public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
         public OrderStatus Status { get; set; } = OrderStatus.Placed;
         //public OrderReady StatusReady { get; set; } = OrderReady.NotReady;
-        public Address ShippingAddress { get; set; }
+        public int AddressId { get; set; }
         public int? ShippingId { get; set; }
         public Shipping Shipping { get; set; }
         public decimal SubTotal { get; set; }

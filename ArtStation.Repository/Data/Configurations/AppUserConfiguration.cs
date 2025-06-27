@@ -17,6 +17,8 @@ namespace ArtStation.Repository.Data.Configurations
                 gender => gender.ToString(), //store
                  gender => (Gender)Enum.Parse(typeof(Gender), gender)//retrive
                  );
+
+           
         }
     }
 }

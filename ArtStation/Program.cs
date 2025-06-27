@@ -68,6 +68,8 @@ namespace ArtStation
             builder.Services.AddScoped(typeof(IFavouriteRepository), typeof(FavouriteRepository));
             builder.Services.AddScoped(typeof(IAddressRepository), typeof(AddressRepository));
             builder.Services.AddScoped(typeof(IBannerRepository), typeof(BannerRepository));
+            builder.Services.AddScoped(typeof(ICartService), typeof(CartService));
+
             builder.Services.AddSwaggerServices();
 
             #region Localization
@@ -108,26 +110,26 @@ namespace ArtStation
 
                     var result = new
                     {
-                      
-                        message = string.Join(" | ", errors) 
+
+                        message = string.Join(" | ", errors)
                     };
 
                     return new BadRequestObjectResult(result);
                 };
             });
-          
+
 
             var app = builder.Build();
             using (var scope = app.Services.CreateScope())
             {
                 var dbcontext = scope.ServiceProvider.GetRequiredService<ArtStationDbContext>();
-                await AppSeeding.SeedShippingCost(dbcontext); 
+                await AppSeeding.SeedShippingCost(dbcontext);
             }
 
             HandlerPhoto.Initialize(app.Environment);
             var localizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>();
             app.UseRequestLocalization(localizationOptions.Value);
-            
+
 
 
             // Configure the HTTP request pipeline.
@@ -140,7 +142,7 @@ namespace ArtStation
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
-         
+
 
 
             app.MapControllers();

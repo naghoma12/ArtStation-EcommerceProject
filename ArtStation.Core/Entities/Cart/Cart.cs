@@ -19,16 +19,15 @@ namespace ArtStation.Core.Entities.Cart
             {
                 Id = cartId;
                 CartItems = new List<CartItem>();
-            CartSummary = new CartSummary();
+           
             }
 
             public string Id { get; set; } // Key
           
-            public List<CartItem>? CartItems { get; set; } = new List<CartItem>(); //Value
-           
-            public DeliveryAddress  Address { get; set; }
+            public List<CartItem>? CartItems { get; set; } = new List<CartItem>(); 
 
-            public CartSummary CartSummary { get; set; } = new CartSummary();
+            public int? AddressId { get; set; }
+      
 
         //public string? PaymentId { get; set; }  //PaymentIntent
         //public string? ClientSecret { get; set; } //ClientSecret
