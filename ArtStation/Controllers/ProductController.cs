@@ -35,13 +35,13 @@ namespace ArtStation.Controllers
                 {
                 return Ok(new
                 {
-                    Message = "No products found.",
+                    Message = ControllerMessages.ProductsListNotFound,
                     List = products
                 });
                 }
                 return Ok(new
                 {
-                    Message = "List of Products.",
+                    Message = ControllerMessages.ProductsList,
                     List = products
                 });
         }
@@ -58,13 +58,13 @@ namespace ArtStation.Controllers
             {
                 return Ok(new
                 {
-                    Message = "No products found.",
+                    Message = ControllerMessages.ProductsListNotFound,
                     List = products
                 });
             }
             return Ok(new
             {
-                Message = "List of Products.",
+                Message = ControllerMessages.ProductsList,
                 List = products
             });
         }
@@ -80,13 +80,13 @@ namespace ArtStation.Controllers
             {
                 return Ok(new
                 {
-                    Message = "No Offers found.",
+                    Message = ControllerMessages.OffersNotFound,
                     List = offers
                 });
             }
             return Ok(new
             {
-                Message = "List of Offers.",
+                Message = ControllerMessages.OffersList,
                 List = offers
             });
         }
@@ -104,13 +104,13 @@ namespace ArtStation.Controllers
             {
                 return Ok(new
                 {
-                    Message = "No products found.",
+                    Message = ControllerMessages.ProductsListNotFound,
                     List = products
                 });
             }
             return Ok(new
             {
-                Message = "List of Products.",
+                Message = ControllerMessages.ProductsList,
                 List = products
             });
 
@@ -126,11 +126,11 @@ namespace ArtStation.Controllers
             var product = await _productRepository.GetProductById(language, id, userId);
             if (product == null)
             {
-                return NotFound(new { Message = $"There is no product with this ID : {id}" });
+                return NotFound(new { Message = ControllerMessages.ProductNotFound});
             }
             return Ok(new
             {
-                Message = "Product found successfully.",
+                Message = ControllerMessages.ProductFound,
                 Product = product
             });
         }
@@ -155,13 +155,13 @@ namespace ArtStation.Controllers
             {
                 return Ok(new
                 {
-                    Message = "No products with this name.",
+                    Message = ControllerMessages.ProductNotFound,
                     List = products
                 });
             }
             return Ok(new
             {
-                Message = "List of Products.",
+                Message = ControllerMessages.ProductsList,
                 List = products
             });
         }

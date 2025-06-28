@@ -234,15 +234,88 @@
   <data name="BannersNotFound" xml:space="preserve">
     <value />
   </data>
-
   <data name="Shipped" xml:space="preserve">
     <value />
   </data>
   <data name="Deliverd" xml:space="preserve">
     <value />
   </data>
-	<data name="ProductNameSearch" xml:space="preserve">
-
+  <data name="ProductNameSearch" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FavProductAdded" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FavProductDeleted" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FavProductExist" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FavProductNotExist" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CategoriesFound" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CategoriesNotFound" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CategoryFound" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CategoryNotFound" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LikeAdded" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LikeDeleted" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ReviewAdded" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ReviewLiked" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ReviewNotAdded" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ReviewNotFound" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ReviewNotLiked" xml:space="preserve">
+    <value />
+  </data>
+  <data name="OffersList" xml:space="preserve">
+    <value />
+  </data>
+  <data name="OffersNotFound" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ProductFound" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ProductNotFound" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ProductsList" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ProductsListNotFound" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ReviewDeleted" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ReviewNotDeleted" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ReviewNotUpdated" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ReviewUpdated" xml:space="preserve">
     <value />
   </data>
 </root>

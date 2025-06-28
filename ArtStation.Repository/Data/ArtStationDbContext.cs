@@ -47,6 +47,7 @@ namespace ArtStation.Repository.Data
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Shipping> Shippings { get; set; }
         public DbSet<Banner> Banners { get; set; }
+        public DbSet<ReviewLikes> ReviewLikes { get; set; }
 
 
     }

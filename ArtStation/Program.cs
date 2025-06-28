@@ -68,6 +68,7 @@ namespace ArtStation
             builder.Services.AddScoped(typeof(IFavouriteRepository), typeof(FavouriteRepository));
             builder.Services.AddScoped(typeof(IAddressRepository), typeof(AddressRepository));
             builder.Services.AddScoped(typeof(IBannerRepository), typeof(BannerRepository));
+            builder.Services.AddScoped(typeof(IReviewRepository), typeof(ReviewRepository));
             builder.Services.AddSwaggerServices();
 
             #region Localization

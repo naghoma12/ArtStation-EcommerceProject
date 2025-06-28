@@ -19,13 +19,14 @@ namespace ArtStation.Core.Entities
         public string DescriptionAR { get; set; }
         [MaxLength(1000)]
         public string DescriptionEN { get; set; }
-        //  public ForWhom ForWhom { get; set; }
         [MaxLength(150)]
         public string ShippingDetailsAR { get; set; }
         [MaxLength(150)]
         public string ShippingDetailsEN { get; set; }
-        public int DeliveredMinDate { get; set; }
-        public int DeliveredMaxDate { get; set; }
+        [MaxLength(150)]
+        public string DeliveredOnAR { get; set; }
+        [MaxLength(150)]
+        public string DeliveredOnEN { get; set; }
         [MaxLength(50)]
         public string BrandAR { get; set; }
         [MaxLength(50)]
@@ -40,13 +41,8 @@ namespace ArtStation.Core.Entities
         public ICollection<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
         public  ICollection<Favourite> Favourites { get; set; } = new List<Favourite>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public ICollection<ForWhom> ForWhomOptions { get; set; } = new List<ForWhom>();
 
     }
-    [Flags]
-    public enum ForWhom
-    {
-        Women = 0,
-        Men = 2,
-        Kids = 4
-    }
+   
 }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using ArtStation.Core.Helper;
+using ArtStation.Core.Resources;
 
 namespace ArtStation.Controllers
 {
@@ -39,13 +40,13 @@ namespace ArtStation.Controllers
             if (list == null || !list.Any())
             {
                 return Ok(new {
-                    Message = "No categories found." ,
+                    Message = ControllerMessages.CategoriesNotFound ,
                     List = list
                 });
             }
             return Ok(new
             {
-                Message = "List of Categories .",
+                Message = ControllerMessages.CategoriesFound,
                 List = list
             });
         }
@@ -60,11 +61,11 @@ namespace ArtStation.Controllers
             var category = await _categoryRepository.GetCategoryById(language, id, userId);
             if (category == null)
             {
-                return NotFound(new { Message = $"There is no category with this ID : {id}" });
+                return NotFound(new { Message = ControllerMessages.CategoryNotFound });
             }
             return Ok(new
             {
-                Message = "Category found successfully.",
+                Message = ControllerMessages.CategoryFound,
                 Category = category
             });
         }

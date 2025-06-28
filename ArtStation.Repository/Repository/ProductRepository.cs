@@ -150,9 +150,17 @@ namespace ArtStation.Repository.Repository
                     Name = language == "en" ? f.NameEN : f.NameAR
                 }).ToList(),
                 ShippingDetails = language == "en" ?  product.ShippingDetailsEN : product.ShippingDetailsAR,
-                DeliveredMinDate = product.DeliveredMinDate,
-                DeliveredMaxDate = product.DeliveredMaxDate,
-                Reviews = product.Reviews.ToList(),
+                 DeliveredOn = language == "en" ? product.DeliveredOnEN : product.DeliveredOnAR,
+                Reviews = product.Reviews.Select( r=> 
+                    new ReviewDTO
+                    {
+                        Id = r.Id,
+                        Comment = r.Comment,
+                        Rating = r.Rating,
+                        UserName = r.AppUser?.UserName ?? "Unknown",
+                        UserImage = r.AppUser?.Image ?? "",
+                        LikesCount = r.LikesCount
+                    }).ToList(),
                 IsFav = userId.HasValue && product.Favourites.Any(f => f.UserId == userId.Value)
             };
         }

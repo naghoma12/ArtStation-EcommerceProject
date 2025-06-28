@@ -20,9 +20,8 @@ namespace ArtStation.Core.Helper
         public List<SizesDTO> Sizes { get; set; } = new List<SizesDTO>();
         public List<FlavourDTO> Flavours { get; set; } = new List<FlavourDTO>();
         public string ShippingDetails { get; set; }
-        public int DeliveredMinDate { get; set; }
-        public int DeliveredMaxDate { get; set; }
-        public List<Review> Reviews { get; set; } = new List<Review>();
+        public string DeliveredOn { get; set; }
+        public List<ReviewDTO> Reviews { get; set; } = new List<ReviewDTO>();
 
         public bool IsFav { get; set; }
     }

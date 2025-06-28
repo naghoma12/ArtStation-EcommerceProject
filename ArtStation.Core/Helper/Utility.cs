@@ -20,7 +20,8 @@ namespace ArtStation.Core.Helper
                 .OrderByDescending(s => s.Id)
                 .FirstOrDefault();
             var discount = activeSale?.Discount ?? 0;
-            var priceAfterSale = basePrice - (discount / 100m * basePrice);
+
+            var priceAfterSale = discount > 0 ? basePrice - (discount / 100m * basePrice) : 0;
 
             return new SimpleProduct
             {
@@ -29,8 +30,9 @@ namespace ArtStation.Core.Helper
                 PhotoUrl = p.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault() ?? "",
                 ReviewsNumber = p.Reviews.Count,
                 TotalPrice = basePrice,
+                Discount = discount,
+                IsSale = discount > 0,
                 PriceAfterSale = priceAfterSale,
-                IsActive = p.IsActive,
                 AvgRating = p.Reviews.Any() ? (float?)p.Reviews.Average(r => r.Rating) : 0,
                 IsFav = userId.HasValue && p.Favourites.Any(f => f.UserId == userId.Value)
             };

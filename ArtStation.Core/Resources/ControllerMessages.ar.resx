@@ -237,4 +237,79 @@
   <data name="BannersNotFound" xml:space="preserve">
     <value>لا يوجد </value>
   </data>
+  <data name="FavProductAdded" xml:space="preserve">
+    <value>تم إضافة المنتج إلى المفضلة بنجاح .</value>
+  </data>
+  <data name="FavProductDeleted" xml:space="preserve">
+    <value>تم حذف المنتج من المفضله بنجاح .</value>
+  </data>
+  <data name="FavProductExist" xml:space="preserve">
+    <value>هذا المنتج مضاف الى المفضله بالفعل .</value>
+  </data>
+  <data name="FavProductNotExist" xml:space="preserve">
+    <value>هذا المنتج غير موجود في المفضله .</value>
+  </data>
+  <data name="CategoriesFound" xml:space="preserve">
+    <value>هذه مجموعه من التصنيفات</value>
+  </data>
+  <data name="CategoriesNotFound" xml:space="preserve">
+    <value>لا يوجد تصنيفات .</value>
+  </data>
+  <data name="CategoryFound" xml:space="preserve">
+    <value>تم إيجاد التصنيف بنجاح .</value>
+  </data>
+  <data name="CategoryNotFound" xml:space="preserve">
+    <value>لا يوجد تصنيف بهذا الكود .</value>
+  </data>
+  <data name="LikeAdded" xml:space="preserve">
+    <value>تم إضافة الإعجاب بنجاح .</value>
+  </data>
+  <data name="LikeDeleted" xml:space="preserve">
+    <value>تم حذف الإعجاب بنجاح .</value>
+  </data>
+  <data name="ReviewAdded" xml:space="preserve">
+    <value>تم إضافة التقييم بنجاح .</value>
+  </data>
+  <data name="ReviewLiked" xml:space="preserve">
+    <value>المستخدم قام بالإعجاب بهذا التعليق.</value>
+  </data>
+  <data name="ReviewNotAdded" xml:space="preserve">
+    <value>فشلت إضافة التقييم .</value>
+  </data>
+  <data name="ReviewNotFound" xml:space="preserve">
+    <value>هذا التقييم غير موجود .</value>
+  </data>
+  <data name="ReviewNotLiked" xml:space="preserve">
+    <value>المستخدم لم يقم بالإعجاب بهذا التعليق .</value>
+  </data>
+  <data name="OffersList" xml:space="preserve">
+    <value>هذه مجموعة العروض .</value>
+  </data>
+  <data name="OffersNotFound" xml:space="preserve">
+    <value>لا يوجد عروض .</value>
+  </data>
+  <data name="ProductFound" xml:space="preserve">
+    <value>تم العثور على المنتج بنجاح .</value>
+  </data>
+  <data name="ProductNotFound" xml:space="preserve">
+    <value>هذا المنتج غير موجود .</value>
+  </data>
+  <data name="ProductsList" xml:space="preserve">
+    <value>هذه مجموعة المنتجات .</value>
+  </data>
+  <data name="ProductsListNotFound" xml:space="preserve">
+    <value>لا يوجد منتجات .</value>
+  </data>
+  <data name="ReviewDeleted" xml:space="preserve">
+    <value>تم حذف التقييم بنجاح .</value>
+  </data>
+  <data name="ReviewNotDeleted" xml:space="preserve">
+    <value>فشلت عملية حذف التقييم .</value>
+  </data>
+  <data name="ReviewNotUpdated" xml:space="preserve">
+    <value>فشلت عملية تعديل التقييم .</value>
+  </data>
+  <data name="ReviewUpdated" xml:space="preserve">
+    <value>تم تعديل التقييم بنجاح .</value>
+  </data>
 </root>

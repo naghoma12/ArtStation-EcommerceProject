@@ -63,6 +63,15 @@ namespace ArtStation.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string CommentMaxLength {
+            get {
+                return ResourceManager.GetString("CommentMaxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Deliverd {
             get {
                 return ResourceManager.GetString("Deliverd", resourceCulture);
@@ -111,6 +120,15 @@ namespace ArtStation.Core.Resources {
         public static string Placed {
             get {
                 return ResourceManager.GetString("Placed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Rating {
+            get {
+                return ResourceManager.GetString("Rating", resourceCulture);
             }
         }
         

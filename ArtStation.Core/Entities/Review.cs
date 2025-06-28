@@ -24,7 +24,8 @@ namespace ArtStation.Core.Entities
         public AppUser? AppUser { get; set; }
         [ForeignKey(nameof(AppUser))]
         public int UserId { get; set; }
-        public int LikesCount { get; set; }
+        public virtual ICollection<ReviewLikes> ReviewLikes { get; set; } = new List<ReviewLikes>();
+        public int LikesCount { get; set; } 
 
     }
 }

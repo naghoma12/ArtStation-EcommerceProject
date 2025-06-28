@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using ArtStation.Core.Resources;
+using FirebaseAdmin.Messaging;
 
 namespace ArtStation.Controllers
 {
@@ -35,17 +37,20 @@ namespace ArtStation.Controllers
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 if (userId == null)
                 {
-                    return BadRequest("There is no Users with this Id"); // localization
+                    return BadRequest( new
+                    {
+                       Message = ControllerMessages.UserNotFound
+                    }); 
                 }
                 var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
                 if (product == null)
                 {
-                    return BadRequest("There is no Products with this Id"); // localization
+                    return BadRequest(new { Message = ControllerMessages.ProductNotFound }); 
                 }
                 var Fav = await _fav.GetFavoriteAsync(productId, userId);
                 if (Fav != null)
                 {
-                    return BadRequest("هذا المنتج مضاف الى المفضله بالفعل"); // localization
+                    return BadRequest(new { Message = ControllerMessages.FavProductExist}); // localization
                 }
                 else
                 {
@@ -60,7 +65,7 @@ namespace ArtStation.Controllers
                     {
                         return Ok(new
                         {
-                            Message = $"تم إضافة المنتج إلى المفضلة بنجاح" // localization
+                            Message = ControllerMessages.FavProductAdded // localization
                         });
                     }
                 }
@@ -70,7 +75,7 @@ namespace ArtStation.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = $"فشلت عملية الإضافه {ex.Message.ToString() ?? ex.InnerException?.Message.ToString()}"
+                    Message = $"Adding Failed {ex.Message.ToString() ?? ex.InnerException?.Message.ToString()}"
                 });
             }
 
@@ -80,17 +85,17 @@ namespace ArtStation.Controllers
         {
             try
             {
-                var user = await _user.GetUserAsync(User);
-                if (user == null)
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                if (userId == null)
                 {
-                    return BadRequest("لا يوجد مستخدم بهذا الكود");
+                    return BadRequest(new { Message = ControllerMessages.UserNotFound });
                 }
                 var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
                 if (product == null)
                 {
-                    return BadRequest("لا يوجد منتج بهذا الكود");
+                    return BadRequest(new {Message = ControllerMessages.ProductNotFound});
                 }
-                var Fav = await _fav.GetFavoriteAsync(productId, user.Id);
+                var Fav = await _fav.GetFavoriteAsync(productId, userId);
                 if (Fav != null)
                 {
                     _unitOfWork.Repository<Favourite>().Delete(Fav);
@@ -99,17 +104,20 @@ namespace ArtStation.Controllers
                     {
                         return Ok(new 
                         {
-                            Message = $"تم حذف المنتج من المفضله بنجاح"
+                            Message = ControllerMessages.FavProductDeleted
                         });
                     }
                 }
-                return BadRequest("هذا المنتج غير موجود في المفضله");
+                return BadRequest(new
+                {
+                    Message = ControllerMessages.FavProductNotExist 
+                });
             }
             catch (Exception ex)
             {
                 return BadRequest(new 
                 {
-                    Message = $"فشلت عملية حذف المنتج من المفضله {ex.Message.ToString() ?? ex.InnerException?.Message.ToString()}"
+                    Message = $"Deleting Failed {ex.Message.ToString() ?? ex.InnerException?.Message.ToString()}"
                 });
             }
 
@@ -123,7 +131,10 @@ namespace ArtStation.Controllers
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 if (userId == null)
                 {
-                    return BadRequest("لا يوجد مستخدم بهذا الكود"); //localization
+                    return BadRequest(new
+                    {
+                        Message = ControllerMessages.UserNotFound
+                    });
                 }
                 var language = Request.Headers["Accept-Language"].ToString();
                 if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))

@@ -4,6 +4,7 @@ using ArtStation.Repository.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArtStation.Repository.Data.Migrations
 {
     [DbContext(typeof(ArtStationDbContext))]
-    partial class ArtStationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250628190733_updateModels")]
+    partial class updateModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -679,41 +682,6 @@ namespace ArtStation.Repository.Data.Migrations
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("ArtStation.Core.Entities.ReviewLikes", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ReviewId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReviewId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ReviewLikes");
-                });
-
             modelBuilder.Entity("ArtStation.Core.Entities.Sale", b =>
                 {
                     b.Property<int>("Id")
@@ -1028,25 +996,6 @@ namespace ArtStation.Repository.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("ArtStation.Core.Entities.ReviewLikes", b =>
-                {
-                    b.HasOne("ArtStation.Core.Entities.Review", "Review")
-                        .WithMany("ReviewLikes")
-                        .HasForeignKey("ReviewId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ArtStation.Core.Entities.Identity.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Review");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ArtStation.Core.Entities.Sale", b =>
                 {
                     b.HasOne("ArtStation.Core.Entities.Product", "Product")
@@ -1153,11 +1102,6 @@ namespace ArtStation.Repository.Data.Migrations
                     b.Navigation("Reviews");
 
                     b.Navigation("Sales");
-                });
-
-            modelBuilder.Entity("ArtStation.Core.Entities.Review", b =>
-                {
-                    b.Navigation("ReviewLikes");
                 });
 #pragma warning restore 612, 618
         }

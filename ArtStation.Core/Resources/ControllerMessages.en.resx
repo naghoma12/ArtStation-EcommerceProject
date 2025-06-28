@@ -140,7 +140,7 @@ Please try again or request a new code. </value>
     <value>You are not authorized to access this resource</value>
   </data>
   <data name="UserNotFound" xml:space="preserve">
-    <value>This user does not exist.</value>
+    <value>There is no users with this id.</value>
   </data>
   <data name="EmailAlreadyInUse" xml:space="preserve">
     <value>Email is already registered.</value>
@@ -235,7 +235,82 @@ Please try again or request a new code. </value>
   <data name="BannersNotFound" xml:space="preserve">
     <value>No Banners Exsist</value>
   </data>
-	<data name="ProductNameSearch" xml:space="preserve">
+  <data name="ProductNameSearch" xml:space="preserve">
     <value>Product name cannot be empty.</value>
+  </data>
+  <data name="FavProductAdded" xml:space="preserve">
+    <value>Product added to favourite successfully.</value>
+  </data>
+  <data name="FavProductDeleted" xml:space="preserve">
+    <value>Product deleted from favourite successfully .</value>
+  </data>
+  <data name="FavProductExist" xml:space="preserve">
+    <value>This Product already added in favourites</value>
+  </data>
+  <data name="FavProductNotExist" xml:space="preserve">
+    <value>Product not exsist in favourites .</value>
+  </data>
+  <data name="CategoriesFound" xml:space="preserve">
+    <value>There is a list of categories .</value>
+  </data>
+  <data name="CategoriesNotFound" xml:space="preserve">
+    <value>No Categories Found .</value>
+  </data>
+  <data name="CategoryFound" xml:space="preserve">
+    <value>Category found successfully.</value>
+  </data>
+  <data name="CategoryNotFound" xml:space="preserve">
+    <value>There is no category with this id .</value>
+  </data>
+  <data name="LikeAdded" xml:space="preserve">
+    <value>Like added successfully .</value>
+  </data>
+  <data name="LikeDeleted" xml:space="preserve">
+    <value>Like deleted successfully .</value>
+  </data>
+  <data name="ReviewAdded" xml:space="preserve">
+    <value>Review Added Successfuly .</value>
+  </data>
+  <data name="ReviewLiked" xml:space="preserve">
+    <value>User already Liked on this review</value>
+  </data>
+  <data name="ReviewNotAdded" xml:space="preserve">
+    <value>Failed to add review .</value>
+  </data>
+  <data name="ReviewNotFound" xml:space="preserve">
+    <value>There is review not found .</value>
+  </data>
+  <data name="ReviewNotLiked" xml:space="preserve">
+    <value>User didn't Like on this review</value>
+  </data>
+  <data name="OffersList" xml:space="preserve">
+    <value>There is a list of offers.</value>
+  </data>
+  <data name="OffersNotFound" xml:space="preserve">
+    <value>No offers found .</value>
+  </data>
+  <data name="ProductFound" xml:space="preserve">
+    <value>Product found successfully .</value>
+  </data>
+  <data name="ProductNotFound" xml:space="preserve">
+    <value>There is no product with this id .</value>
+  </data>
+  <data name="ProductsList" xml:space="preserve">
+    <value>There is a list of products.</value>
+  </data>
+  <data name="ProductsListNotFound" xml:space="preserve">
+    <value>No products found.</value>
+  </data>
+  <data name="ReviewDeleted" xml:space="preserve">
+    <value>Review deleted successfully.</value>
+  </data>
+  <data name="ReviewNotDeleted" xml:space="preserve">
+    <value>Failed to delete review .</value>
+  </data>
+  <data name="ReviewNotUpdated" xml:space="preserve">
+    <value>Failed to update review .</value>
+  </data>
+  <data name="ReviewUpdated" xml:space="preserve">
+    <value>Review updated successfully .</value>
   </data>
 </root>
