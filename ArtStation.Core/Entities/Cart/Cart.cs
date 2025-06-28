@@ -17,12 +17,12 @@ namespace ArtStation.Core.Entities.Cart
 
             public Cart(string cartId)
             {
-                Id = cartId;
+            CartId = cartId;
                 CartItems = new List<CartItem>();
            
             }
 
-            public string Id { get; set; } // Key
+            public string CartId { get; set; } // Key
           
             public List<CartItem>? CartItems { get; set; } = new List<CartItem>(); 
 

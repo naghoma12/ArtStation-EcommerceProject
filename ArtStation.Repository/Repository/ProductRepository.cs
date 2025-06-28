@@ -183,5 +183,36 @@ namespace ArtStation.Repository.Repository
 
             return matchedProducts;
         }
+
+        public async Task<ProductWithPriceDto> GetProductWithPrice(int productId,int sizeId )
+        {
+            var product = await _context.Products
+               .Where(p => p.IsActive && !p.IsDeleted && p.Id == productId)
+               .Include(p => p.Sales)
+               .Include(p => p.ProductSizes)
+               .FirstOrDefaultAsync();
+
+            if (product == null)
+                return null;
+
+            var activeSale = product.Sales
+                .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
+                .OrderByDescending(s => s.Id)
+                .FirstOrDefault();
+
+            var discount = activeSale?.Discount ?? 0;
+            var size = product.ProductSizes.Where(s => s.Id == sizeId).FirstOrDefault();
+            var priceAfterSale=size.Price -(size.Price * discount / 100m);
+            return new ProductWithPriceDto()
+            {
+                Product=product,
+                Price=size.Price,
+                PriceAfterSale = priceAfterSale,
+
+
+            };
+            
+        }
+
     }
 }

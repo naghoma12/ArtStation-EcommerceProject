@@ -9,8 +9,8 @@ namespace ArtStation.Core.Repository.Contract
 {
     public interface IOrderRepository
     {
-        public Task<IEnumerable<Order>> GetUserOrdersAsync(string Email);
-        public Task<Order> GetOrderForUserAsync(int OrderId);
+        //public Task<IEnumerable<Order>> GetUserOrdersAsync(string Email);
+        //public Task<Order> GetOrderForUserAsync(int OrderId);
         //public Task<Order> CancelOrderForUserAsync(int OrderId);
         //public Task<Order> ReOrderForUserAsync(int OrderId);
         //public Task<Order> DeleteOrderForUserAsync(int OrderId);

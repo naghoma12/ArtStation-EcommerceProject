@@ -1,99 +1,101 @@
-﻿//using ArtStation.Core.Entities.Identity;
-//using ArtStation.Core.Entities.Order;
-//using ArtStation.Core.Entities;
-//using ArtStation.Core.Repository.Contract;
-//using ArtStation.Core.Services.Contract;
-//using ArtStation.Core;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
-//using System.Globalization;
+﻿using ArtStation.Core.Entities.Identity;
+using ArtStation.Core.Entities.Order;
+using ArtStation.Core.Entities;
+using ArtStation.Core.Repository.Contract;
+using ArtStation.Core.Services.Contract;
+using ArtStation.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Globalization;
 
-//namespace ArtStation.Services
-//{
-//    public class OrderService : IOrderService
-//    {
-//        private readonly ICartRepository _cartRepository;
-//        private readonly ICartService _cartService;
-//        private readonly IUnitOfWork _unitOfWork;
-//        private readonly IOrderRepository _orderRepo;
+namespace ArtStation.Services
+{
+    public class OrderService : IOrderService
+    {
+        private readonly IProductRepository _productRepo;
+        private readonly ICartRepository _cartRepository;
+        private readonly ICartService _cartService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IOrderRepository _orderRepo;
 
-//        public OrderService(ICartRepository cartRepository,ICartService cartService, IUnitOfWork unitOfWork, IOrderRepository orderRepo)
-//        {
-//            _cartRepository = cartRepository;
-//            _cartService = cartService;
-//            _unitOfWork = unitOfWork;
-//            _orderRepo = orderRepo;
-//        }
-//        public async Task<Order?> CreateOrderAsync(string CustomerEmail, string CartId, int shippingCostId, Address ShippingAddress)
-//        {
-//            //1.Get Cart from cart repo
-//            var cart = await _cartRepository.GetCartAsync(CartId);
-//            var cartData = await _cartService.MapCartToReturnDto(cart, CultureInfo.CurrentUICulture.Name);
-//            //2 Get OrderItems  fro product 
-//            var OrderItems = new List<OrderItem>();
+        public OrderService(IProductRepository productRepo,ICartRepository cartRepository, ICartService cartService, IUnitOfWork unitOfWork, IOrderRepository orderRepo)
+        {
+           _productRepo = productRepo;
+            _cartRepository = cartRepository;
+            _cartService = cartService;
+            _unitOfWork = unitOfWork;
+            _orderRepo = orderRepo;
+        }
+        public async Task<Order?> CreateOrderAsync(string CustomerPhone, string CartId, int AddressId)
+        {
+            //1.Get Cart from cart repo
+            var cart = await _cartRepository.GetCartAsync(CartId);
+            //var cartData = await _cartService.MapCartToReturnDto(cart, CultureInfo.CurrentUICulture.Name);
+            //2 Get OrderItems  fro product 
+            var OrderItems = new List<OrderItem>();
 
-//            if (cart?.CartItems?.Count() > 0)
-//            {
-//                foreach (var item in cartData.CartItems)
-//                {
-//                    ProductItemDetails productDetails = new ProductItemDetails();
-//                    var Photos = string.Empty;
-                   
-//                    var product = await _unitOfWork.Repository<Product>().GetByIdAsync(item.ProductId);
-                   
-//                    productDetails = new ProductItemDetails(product.Id,produc) ;
-                    
-//                    var orderitem = new OrderItem(productDetails, item.Quantity, product.UserId);
-//                    orderitem.TotalPrice = (decimal)(productDetails.PriceAfterSale == 0 ? productDetails.Price * item.Quantity : productDetails.PriceAfterSale * item.Quantity);
+            if (cart?.CartItems?.Count() > 0)
+            {
+                foreach (var item in cart.CartItems)
+                {
+                    ProductItemDetails productDetails = new ProductItemDetails();
+                    var Photos = string.Empty;
 
-//                    OrderItems.Add(orderitem);
+                    var product = await _productRepo.GetProductWithPrice(item.ProductId, (int)item.SizeId);
+                    productDetails = new ProductItemDetails(product.Product.Id,item.ColorId,item.SizeId,item.FlavourId);
 
-//                }
-//            }
+                    var orderitem = new OrderItem(productDetails, item.Quantity,1); //static userid
+                    //var orderitem = new OrderItem(productDetails, item.Quantity, product.UserId);
+                 
+                    orderitem.TotalPrice = (decimal)(product.PriceAfterSale == 0 ? product.Price * item.Quantity : product.PriceAfterSale * item.Quantity);
 
-//            //calc subtotal
+                    OrderItems.Add(orderitem);
 
-//            var TotalPrice = OrderItems.Sum(OI => OI.TotalPrice);
-//            //get shippingcost
-//            var ShippingCost = await _unitOfWork.Repository<Shipping>().GetByIdAsync(shippingCostId);
-//            //createorder
+                }
+            }
 
-//            var order = new Order(CustomerEmail, ShippingAddress, TotalPrice, OrderItems, ShippingCost);
-//            //save to db
-//            _unitOfWork.Repository<Order>().Add(order);
-//            var rows = await _unitOfWork.Complet();
-//            if (rows <= 0)
-//                return null;
+            //calc subtotal
 
-//            return order;
+            var TotalPrice = OrderItems.Sum(OI => OI.TotalPrice);
+           
+            //createorder
+
+            var order = new Order(CustomerPhone,AddressId, TotalPrice, OrderItems);
+            //save to db
+            _unitOfWork.Repository<Order>().Add(order);
+            var rows = await _unitOfWork.Complet();
+            if (rows <= 0)
+                return null;
+
+            return order;
 
 
-//        }
+        }
 
-//        public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string Email)
-//        {
-//            var orders = await _orderRepo.GetUserOrdersAsync(Email);
+        //public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string Email)
+        //{
+        //    var orders = await _orderRepo.GetUserOrdersAsync(Email);
 
-//            return (IReadOnlyList<Order>)orders;
-//        }
+        //    return (IReadOnlyList<Order>)orders;
+        //}
 
-//        public async Task<Order> GetOrderForUserAsync(int orderid)
-//        {
-//            var order = await _orderRepo.GetOrderForUserAsync(orderid);
+        //public async Task<Order> GetOrderForUserAsync(int orderid)
+        //{
+        //    var order = await _orderRepo.GetOrderForUserAsync(orderid);
 
-//            return order;
-//        }
-
-       
-
-      
+        //    return order;
+        //}
 
 
 
-     
-     
-//    }
-//}
+
+
+
+
+
+
+    }
+}

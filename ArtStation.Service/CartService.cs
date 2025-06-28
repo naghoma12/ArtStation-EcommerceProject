@@ -33,7 +33,7 @@ namespace ArtStation.Services
             this.unitOfWork = unitOfWork;
             _productRepository = productRepository;
         }
-        public async Task<CartReturnDto> MapCartToReturnDto(Cart cart, string lang)
+        public async Task<CartReturnDto> MapCartToReturnDto(Cart cart, string? lang)
         {
             CartReturnDto cartReturnDto = new CartReturnDto();
             Address address = null;
@@ -48,7 +48,7 @@ namespace ArtStation.Services
                 cartReturnDto.Address.City = shippingCity.City;
             }
 
-            cartReturnDto.Id = cart.Id;
+            cartReturnDto.Id = cart.CartId;
 
             foreach (var item in cart.CartItems)
             {

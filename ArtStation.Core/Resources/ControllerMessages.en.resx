@@ -235,7 +235,13 @@ Please try again or request a new code. </value>
   <data name="BannersNotFound" xml:space="preserve">
     <value>No Banners Exsist</value>
   </data>
-	<data name="ProductNameSearch" xml:space="preserve">
+  <data name="ProductNameSearch" xml:space="preserve">
     <value>Product name cannot be empty.</value>
+  </data>
+  <data name="OrderSuccesfully" xml:space="preserve">
+    <value>Your order has been received and will be delivered</value>
+  </data>
+  <data name="OrderFailed" xml:space="preserve">
+    <value>Order failed. Please try again or contact support.</value>
   </data>
 </root>

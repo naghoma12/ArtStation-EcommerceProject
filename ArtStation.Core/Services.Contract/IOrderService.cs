@@ -10,9 +10,9 @@ namespace ArtStation.Core.Services.Contract
 {
     public interface IOrderService
     {
-        Task<Order?> CreateOrderAsync(string CustomerEmail, string CartId, int shippingCostId, Address ShippingAddress);
-        Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string Email);
-        Task<Order> GetOrderForUserAsync(int orderid);
+        Task<Order?> CreateOrderAsync(string CustomerEmail, string CartId,int addressId);
+        //Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string Email);
+        //Task<Order> GetOrderForUserAsync(int orderid);
         //Task<Order> CancelOrderForUserAsync(int orderid);
         //Task<Order> ReOrderForUserAsync(int orderid);
         //Task<OrderItem> GetOrderItemForOrder(int orderItemId);

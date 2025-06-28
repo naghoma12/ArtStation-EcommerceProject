@@ -70,6 +70,10 @@ namespace ArtStation
             builder.Services.AddScoped(typeof(IBannerRepository), typeof(BannerRepository));
             builder.Services.AddScoped(typeof(ICartService), typeof(CartService));
 
+            builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
+
+            builder.Services.AddScoped(typeof(IOrderService), typeof(OrderService));
+
             builder.Services.AddSwaggerServices();
 
             #region Localization

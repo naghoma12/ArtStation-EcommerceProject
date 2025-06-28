@@ -13,8 +13,11 @@ namespace ArtStation.Repository.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-           
-           
+
+            builder.Property(o => o.Status).HasConversion(
+                           order=>order.ToString(), //store
+                           order=> (OrderStatus)Enum.Parse(typeof(OrderStatus), order)//retrive
+                            );
             builder.Property(o => o.SubTotal).HasColumnType("decimal(18,2)");
 
         }

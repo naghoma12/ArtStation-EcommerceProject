@@ -10,6 +10,6 @@ namespace ArtStation.Core.Services.Contract
 {
     public interface ICartService
     {
-        public  Task<CartReturnDto> MapCartToReturnDto(Cart cart, string lang);
+        public  Task<CartReturnDto> MapCartToReturnDto(Cart cart, string? lang);
     }
 }

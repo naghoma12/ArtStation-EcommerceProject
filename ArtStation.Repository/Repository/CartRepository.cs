@@ -39,12 +39,12 @@ namespace ArtStation.Repository.Repository
         public async Task<Cart> AddCartAsync(Cart cart)
         {
            
-            var customercart = await _database.StringSetAsync(cart.Id, JsonSerializer.Serialize(cart), TimeSpan.FromDays(2));
+            var customercart = await _database.StringSetAsync(cart.CartId, JsonSerializer.Serialize(cart), TimeSpan.FromDays(2));
             if (customercart is false)
             {
                 return null;
             }
-            return await GetCartAsync(cart.Id);
+            return await GetCartAsync(cart.CartId);
         }
 
         public async Task<bool> DeleteCartAsync(string cartId)
@@ -65,7 +65,7 @@ namespace ArtStation.Repository.Repository
                 await DeleteCartAsync(id);
                 return null;
             }
-            var customercart = await _database.StringSetAsync(cart.Id, JsonSerializer.Serialize(cart), TimeSpan.FromDays(2));
+            var customercart = await _database.StringSetAsync(cart.CartId, JsonSerializer.Serialize(cart), TimeSpan.FromDays(2));
             if (customercart is false)
             {
                 return null;
@@ -79,7 +79,7 @@ namespace ArtStation.Repository.Repository
             var cart =await GetCartAsync(cartId);
            
             cart.AddressId = addressId;
-            var customercart = await _database.StringSetAsync(cart.Id, JsonSerializer.Serialize(cart), TimeSpan.FromDays(2));
+            var customercart = await _database.StringSetAsync(cart.CartId, JsonSerializer.Serialize(cart), TimeSpan.FromDays(2));
             if (customercart is false)
             {
                 return null;

@@ -18,5 +18,7 @@ namespace ArtStation.Core.Repository.Contract
         Task<IEnumerable<SimpleProduct>> SearchByProductName(string productName, string
             language, int? userId = null);
 
+       Task<ProductWithPriceDto> GetProductWithPrice(int productId, int sizeId);
+
     }
 }
