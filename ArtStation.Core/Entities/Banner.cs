@@ -12,6 +12,6 @@ namespace ArtStation.Core.Entities
        
         public string ImageUrl { get; set; }
 
-        public int Order { get; set; }
+        public int OrderBanner { get; set; }
     }
 }

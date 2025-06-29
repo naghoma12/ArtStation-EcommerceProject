@@ -42,6 +42,7 @@ namespace ArtStation.Helper
     .ForMember(dest => dest.FullName, opt => opt.MapFrom(src =>
         $"{src.Fname} {src.LName}".Trim()))
     .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+     .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
     .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
     .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.PhoneNumber))
     .ForMember(dest => dest.BirthDay, opt => opt.MapFrom(src =>
@@ -53,9 +54,14 @@ namespace ArtStation.Helper
 
 
             CreateMap<Cart, CartDto>().ReverseMap();
-            CreateMap<Address, DeliveryAddress>().ReverseMap();
             CreateMap<CartItem, CartItemDto>().ReverseMap();
+            CreateMap<Address, DeliveryAddress>().ReverseMap();
+            CreateMap<CartItem, CartItemReturnDto>().ReverseMap();
+            //CreateMap<Cart, CartReturnDto>().ReverseMap();
+
             CreateMap<Banner, BannerDto>().ReverseMap();
+
+           
         }
     }
 }

@@ -419,7 +419,29 @@ namespace ArtStation.Core.Resources {
                 return ResourceManager.GetString("OffersNotFound", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string OrderFailed
+        {
+            get
+            {
+                return ResourceManager.GetString("OrderFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string OrderSuccesfully
+        {
+            get
+            {
+                return ResourceManager.GetString("OrderSuccesfully", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>

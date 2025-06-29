@@ -67,7 +67,7 @@ namespace ArtStation.Repository.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Order = table.Column<int>(type: "int", nullable: false),
+                    OrderBanner = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -95,6 +95,46 @@ namespace ArtStation.Repository.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ForWhom",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NameAR = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    NameEN = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ForWhom", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Order",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerPhone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrderDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressId = table.Column<int>(type: "int", nullable: false),
+                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PaymentId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Order", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -263,8 +303,8 @@ namespace ArtStation.Repository.Data.Migrations
                     DescriptionEN = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     ShippingDetailsAR = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     ShippingDetailsEN = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    DeliveredMinDate = table.Column<int>(type: "int", nullable: false),
-                    DeliveredMaxDate = table.Column<int>(type: "int", nullable: false),
+                    DeliveredOnAR = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    DeliveredOnEN = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     BrandAR = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     BrandEN = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     SellersCount = table.Column<int>(type: "int", nullable: false),
@@ -286,7 +326,38 @@ namespace ArtStation.Repository.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Address",
+                name: "OrderItem",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductItem_ProductId = table.Column<int>(type: "int", nullable: false),
+                    ProductItem_ColorId = table.Column<int>(type: "int", nullable: true),
+                    ProductItem_SizeId = table.Column<int>(type: "int", nullable: true),
+                    ProductItem_FlavourId = table.Column<int>(type: "int", nullable: true),
+                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    OrderItemStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TraderId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItem", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderItem_Order_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Order",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Addresses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -305,15 +376,15 @@ namespace ArtStation.Repository.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Address", x => x.Id);
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Address_AspNetUsers_AppUserId",
+                        name: "FK_Addresses_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Address_Shippings_ShippingId",
+                        name: "FK_Addresses_Shippings_ShippingId",
                         column: x => x.ShippingId,
                         principalTable: "Shippings",
                         principalColumn: "Id",
@@ -347,6 +418,30 @@ namespace ArtStation.Repository.Data.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ForWhomProduct",
+                columns: table => new
+                {
+                    ForWhomOptionsId = table.Column<int>(type: "int", nullable: false),
+                    productsId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ForWhomProduct", x => new { x.ForWhomOptionsId, x.productsId });
+                    table.ForeignKey(
+                        name: "FK_ForWhomProduct_ForWhom_ForWhomOptionsId",
+                        column: x => x.ForWhomOptionsId,
+                        principalTable: "ForWhom",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ForWhomProduct_Products_productsId",
+                        column: x => x.productsId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -509,14 +604,44 @@ namespace ArtStation.Repository.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ReviewLikes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ReviewId = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReviewLikes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ReviewLikes_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ReviewLikes_Reviews_ReviewId",
+                        column: x => x.ReviewId,
+                        principalTable: "Reviews",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_Address_AppUserId",
-                table: "Address",
+                name: "IX_Addresses_AppUserId",
+                table: "Addresses",
                 column: "AppUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Address_ShippingId",
-                table: "Address",
+                name: "IX_Addresses_ShippingId",
+                table: "Addresses",
                 column: "ShippingId");
 
             migrationBuilder.CreateIndex(
@@ -569,9 +694,19 @@ namespace ArtStation.Repository.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ForWhomProduct_productsId",
+                table: "ForWhomProduct",
+                column: "productsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Notifications_AppUserId",
                 table: "Notifications",
                 column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItem_OrderId",
+                table: "OrderItem",
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductColors_ProductId",
@@ -599,6 +734,16 @@ namespace ArtStation.Repository.Data.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ReviewLikes_ReviewId",
+                table: "ReviewLikes",
+                column: "ReviewId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReviewLikes_UserId",
+                table: "ReviewLikes",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Reviews_ProductId",
                 table: "Reviews",
                 column: "ProductId");
@@ -618,7 +763,7 @@ namespace ArtStation.Repository.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Address");
+                name: "Addresses");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -642,7 +787,13 @@ namespace ArtStation.Repository.Data.Migrations
                 name: "Favorites");
 
             migrationBuilder.DropTable(
+                name: "ForWhomProduct");
+
+            migrationBuilder.DropTable(
                 name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "OrderItem");
 
             migrationBuilder.DropTable(
                 name: "ProductColors");
@@ -657,7 +808,7 @@ namespace ArtStation.Repository.Data.Migrations
                 name: "ProductSizes");
 
             migrationBuilder.DropTable(
-                name: "Reviews");
+                name: "ReviewLikes");
 
             migrationBuilder.DropTable(
                 name: "Sales");
@@ -667,6 +818,15 @@ namespace ArtStation.Repository.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "ForWhom");
+
+            migrationBuilder.DropTable(
+                name: "Order");
+
+            migrationBuilder.DropTable(
+                name: "Reviews");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

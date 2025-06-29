@@ -34,6 +34,7 @@ namespace ArtStation.Core.Entities
         public int SellersCount { get; set; }
         public Category Category { get; set; }
         public int CategoryId { get; set; }
+
         public ICollection<ProductPhotos> ProductPhotos { get; set; } = new List<ProductPhotos>();
         public ICollection<Sale> Sales { get; set; } = new List<Sale>();
         public ICollection<ProductColor> ProductColors { get; set; } = new List<ProductColor>();

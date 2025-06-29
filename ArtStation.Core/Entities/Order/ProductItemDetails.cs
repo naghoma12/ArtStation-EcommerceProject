@@ -13,31 +13,20 @@ namespace ArtStation.Core.Entities.Order
 
         }
 
-        public ProductItemDetails(int productId, string photo, string name, decimal price, decimal? priceAfterSale, string? color, string? size, string? flavour)
+        public ProductItemDetails(int productId, int? colorId, int? sizeId, int? flavourId)
         {
             ProductId = productId;
-            Photo = photo;
            
-            Name = name;
-            Price = price;
-            PriceAfterSale = priceAfterSale;
-            Color = color;
-            Size = size;
-            Flavour = flavour;
+            ColorId= colorId;
+            SizeId = sizeId;
+            FlavourId = flavourId;
         }
 
         public int ProductId { get; set; }
-        public string Photo { get; set; }
-       
-        public string Name { get; set; }
-
       
-        public decimal Price { get; set; }
-        public decimal? PriceAfterSale { get; set; }
-
-        public string? Color { get; set; }
-        public string? Size { get; set; }
-        public string? Flavour { get; set; }
+        public int? ColorId { get; set; }
+        public int? SizeId { get; set; }
+        public int? FlavourId { get; set; }
 
 
 

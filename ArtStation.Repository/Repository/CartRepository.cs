@@ -19,14 +19,16 @@ namespace ArtStation.Repository.Repository
         private readonly IAddressRepository _addressRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IProductRepository _productRepository;
 
         public CartRepository(IConnectionMultiplexer redis,IAddressRepository addressRepository
-            , IMapper mapper,IUnitOfWork unitOfWork)
+            , IMapper mapper,IUnitOfWork unitOfWork,IProductRepository productRepository)
         {
             _database = redis.GetDatabase();
            _addressRepository = addressRepository;
             _mapper = mapper;
            _unitOfWork = unitOfWork;
+           _productRepository = productRepository;
         }
         public async Task<Cart?> GetCartAsync(string cartId)
         {
@@ -36,21 +38,13 @@ namespace ArtStation.Repository.Repository
 
         public async Task<Cart> AddCartAsync(Cart cart)
         {
-            //var address=await _addressRepository.GetByIdAsync((int)cart.AddressId);
-            cart.CartSummary = new CartSummary
-            {
-                TotalItems = cart.CartItems?.Count ?? 0,
-                TotalPriceBeforeDiscount = cart.CartItems?.Sum(item => item.Price * item.Quantity) ?? 0,
-                ShippingPrice = 0.0M, 
-                TotalPriceAfterDiscount = cart.CartItems?.Sum(item => (item.PriceAfterSale==0?item.Price:item.PriceAfterSale) * item.Quantity) ?? 0,
-                FinalTotal = (cart.CartItems?.Sum(item => (item.PriceAfterSale==0?item.Price : item.PriceAfterSale) * item.Quantity) ?? 0) + 0.0M 
-            };
-            var customercart = await _database.StringSetAsync(cart.Id, JsonSerializer.Serialize(cart), TimeSpan.FromDays(2));
+           
+            var customercart = await _database.StringSetAsync(cart.CartId, JsonSerializer.Serialize(cart), TimeSpan.FromDays(2));
             if (customercart is false)
             {
                 return null;
             }
-            return await GetCartAsync(cart.Id);
+            return await GetCartAsync(cart.CartId);
         }
 
         public async Task<bool> DeleteCartAsync(string cartId)
@@ -63,14 +57,7 @@ namespace ArtStation.Repository.Repository
         public async Task<Cart> DeleteItemAsync(string cartId,string id)
         {
             var cart=await GetCartAsync(cartId);
-            cart.CartSummary = new CartSummary
-            {
-                TotalItems = cart.CartItems?.Count ?? 0,
-                TotalPriceBeforeDiscount = cart.CartItems?.Sum(item => item.Price * item.Quantity) ?? 0,
-                ShippingPrice = 0.0M,
-                TotalPriceAfterDiscount = cart.CartItems?.Sum(item => (item.PriceAfterSale == 0 ? item.Price : item.PriceAfterSale) * item.Quantity) ?? 0,
-                FinalTotal = (cart.CartItems?.Sum(item => (item.PriceAfterSale == 0 ? item.Price : item.PriceAfterSale) * item.Quantity) ?? 0) 
-            };
+           
             cart.CartItems.Remove(cart.CartItems.FirstOrDefault(x => x.ItemId == id));
 
             if(cart.CartItems.Count == 0)
@@ -78,7 +65,7 @@ namespace ArtStation.Repository.Repository
                 await DeleteCartAsync(id);
                 return null;
             }
-            var customercart = await _database.StringSetAsync(cart.Id, JsonSerializer.Serialize(cart), TimeSpan.FromDays(2));
+            var customercart = await _database.StringSetAsync(cart.CartId, JsonSerializer.Serialize(cart), TimeSpan.FromDays(2));
             if (customercart is false)
             {
                 return null;
@@ -90,13 +77,9 @@ namespace ArtStation.Repository.Repository
         {
 
             var cart =await GetCartAsync(cartId);
-            var address= _addressRepository.GetByIdAsync(addressId).Result;
-            var shipping = await _unitOfWork.Repository<Shipping>().GetByIdAsync(address.ShippingId);
-            cart.Address = _mapper.Map<DeliveryAddress>(address);
-            cart.CartSummary.ShippingPrice = shipping.Cost;
-            cart.CartSummary.FinalTotal = cart.CartSummary.FinalTotal + shipping.Cost;
-            cart.Address.City = shipping.City;
-            var customercart = await _database.StringSetAsync(cart.Id, JsonSerializer.Serialize(cart), TimeSpan.FromDays(2));
+           
+            cart.AddressId = addressId;
+            var customercart = await _database.StringSetAsync(cart.CartId, JsonSerializer.Serialize(cart), TimeSpan.FromDays(2));
             if (customercart is false)
             {
                 return null;

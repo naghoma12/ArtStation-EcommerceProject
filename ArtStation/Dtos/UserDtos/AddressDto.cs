@@ -3,6 +3,7 @@ using ArtStation.Core.Entities;
 
 using ArtStation.Core.Resources;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ArtStation.Dtos.UserDtos
 {
@@ -21,6 +22,7 @@ namespace ArtStation.Dtos.UserDtos
 
         [Required(ErrorMessageResourceType = typeof(Messages),
      ErrorMessageResourceName = "RequiredField")]
+        [JsonPropertyName("CityId")]
         public int ShippingId { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(Messages),

@@ -50,7 +50,7 @@ public static class UserManagerExtensions
 
                 FullName = address.FullName,
                 PhoneNumber = address.PhoneNumber,
-                ShippingId=address.ShippingId,
+               ShippingId=address.ShippingId,
                 Lat = address.Lat,
                 Long = address.Long,
                 AddressDetails = address.AddressDetails,
@@ -80,7 +80,7 @@ public static class UserManagerExtensions
 
                 FullName = addressDto.FullName,
                 PhoneNumber = addressDto.PhoneNumber,
-                ShippingId =addressDto.ShippingId,
+                ShippingId=addressDto.ShippingId,
                 Lat = addressDto.Lat,
                 Long = addressDto.Long,
                 AddressDetails =addressDto.AddressDetails,

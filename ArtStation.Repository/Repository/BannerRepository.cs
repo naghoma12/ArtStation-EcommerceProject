@@ -19,7 +19,7 @@ namespace ArtStation.Repository.Repository
         public async Task<IEnumerable<Banner>> GetAllBannersSortedAsync()
         {
             var banners = await _context.Banners.Where(b => b.IsActive == true)
-                 .OrderBy(b => b.Order)
+                 .OrderBy(b => b.OrderBanner)
                  .ToListAsync();
             return banners;
         }

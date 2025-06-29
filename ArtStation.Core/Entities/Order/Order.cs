@@ -7,31 +7,29 @@ using System.Threading.Tasks;
 
 namespace ArtStation.Core.Entities.Order
 {
-    public class Order
+    public class Order:BaseEntity
     {
         public Order()
         {
 
         }
-        public Order(string customerEmail, Address shippingAddress, decimal subTotal, ICollection<OrderItem> orderItems, Shipping shippingCost)
+        public Order(string customerPhone, int addressId, decimal subTotal, ICollection<OrderItem> orderItems)
         {
-            CustomerEmail = customerEmail;
-            ShippingAddress = shippingAddress;
+            CustomerPhone = customerPhone;
+            AddressId = addressId;
             SubTotal = subTotal;
             OrderItems = orderItems;
-            Shipping = shippingCost;
-
+          
         }
 
-        public string CustomerEmail { get; set; }
+        public string CustomerPhone { get; set; }
         public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.Now;
         public OrderStatus Status { get; set; } = OrderStatus.Placed;
         //public OrderReady StatusReady { get; set; } = OrderReady.NotReady;
-        public Address ShippingAddress { get; set; }
-        public int? ShippingId { get; set; }
-        public Shipping Shipping { get; set; }
+        public int AddressId { get; set; }
+     
         public decimal SubTotal { get; set; }
-        public decimal GetTotal() => SubTotal + Shipping.Cost;
+        //public decimal GetTotal() => SubTotal + Shipping.Cost;
         public ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();
         public string PaymentId { get; set; } = "";
 

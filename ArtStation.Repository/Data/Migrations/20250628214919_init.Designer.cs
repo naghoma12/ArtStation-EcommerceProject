@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArtStation.Repository.Data.Migrations
 {
     [DbContext(typeof(ArtStationDbContext))]
-    [Migration("20250628210943_ReviewLikesAdded")]
-    partial class ReviewLikesAdded
+    [Migration("20250628214919_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,7 +49,7 @@ namespace ArtStation.Repository.Data.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Order")
+                    b.Property<int>("OrderBanner")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -218,7 +218,7 @@ namespace ArtStation.Repository.Data.Migrations
 
                     b.HasIndex("ShippingId");
 
-                    b.ToTable("Address");
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("ArtStation.Core.Entities.Identity.AppRole", b =>
@@ -392,6 +392,95 @@ namespace ArtStation.Repository.Data.Migrations
                     b.HasIndex("AppUserId");
 
                     b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("ArtStation.Core.Entities.Order.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CustomerPhone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTimeOffset>("OrderDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("PaymentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("SubTotal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Order");
+                });
+
+            modelBuilder.Entity("ArtStation.Core.Entities.Order.OrderItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OrderItemStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("TraderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderItem");
                 });
 
             modelBuilder.Entity("ArtStation.Core.Entities.Product", b =>
@@ -930,7 +1019,7 @@ namespace ArtStation.Repository.Data.Migrations
             modelBuilder.Entity("ArtStation.Core.Entities.Identity.Address", b =>
                 {
                     b.HasOne("ArtStation.Core.Entities.Identity.AppUser", "AppUser")
-                        .WithMany("Addresses")
+                        .WithMany("Address")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -955,6 +1044,43 @@ namespace ArtStation.Repository.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("AppUser");
+                });
+
+            modelBuilder.Entity("ArtStation.Core.Entities.Order.OrderItem", b =>
+                {
+                    b.HasOne("ArtStation.Core.Entities.Order.Order", null)
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("ArtStation.Core.Entities.Order.ProductItemDetails", "ProductItem", b1 =>
+                        {
+                            b1.Property<int>("OrderItemId")
+                                .HasColumnType("int");
+
+                            b1.Property<int?>("ColorId")
+                                .HasColumnType("int");
+
+                            b1.Property<int?>("FlavourId")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("ProductId")
+                                .HasColumnType("int");
+
+                            b1.Property<int?>("SizeId")
+                                .HasColumnType("int");
+
+                            b1.HasKey("OrderItemId");
+
+                            b1.ToTable("OrderItem");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderItemId");
+                        });
+
+                    b.Navigation("ProductItem")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ArtStation.Core.Entities.Product", b =>
@@ -1134,11 +1260,16 @@ namespace ArtStation.Repository.Data.Migrations
 
             modelBuilder.Entity("ArtStation.Core.Entities.Identity.AppUser", b =>
                 {
-                    b.Navigation("Addresses");
+                    b.Navigation("Address");
 
                     b.Navigation("Favourites");
 
                     b.Navigation("Notifications");
+                });
+
+            modelBuilder.Entity("ArtStation.Core.Entities.Order.Order", b =>
+                {
+                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("ArtStation.Core.Entities.Product", b =>
