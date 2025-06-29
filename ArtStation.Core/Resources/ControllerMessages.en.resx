@@ -319,4 +319,7 @@ Please try again or request a new code. </value>
 	<data name="OrderFailed" xml:space="preserve">
     <value>Order failed. Please try again or contact support.</value>
   </data>
+  <data name="CitiesReturnedSuccess" xml:space="preserve">
+    <value>Cities returned successfully!</value>
+  </data>
 </root>
