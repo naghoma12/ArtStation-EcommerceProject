@@ -243,4 +243,7 @@
   <data name="OrderFailed" xml:space="preserve">
     <value>فشل الطلب. يرجى المحاولة مرة أخرى أو التواصل مع الدعم.</value>
   </data>
+  <data name="CitiesReturnedSuccess" xml:space="preserve">
+    <value>تم جلب المدن بنجاح</value>
+  </data>
 </root>

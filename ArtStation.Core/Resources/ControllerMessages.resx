@@ -249,4 +249,7 @@
   <data name="OrderFailed" xml:space="preserve">
     <value />
   </data>
+  <data name="CitiesReturnedSuccess" xml:space="preserve">
+    <value />
+  </data>
 </root>

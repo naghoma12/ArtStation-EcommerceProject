@@ -198,6 +198,15 @@ namespace ArtStation.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string CitiesReturnedSuccess {
+            get {
+                return ResourceManager.GetString("CitiesReturnedSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string CountryAddedSuccessfully {
             get {
                 return ResourceManager.GetString("CountryAddedSuccessfully", resourceCulture);
