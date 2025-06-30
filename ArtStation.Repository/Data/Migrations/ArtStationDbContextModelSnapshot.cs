@@ -399,6 +399,8 @@ namespace ArtStation.Repository.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AddressId");
+
                     b.ToTable("Order");
                 });
 
@@ -1031,6 +1033,17 @@ namespace ArtStation.Repository.Data.Migrations
                     b.Navigation("AppUser");
                 });
 
+            modelBuilder.Entity("ArtStation.Core.Entities.Order.Order", b =>
+                {
+                    b.HasOne("ArtStation.Core.Entities.Identity.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+                });
+
             modelBuilder.Entity("ArtStation.Core.Entities.Order.OrderItem", b =>
                 {
                     b.HasOne("ArtStation.Core.Entities.Order.Order", null)
@@ -1058,10 +1071,20 @@ namespace ArtStation.Repository.Data.Migrations
 
                             b1.HasKey("OrderItemId");
 
+                            b1.HasIndex("ProductId");
+
                             b1.ToTable("OrderItem");
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderItemId");
+
+                            b1.HasOne("ArtStation.Core.Entities.Product", "Product")
+                                .WithMany()
+                                .HasForeignKey("ProductId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+
+                            b1.Navigation("Product");
                         });
 
                     b.Navigation("ProductItem")

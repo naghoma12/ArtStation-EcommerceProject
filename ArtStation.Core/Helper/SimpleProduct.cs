@@ -14,9 +14,12 @@ namespace ArtStation.Core.Helper
         public decimal TotalPrice { get; set; }
         public decimal PriceAfterSale { get; set; }
         public bool IsSale { get; set; }
+
         public int Discount { get; set; }
         public string PhotoUrl { get; set; }
         public float? AvgRating { get; set; }
+        public string Brand { get; set; }
+        public List<ForWhomDTO> ForWhom { get; set; } = new List<ForWhomDTO>();
         public bool IsFav { get; set; } = false;
     }
 }

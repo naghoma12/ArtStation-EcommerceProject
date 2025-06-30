@@ -234,13 +234,13 @@
   <data name="BannersNotFound" xml:space="preserve">
     <value />
   </data>
-  <data name="Shipped" xml:space="preserve">
-    <value />
-  </data>
-  <data name="Deliverd" xml:space="preserve">
-    <value />
-  </data>
   <data name="ProductNameSearch" xml:space="preserve">
+    <value />
+  </data>
+  <data name="OrderSuccesfully" xml:space="preserve">
+    <value />
+  </data>
+  <data name="OrderFailed" xml:space="preserve">
     <value />
   </data>
   <data name="FavProductAdded" xml:space="preserve">
@@ -321,10 +321,13 @@
   <data name="OrderSuccesfully" xml:space="preserve">
     <value />
   </data>
-  <data name="OrderFailed" xml:space="preserve">
+	<data name="CitiesReturnedSuccess" xml:space="preserve">
     <value />
   </data>
-  <data name="CitiesReturnedSuccess" xml:space="preserve">
+  <data name="NoOrdersForThisUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UserHaveOrders" xml:space="preserve">
     <value />
   </data>
   <data name="BrandsList" xml:space="preserve">

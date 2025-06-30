@@ -279,15 +279,6 @@ namespace ArtStation.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string Deliverd {
-            get {
-                return ResourceManager.GetString("Deliverd", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
         public static string EmailAlreadyInUse {
             get {
                 return ResourceManager.GetString("EmailAlreadyInUse", resourceCulture);
@@ -446,7 +437,18 @@ namespace ArtStation.Core.Resources {
                 return ResourceManager.GetString("OffersNotFound", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string NoOrdersForThisUser
+        {
+            get
+            {
+                return ResourceManager.GetString("NoOrdersForThisUser", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
@@ -666,15 +668,6 @@ namespace ArtStation.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string Shipped {
-            get {
-                return ResourceManager.GetString("Shipped", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
         public static string SomethingWrong {
             get {
                 return ResourceManager.GetString("SomethingWrong", resourceCulture);
@@ -696,6 +689,15 @@ namespace ArtStation.Core.Resources {
         public static string UserDataUpdatedSucessfully {
             get {
                 return ResourceManager.GetString("UserDataUpdatedSucessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string UserHaveOrders {
+            get {
+                return ResourceManager.GetString("UserHaveOrders", resourceCulture);
             }
         }
         

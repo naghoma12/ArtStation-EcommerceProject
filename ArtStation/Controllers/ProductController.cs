@@ -238,6 +238,17 @@ namespace ArtStation.Controllers
                 List = brands
             });
         }
+
+        [HttpGet("FilterProducts")]
+        public async Task<IActionResult> FilterProducts(List<SimpleProduct> products, int? minPriceRange, int? maxPriceRange, string? brand, bool? men, bool? women, bool? kids, int? discount)
+        {
+            var list = _productRepository.FilterProducts(products, minPriceRange, maxPriceRange , brand , men , women , kids , discount);
+            return Ok(new
+            {
+                Message = ControllerMessages.ProductsList,
+                List = list
+            });
+        }
     }
 
    

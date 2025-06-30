@@ -328,4 +328,10 @@ Please try again or request a new code. </value>
   <data name="BrandsNotFound" xml:space="preserve">
     <value>There is no brands found .</value>
   </data>
+	<data name="NoOrdersForThisUser" xml:space="preserve">
+    <value>You do not have any orders yet.</value>
+  </data>
+	<data name="UserHaveOrders" xml:space="preserve">
+    <value>Your orders are here.</value>
+  </data>
 </root>

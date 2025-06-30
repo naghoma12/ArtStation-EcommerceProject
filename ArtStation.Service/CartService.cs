@@ -41,11 +41,11 @@ namespace ArtStation.Services
 
             if (cart.AddressId > 0)
             {
-                address = await _addressRepository.GetByIdAsync((int)cart.AddressId);
-                shippingCity = await unitOfWork.Repository<Shipping>().GetByIdAsync(address.ShippingId);
+                address = await _addressRepository.GetAddressWithShipping((int)cart.AddressId);
+                //shippingCity = await unitOfWork.Repository<Shipping>().GetByIdAsync(address.ShippingId);
 
                 cartReturnDto.Address = _mapper.Map<DeliveryAddress>(address);
-                cartReturnDto.Address.City = shippingCity.City;
+                //cartReturnDto.Address.City = shippingCity.City;
             }
 
             cartReturnDto.Id = cart.CartId;

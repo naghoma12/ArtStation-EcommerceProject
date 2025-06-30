@@ -327,4 +327,10 @@
   <data name="BrandsNotFound" xml:space="preserve">
     <value>لا يوجد براندات .</value>
   </data>
+	<data name="NoOrdersForThisUser" xml:space="preserve">
+    <value>لا توجد لديك أي طلبات حتى الآن.</value>
+  </data>
+	<data name="UserHaveOrders" xml:space="preserve">
+    <value>طلباتك هنا.</value>
+  </data>
 </root>

@@ -2,6 +2,7 @@
 using ArtStation.Core.Helper;
 using ArtStation.Core.Repository.Contract;
 using ArtStation.Repository.Data;
+using AutoMapper;
 using FuzzySharp;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,10 +16,12 @@ namespace ArtStation.Repository.Repository
     public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
         private readonly ArtStationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public ProductRepository(ArtStationDbContext context) : base(context)
+        public ProductRepository(ArtStationDbContext context, IMapper mapper) : base(context)
         {
             _context = context;
+            _mapper = mapper;
         }
 
       
@@ -31,6 +34,7 @@ namespace ArtStation.Repository.Repository
                 .Include(p => p.Reviews)
                 .Include(p => p.Sales)
                 .Include(p => p.Favourites)
+                .Include(p => p.ForWhoms)
                 .ToListAsync();
 
             var products = rawProducts.Select(p => Utility.MapToSimpleProduct(p, userId , language));
@@ -47,6 +51,7 @@ namespace ArtStation.Repository.Repository
                 .Include(p => p.Reviews)
                 .Include(p => p.Sales)
                 .Include(p => p.Favourites)
+                .Include(p => p.ForWhoms)
                 .OrderByDescending(p => p.SellersCount)
                 .ToListAsync();
 
@@ -64,6 +69,7 @@ namespace ArtStation.Repository.Repository
                 .Include(p => p.Reviews)
                 .Include(p => p.Sales)
                 .Include(p => p.Favourites)
+                .Include(p => p.ForWhoms)
                 .OrderByDescending(p => p.CreatedDate)
                 .ToListAsync();
 
@@ -176,6 +182,7 @@ namespace ArtStation.Repository.Repository
                 .Include(p => p.ProductSizes)
                 .Include(p => p.Sales)
                 .Include(p => p.Favourites)
+                .Include(p => p.ForWhoms)
                 .ToListAsync();
 
             int similarityThreshold = 70;
@@ -232,6 +239,7 @@ namespace ArtStation.Repository.Repository
                 .Include(p => p.Sales)
                 .Include(x => x.Category)
                 .Include(p => p.Favourites)
+                .Include(p => p.ForWhoms)
                 .FirstOrDefaultAsync();
 
 
@@ -244,7 +252,9 @@ namespace ArtStation.Repository.Repository
                 .Include(p => p.Reviews)
                 .Include(p => p.ProductSizes)
                 .Include(p => p.Sales)
-                .Include(p => p.Favourites);
+                .Include(p => p.Favourites)
+                .Include(p => p.ForWhoms)
+;
 
             var simpleProducts = relatedProducts.Where(x => x.Id != productId)
                 .Select(p => Utility.MapToSimpleProduct(p, userId, language))
@@ -282,7 +292,24 @@ namespace ArtStation.Repository.Repository
         }
     
 
-         //public async Task<IEnumerable<SimpleProduct>> FilterProducts(int minPriceRange, int maxPriceRange , string? brand , string? men , string? women , string? kids , )
+        public async Task<IEnumerable<SimpleProduct>> FilterProducts(List<SimpleProduct> products,int? minPriceRange, int? maxPriceRange , string? brand , bool? men , bool? women , bool? kids , int? discount)
+        {
+            var detailedList = _context.Products.
+                Where(p => p.IsActive && !p.IsDeleted);
+
+            if(minPriceRange.HasValue && maxPriceRange.HasValue)
+            {
+                products = products
+                    .Where(p => p.TotalPrice >= (decimal)minPriceRange && p.TotalPrice <= (decimal)maxPriceRange)
+                    .ToList();
+            }
+            //if (string.IsNullOrEmpty(brand))
+            //{
+            //    products = products
+            //        .Where(p => p.)
+            //}
+            return products;
+        }
 
     }
 }

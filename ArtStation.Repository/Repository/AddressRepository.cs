@@ -21,5 +21,14 @@ namespace ArtStation.Repository.Repository
             var addresses = await _context.Addresses.Where(a => a.AppUserId == userId).ToListAsync();
             return addresses ?? new List<Address>();
         }
+
+        public async Task<Address> GetAddressWithShipping(int id)
+        {
+            return await _context.Addresses
+            .Where(z => z.IsDeleted == false
+            && z.IsActive == true
+            && z.Id == id).Include(s=>s.Shipping).FirstOrDefaultAsync();
+        }
+
     }
 }

@@ -33,6 +33,11 @@ namespace ArtStation.Core.Helper
                 Discount = discount,
                 IsSale = discount > 0,
                 PriceAfterSale = priceAfterSale,
+                Brand = language == "en" ? p.BrandEN : p.BrandAR,
+                ForWhom = p.ForWhoms.Select(f => new ForWhomDTO
+                {
+                    ForWhom = language == "en" ? f.ForWhomEN : f.ForWhomAR
+                }).ToList(),
                 AvgRating = p.Reviews.Any() ? (float?)p.Reviews.Average(r => r.Rating) : 0,
                 IsFav = userId.HasValue && p.Favourites.Any(f => f.UserId == userId.Value)
             };

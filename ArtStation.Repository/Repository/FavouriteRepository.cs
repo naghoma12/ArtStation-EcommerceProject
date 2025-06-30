@@ -37,7 +37,9 @@ namespace ArtStation.Repository.Repository
                     Sizes = f.Product.ProductSizes,
                     Sales = f.Product.Sales,
                     f.Product.IsActive,
-                    f.Product.Favourites
+                    f.Product.Favourites,
+                    Brand = language == "en" ? f.Product.BrandEN : f.Product.BrandAR,
+                    ForWhoms = f.Product.ForWhoms.Select(p => language == "en" ? p.ForWhomEN : p.ForWhomAR)
                 })
                 .ToListAsync();
 
@@ -61,6 +63,10 @@ namespace ArtStation.Repository.Repository
                     Discount = discount,
                     IsSale = discount > 0,
                     PriceAfterSale = priceAfterSale,
+                    Brand = p.Brand,
+                    ForWhom = p.ForWhoms
+                   .Select(f => new ForWhomDTO { ForWhom = f })
+                   .ToList(),
                     AvgRating = p.Reviews.Any() ? (float?)p.Reviews.Average(r => r.Rating) : 0,
                     IsFav = true
                 };

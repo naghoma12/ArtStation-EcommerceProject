@@ -42,6 +42,7 @@ namespace ArtStation.Core.Entities
         public ICollection<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
         public  ICollection<Favourite> Favourites { get; set; } = new List<Favourite>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public ICollection<ProductForWhom> ForWhoms { get; set; } = new List<ProductForWhom>();
 
     }
    

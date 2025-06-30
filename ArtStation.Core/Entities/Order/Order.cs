@@ -27,7 +27,7 @@ namespace ArtStation.Core.Entities.Order
         public OrderStatus Status { get; set; } = OrderStatus.Placed;
         //public OrderReady StatusReady { get; set; } = OrderReady.NotReady;
         public int AddressId { get; set; }
-     
+        public Address Address { get; set; }
         public decimal SubTotal { get; set; }
         //public decimal GetTotal() => SubTotal + Shipping.Cost;
         public ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();
