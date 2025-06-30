@@ -10,7 +10,7 @@ using System.Security.Claims;
 
 namespace ArtStation.Controllers
 {
-    
+
     public class ProductController : BaseController
     {
         private readonly IProductRepository _productRepository;
@@ -31,23 +31,23 @@ namespace ArtStation.Controllers
             if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))
                 language = "en";
             var products = await _productRepository.GetAllProducts(language, userId);
-                if (products == null || !products.Any())
-                {
+            if (products == null || !products.Any())
+            {
                 return Ok(new
                 {
                     Message = ControllerMessages.ProductsListNotFound,
                     List = products
                 });
-                }
-                return Ok(new
-                {
-                    Message = ControllerMessages.ProductsList,
-                    List = products
-                });
+            }
+            return Ok(new
+            {
+                Message = ControllerMessages.ProductsList,
+                List = products
+            });
         }
 
         [HttpGet("GetNewProducts")]
-        public async Task<IActionResult> GetNewProducts( string? token)
+        public async Task<IActionResult> GetNewProducts(string? token)
         {
             int? userId = Utility.CheckToken(token);
             var language = Request.Headers["Accept-Language"].ToString();
@@ -115,7 +115,7 @@ namespace ArtStation.Controllers
             });
 
         }
-       
+
         [HttpGet("GetProductDetails")]
         public async Task<IActionResult> GetProductDetails(int id, string? token)
         {
@@ -126,7 +126,7 @@ namespace ArtStation.Controllers
             var product = await _productRepository.GetProductById(language, id, userId);
             if (product == null)
             {
-                return NotFound(new { Message = ControllerMessages.ProductNotFound});
+                return NotFound(new { Message = ControllerMessages.ProductNotFound });
             }
             return Ok(new
             {
@@ -139,6 +139,11 @@ namespace ArtStation.Controllers
         [HttpGet("GetMayAlsoKnowProducts")]
         public async Task<IActionResult> GetMayAlsoKnowProducts(int productId, string? token)
         {
+            var product = await unitOfWork.Repository<Product>().GetByIdAsync(productId);
+            if (product == null)
+            {
+                return NotFound(new { Message = ControllerMessages.ProductNotFound });
+            }
             int? userId = Utility.CheckToken(token);
             var language = Request.Headers["Accept-Language"].ToString();
             if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))
@@ -169,10 +174,10 @@ namespace ArtStation.Controllers
                 language = "en";
             if (string.IsNullOrWhiteSpace(productName))
             {
-                return BadRequest(new 
-                { 
+                return BadRequest(new
+                {
                     Message = ControllerMessages.ProductNameSearch
-                }); 
+                });
             }
             var products = await _productRepository.SearchByProductName(productName, language, userId);
             if (products == null || !products.Any())
@@ -190,26 +195,50 @@ namespace ArtStation.Controllers
             });
         }
 
-        //[HttpGet("GetRecentlySearched")]
-        //public async Task<IActionResult> GetRecentlySearched(string? token)
-        //{
-        //    int? userId = Utility.CheckToken(token);
-        //    var language = Request.Headers["Accept-Language"].ToString();
-        //    if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))
-        //        language = "en";
-        //    var recentlySearched = await _productRepository.GetRecentlySearched(language, userId);
-        //    if (recentlySearched == null || !recentlySearched.Any())
-        //    {
-        //        return Ok(new
-        //        {
-        //            Message = ControllerMessages.RecentlySearchedNotFound,
-        //            List = recentlySearched
-        //        });
-        //    }
-        //    return Ok(new
-        //    {
-        //        Message = ControllerMessages.RecentlySearchedList,
-        //        List = recentlySearched
-        //    });
+        [HttpGet("GetAIProducts")]
+        public async Task<IActionResult> GetAIProducts()
+        {
+
+            var language = Request.Headers["Accept-Language"].ToString();
+            if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))
+                language = "en";
+            var aiProducts = await _productRepository.GetAIProducts(language);
+            if (aiProducts == null || !aiProducts.Any())
+            {
+                return Ok(new
+                {
+                    Message = ControllerMessages.ProductsListNotFound,
+                    List = aiProducts
+                });
+            }
+            return Ok(new
+            {
+                Message = ControllerMessages.ProductsList,
+                List = aiProducts
+            });
+        }
+        [HttpGet("GetBrands")]
+        public async Task<IActionResult> GetBrands()
+        {
+            var language = Request.Headers["Accept-Language"].ToString();
+            if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))
+                language = "en";
+            var brands = await _productRepository.GetBrands(language);
+            if (brands == null || !brands.Any())
+            {
+                return Ok(new
+                {
+                    Message = ControllerMessages.BrandsNotFound,
+                    List = brands
+                });
+            }
+            return Ok(new
+            {
+                Message = ControllerMessages.BrandsList,
+                List = brands
+            });
+        }
     }
+
+   
 }

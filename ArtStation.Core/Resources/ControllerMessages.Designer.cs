@@ -135,6 +135,24 @@ namespace ArtStation.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string BrandsList {
+            get {
+                return ResourceManager.GetString("BrandsList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string BrandsNotFound {
+            get {
+                return ResourceManager.GetString("BrandsNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string CartClearedSuccessfully {
             get {
                 return ResourceManager.GetString("CartClearedSuccessfully", resourceCulture);
@@ -428,29 +446,25 @@ namespace ArtStation.Core.Resources {
                 return ResourceManager.GetString("OffersNotFound", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string OrderFailed
-        {
-            get
-            {
+        public static string OrderFailed {
+            get {
                 return ResourceManager.GetString("OrderFailed", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string OrderSuccesfully
-        {
-            get
-            {
+        public static string OrderSuccesfully {
+            get {
                 return ResourceManager.GetString("OrderSuccesfully", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>

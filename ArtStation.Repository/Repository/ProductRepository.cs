@@ -253,7 +253,36 @@ namespace ArtStation.Repository.Repository
             return simpleProducts;
         }
 
-        // public async Task<IEnumerable<SimpleProduct>> FilterProducts(string? price , string? brand , string? men , string? women , string? kids)
+        public async Task<IEnumerable<AIProducts>> GetAIProducts(string language)
+        {
+            var products = await _context.Products
+                .Where(p => p.IsActive && !p.IsDeleted)
+                .Select(p => new AIProducts
+                {
+                    Id = p.Id,
+                    Name = language == "en" ? p.NameEN : p.NameAR
+                })
+                .ToListAsync();
+
+            return products;
+        }
+        public async Task<IEnumerable<BrandDTO>> GetBrands(string language)
+        {
+
+           var brands = await _context.Products
+                .Where(p => p.IsActive && !p.IsDeleted)
+                .Select(p => new BrandDTO
+                {
+                    Name = language == "en" ? p.BrandEN : p.BrandAR
+                })
+                .Distinct()
+                .ToListAsync();
+
+            return brands;
+        }
+    
+
+         //public async Task<IEnumerable<SimpleProduct>> FilterProducts(int minPriceRange, int maxPriceRange , string? brand , string? men , string? women , string? kids , )
 
     }
 }

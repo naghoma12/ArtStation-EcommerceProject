@@ -130,41 +130,6 @@ namespace ArtStation.Repository.Data.Migrations
                     b.ToTable("Favorites");
                 });
 
-            modelBuilder.Entity("ArtStation.Core.Entities.ForWhom", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("NameAR")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("NameEN")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ForWhom");
-                });
-
             modelBuilder.Entity("ArtStation.Core.Entities.Identity.Address", b =>
                 {
                     b.Property<int>("Id")
@@ -647,6 +612,44 @@ namespace ArtStation.Repository.Data.Migrations
                     b.ToTable("ProductFlavours");
                 });
 
+            modelBuilder.Entity("ArtStation.Core.Entities.ProductForWhom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ForWhomAR")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ForWhomEN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductForWhoms");
+                });
+
             modelBuilder.Entity("ArtStation.Core.Entities.ProductPhotos", b =>
                 {
                     b.Property<int>("Id")
@@ -878,21 +881,6 @@ namespace ArtStation.Repository.Data.Migrations
                     b.ToTable("Shippings");
                 });
 
-            modelBuilder.Entity("ForWhomProduct", b =>
-                {
-                    b.Property<int>("ForWhomOptionsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("productsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ForWhomOptionsId", "productsId");
-
-                    b.HasIndex("productsId");
-
-                    b.ToTable("ForWhomProduct");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
@@ -1113,6 +1101,17 @@ namespace ArtStation.Repository.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("ArtStation.Core.Entities.ProductForWhom", b =>
+                {
+                    b.HasOne("ArtStation.Core.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("ArtStation.Core.Entities.ProductPhotos", b =>
                 {
                     b.HasOne("ArtStation.Core.Entities.Product", "Product")
@@ -1184,21 +1183,6 @@ namespace ArtStation.Repository.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("ForWhomProduct", b =>
-                {
-                    b.HasOne("ArtStation.Core.Entities.ForWhom", null)
-                        .WithMany()
-                        .HasForeignKey("ForWhomOptionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ArtStation.Core.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("productsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("ArtStation.Core.Entities.Identity.AppRole", null)
@@ -1257,7 +1241,16 @@ namespace ArtStation.Repository.Data.Migrations
 
             modelBuilder.Entity("ArtStation.Core.Entities.Identity.AppUser", b =>
                 {
-                    b.Navigation("Addresses");
+                    b.Navigation("Address");
+
+                    b.Navigation("Favourites");
+
+                    b.Navigation("Notifications");
+                });
+
+            modelBuilder.Entity("ArtStation.Core.Entities.Order.Order", b =>
+                {
+                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("ArtStation.Core.Entities.Product", b =>

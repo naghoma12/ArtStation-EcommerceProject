@@ -42,8 +42,16 @@ namespace ArtStation.Core.Entities
         public ICollection<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
         public  ICollection<Favourite> Favourites { get; set; } = new List<Favourite>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
-        public ICollection<ForWhom> ForWhomOptions { get; set; } = new List<ForWhom>();
 
     }
    
+    public enum ForWhom
+    {
+        Women = 0,
+        نساء = 0,
+        Kids =1 ,
+        أطفال = 1,
+        Men =2,
+        رجال = 2,
+    }
 }

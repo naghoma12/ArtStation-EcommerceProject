@@ -313,13 +313,19 @@ Please try again or request a new code. </value>
   <data name="ReviewUpdated" xml:space="preserve">
     <value>Review updated successfully .</value>
   </data>
-	<data name="OrderSuccesfully" xml:space="preserve">
+  <data name="OrderSuccesfully" xml:space="preserve">
     <value>Your order has been received and will be delivered</value>
   </data>
-	<data name="OrderFailed" xml:space="preserve">
+  <data name="OrderFailed" xml:space="preserve">
     <value>Order failed. Please try again or contact support.</value>
   </data>
   <data name="CitiesReturnedSuccess" xml:space="preserve">
     <value>Cities returned successfully!</value>
+  </data>
+  <data name="BrandsList" xml:space="preserve">
+    <value>There is a list of brands. </value>
+  </data>
+  <data name="BrandsNotFound" xml:space="preserve">
+    <value>There is no brands found .</value>
   </data>
 </root>

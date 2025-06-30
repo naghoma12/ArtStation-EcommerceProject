@@ -50,7 +50,7 @@ namespace ArtStation.Repository.Data
         public DbSet<Shipping> Shippings { get; set; }
         public DbSet<Banner> Banners { get; set; }
         public DbSet<ReviewLikes> ReviewLikes { get; set; }
-        public DbSet<RecentlySearched> RecentlySearched { get; set; }
+        public DbSet<ProductForWhom> ProductForWhoms { get; set; }
 
     }
 }

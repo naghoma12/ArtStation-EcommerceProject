@@ -98,24 +98,6 @@ namespace ArtStation.Repository.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ForWhom",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NameAR = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    NameEN = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ForWhom", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Order",
                 columns: table => new
                 {
@@ -421,30 +403,6 @@ namespace ArtStation.Repository.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ForWhomProduct",
-                columns: table => new
-                {
-                    ForWhomOptionsId = table.Column<int>(type: "int", nullable: false),
-                    productsId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ForWhomProduct", x => new { x.ForWhomOptionsId, x.productsId });
-                    table.ForeignKey(
-                        name: "FK_ForWhomProduct_ForWhom_ForWhomOptionsId",
-                        column: x => x.ForWhomOptionsId,
-                        principalTable: "ForWhom",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ForWhomProduct_Products_productsId",
-                        column: x => x.productsId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ProductColors",
                 columns: table => new
                 {
@@ -489,6 +447,31 @@ namespace ArtStation.Repository.Data.Migrations
                     table.PrimaryKey("PK_ProductFlavours", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ProductFlavours_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductForWhoms",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ForWhomAR = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ForWhomEN = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductForWhoms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductForWhoms_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -694,11 +677,6 @@ namespace ArtStation.Repository.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ForWhomProduct_productsId",
-                table: "ForWhomProduct",
-                column: "productsId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Notifications_AppUserId",
                 table: "Notifications",
                 column: "AppUserId");
@@ -716,6 +694,11 @@ namespace ArtStation.Repository.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ProductFlavours_ProductId",
                 table: "ProductFlavours",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductForWhoms_ProductId",
+                table: "ProductForWhoms",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
@@ -787,9 +770,6 @@ namespace ArtStation.Repository.Data.Migrations
                 name: "Favorites");
 
             migrationBuilder.DropTable(
-                name: "ForWhomProduct");
-
-            migrationBuilder.DropTable(
                 name: "Notifications");
 
             migrationBuilder.DropTable(
@@ -800,6 +780,9 @@ namespace ArtStation.Repository.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductFlavours");
+
+            migrationBuilder.DropTable(
+                name: "ProductForWhoms");
 
             migrationBuilder.DropTable(
                 name: "ProductPhotos");
@@ -818,9 +801,6 @@ namespace ArtStation.Repository.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "ForWhom");
 
             migrationBuilder.DropTable(
                 name: "Order");
