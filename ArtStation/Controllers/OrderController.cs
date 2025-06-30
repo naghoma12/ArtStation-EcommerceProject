@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Contracts;
 
 namespace ArtStation.Controllers
 {
@@ -89,5 +90,79 @@ namespace ArtStation.Controllers
                 return BadRequest(new { Message = "حدث خطأ غير متوقع. يرجى المحاولة لاحقًا." });
             }
         }
+
+
+
+        [Authorize]
+        [HttpGet("UserOrders")]
+        public async Task<ActionResult<IEnumerable<OrderReturnDto>>> GetUserOrders()
+        {
+            try
+            {
+
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Unauthorized(new { Message = ControllerMessages.Unauthorized,data=(object?)null });
+                }
+
+
+                var orders = await _orderService.GetOrdersForUserAsync(user.PhoneNumber);
+                if (orders == null || !orders.Any())
+                {
+                    return NotFound(new { Message = ControllerMessages.NoOrdersForThisUser , data = (object?)null });
+                }
+
+
+                var mappedOrders = _mapper.Map<List<OrderReturnDto>>(orders);
+
+
+                return Ok( new { message = ControllerMessages.UserHaveOrders,data= mappedOrders });
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, "Error occurred while retrieving orders for user.");
+
+
+                return BadRequest(new { message =ControllerMessages.SomethingWrong, data = (object?)null });
+            }
+        }
+
+
+        //[Authorize]
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<OneOrderReturnDto>> GetOrderForUser(int id)
+        //{
+        //    try
+        //    {
+
+        //        var user = await _userManager.GetUserAsync(User);
+
+
+        //        var order = await _orderService.GetOrderForUserAsync(id);
+
+
+        //        if (order == null)
+        //        {
+        //            _logger.LogWarning($"Order with id {id} not found for user {user?.Email}");
+        //            return NotFound(new { Message = "الطلب غير موجود" });
+        //        }
+
+
+        //        var mappedOrder = _mapper.Map<OneOrderReturnDto>(order);
+
+
+        //        return Ok(mappedOrder);
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        _logger.LogError(ex, $"An error occurred while retrieving order with id {id}");
+
+
+        //        return BadRequest(new { Message = "حدث خطأ أثناء استرجاع البيانات. حاول مرة أخرى لاحقاً." });
+        //    }
+        //}
     }
 }

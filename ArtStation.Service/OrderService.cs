@@ -75,19 +75,20 @@ namespace ArtStation.Services
 
         }
 
-        //public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string Email)
-        //{
-        //    var orders = await _orderRepo.GetUserOrdersAsync(Email);
 
-        //    return (IReadOnlyList<Order>)orders;
-        //}
+        public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string PhoneNumber)
+        {
+            var orders = await _orderRepo.GetUserOrdersAsync(PhoneNumber);
 
-        //public async Task<Order> GetOrderForUserAsync(int orderid)
-        //{
-        //    var order = await _orderRepo.GetOrderForUserAsync(orderid);
+            return (IReadOnlyList<Order>)orders;
+        }
 
-        //    return order;
-        //}
+        public async Task<Order> GetOrderForUserAsync(int orderid)
+        {
+            var order = await _orderRepo.GetOrderForUserAsync(orderid);
+
+            return order;
+        }
 
 
 

@@ -1,12 +1,15 @@
 ﻿using ArtStation.Core.Entities;
 using ArtStation.Core.Entities.Cart;
 using ArtStation.Core.Entities.Identity;
+using ArtStation.Core.Entities.Order;
 using ArtStation.Dtos;
 using ArtStation.Dtos.AuthDtos;
 using ArtStation.Dtos.CartDtos;
+using ArtStation.Dtos.Order;
 using ArtStation.Dtos.UserDtos;
 using ArtStation.DTOS;
 using AutoMapper;
+using System.Globalization;
 
 namespace ArtStation.Helper
 {
@@ -55,13 +58,24 @@ namespace ArtStation.Helper
 
             CreateMap<Cart, CartDto>().ReverseMap();
             CreateMap<CartItem, CartItemDto>().ReverseMap();
-            CreateMap<Address, DeliveryAddress>().ReverseMap();
+            CreateMap<Address, DeliveryAddress>()
+                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Shipping.City))
+                 .ReverseMap();
             CreateMap<CartItem, CartItemReturnDto>().ReverseMap();
             //CreateMap<Cart, CartReturnDto>().ReverseMap();
 
             CreateMap<Banner, BannerDto>().ReverseMap();
 
-           
+            CreateMap<Order, OrderReturnDto>()
+                 .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.Id+1000))
+                 .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => src.OrderDate.ToString("MMM dd, yyyy",  CultureInfo.CurrentCulture)))
+                  .ForMember(dest => dest.OrderStatus, opt => opt.MapFrom(src => src.Status))
+                   .ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.SubTotal))
+                   .ForMember(dest => dest.ShippingCost, opt => opt.MapFrom(src => src.Address.Shipping.Cost))
+                    .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.SubTotal+src.Address.Shipping.Cost))
+                 .ReverseMap();
+
+
         }
     }
 }
