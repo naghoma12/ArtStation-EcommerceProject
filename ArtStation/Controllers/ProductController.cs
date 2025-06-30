@@ -135,6 +135,30 @@ namespace ArtStation.Controllers
             });
         }
 
+
+        [HttpGet("GetMayAlsoKnowProducts")]
+        public async Task<IActionResult> GetMayAlsoKnowProducts(int productId, string? token)
+        {
+            int? userId = Utility.CheckToken(token);
+            var language = Request.Headers["Accept-Language"].ToString();
+            if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))
+                language = "en";
+            var products = await _productRepository.GetRelatedProducts(productId, language, userId);
+            if (products == null || !products.Any())
+            {
+                return Ok(new
+                {
+                    Message = ControllerMessages.ProductsListNotFound,
+                    List = products
+                });
+            }
+            return Ok(new
+            {
+                Message = ControllerMessages.ProductsList,
+                List = products
+            });
+        }
+
         [HttpGet("SearchByProductName")]
         public async Task<IActionResult> SearchByProductName(string? productName, string? token)
         {
@@ -165,5 +189,27 @@ namespace ArtStation.Controllers
                 List = products
             });
         }
+
+        //[HttpGet("GetRecentlySearched")]
+        //public async Task<IActionResult> GetRecentlySearched(string? token)
+        //{
+        //    int? userId = Utility.CheckToken(token);
+        //    var language = Request.Headers["Accept-Language"].ToString();
+        //    if (string.IsNullOrWhiteSpace(language) || (language != "en" && language != "ar"))
+        //        language = "en";
+        //    var recentlySearched = await _productRepository.GetRecentlySearched(language, userId);
+        //    if (recentlySearched == null || !recentlySearched.Any())
+        //    {
+        //        return Ok(new
+        //        {
+        //            Message = ControllerMessages.RecentlySearchedNotFound,
+        //            List = recentlySearched
+        //        });
+        //    }
+        //    return Ok(new
+        //    {
+        //        Message = ControllerMessages.RecentlySearchedList,
+        //        List = recentlySearched
+        //    });
     }
 }

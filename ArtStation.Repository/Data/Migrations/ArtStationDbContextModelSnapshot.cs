@@ -1257,16 +1257,7 @@ namespace ArtStation.Repository.Data.Migrations
 
             modelBuilder.Entity("ArtStation.Core.Entities.Identity.AppUser", b =>
                 {
-                    b.Navigation("Address");
-
-                    b.Navigation("Favourites");
-
-                    b.Navigation("Notifications");
-                });
-
-            modelBuilder.Entity("ArtStation.Core.Entities.Order.Order", b =>
-                {
-                    b.Navigation("OrderItems");
+                    b.Navigation("Addresses");
                 });
 
             modelBuilder.Entity("ArtStation.Core.Entities.Product", b =>

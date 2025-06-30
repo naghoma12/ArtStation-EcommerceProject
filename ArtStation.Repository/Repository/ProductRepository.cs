@@ -222,7 +222,38 @@ namespace ArtStation.Repository.Repository
             
         }
 
-       // public async Task<IEnumerable<SimpleProduct>> FilterProducts(string? price , string? brand , string? men , string? women , string? kids)
+        public async Task<IEnumerable<SimpleProduct>> GetRelatedProducts(int productId, string language, int? userId = null)
+        {
+            var product = await _context.Products
+                .Where(p => p.IsActive && !p.IsDeleted && p.Id == productId)
+                .Include(p => p.ProductPhotos)
+                .Include(p => p.Reviews)
+                .Include(p => p.ProductSizes)
+                .Include(p => p.Sales)
+                .Include(x => x.Category)
+                .Include(p => p.Favourites)
+                .FirstOrDefaultAsync();
+
+
+
+            var relatedProducts =  _context.Products
+                .Where(p => p.IsActive && !p.IsDeleted 
+                && (p.Category.NameAR == product.Category.NameAR || p.Category.NameEN == product.Category.NameEN) 
+                || (p.BrandAR == product.BrandAR || p.BrandEN == product.BrandEN))
+                .Include(p => p.ProductPhotos)
+                .Include(p => p.Reviews)
+                .Include(p => p.ProductSizes)
+                .Include(p => p.Sales)
+                .Include(p => p.Favourites);
+
+            var simpleProducts = relatedProducts.Where(x => x.Id != productId)
+                .Select(p => Utility.MapToSimpleProduct(p, userId, language))
+                .Take(5);
+
+            return simpleProducts;
+        }
+
+        // public async Task<IEnumerable<SimpleProduct>> FilterProducts(string? price , string? brand , string? men , string? women , string? kids)
 
     }
 }
