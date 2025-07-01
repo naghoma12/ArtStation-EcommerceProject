@@ -1,4 +1,5 @@
 ﻿using ArtStation.Core.Entities.Identity;
+using ArtStation.Core.Entities.Order;
 using ArtStation.Core.Repository.Contract;
 using ArtStation.Core.Resources;
 using ArtStation.Core.Roles;
@@ -130,39 +131,39 @@ namespace ArtStation.Controllers
         }
 
 
-        //[Authorize]
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<OneOrderReturnDto>> GetOrderForUser(int id)
-        //{
-        //    try
-        //    {
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Order>> GetOrderForUser(int id)
+        {
+            try
+            {
 
-        //        var user = await _userManager.GetUserAsync(User);
-
-
-        //        var order = await _orderService.GetOrderForUserAsync(id);
+                var user = await _userManager.GetUserAsync(User);
 
 
-        //        if (order == null)
-        //        {
-        //            _logger.LogWarning($"Order with id {id} not found for user {user?.Email}");
-        //            return NotFound(new { Message = "الطلب غير موجود" });
-        //        }
+                var order = await _orderService.GetOrderForUserAsync(id);
 
 
-        //        var mappedOrder = _mapper.Map<OneOrderReturnDto>(order);
+                if (order == null)
+                {
+                    _logger.LogWarning($"Order with id {id} not found for user {user?.Email}");
+                    return NotFound(new { Message = "الطلب غير موجود" });
+                }
 
 
-        //        return Ok(mappedOrder);
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        _logger.LogError(ex, $"An error occurred while retrieving order with id {id}");
+                //var mappedOrder = _mapper.Map<OneOrderReturnDto>(order);
 
 
-        //        return BadRequest(new { Message = "حدث خطأ أثناء استرجاع البيانات. حاول مرة أخرى لاحقاً." });
-        //    }
-        //}
+                return Ok(order);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, $"An error occurred while retrieving order with id {id}");
+
+
+                return BadRequest(new { Message = "حدث خطأ أثناء استرجاع البيانات. حاول مرة أخرى لاحقاً." });
+            }
+        }
     }
 }

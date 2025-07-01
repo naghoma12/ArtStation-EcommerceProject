@@ -23,6 +23,6 @@ namespace ArtStation.Core.Repository.Contract
         Task<IEnumerable<AIProducts>> GetAIProducts(string language);
         Task<IEnumerable<BrandDTO>> GetBrands(string language);
         Task<IEnumerable<SimpleProduct>> FilterProducts(List<SimpleProduct> products, int? minPriceRange, int? maxPriceRange, string? brand, bool? men, bool? women, bool? kids, int? discount);
-
+         Task<ProductsOFSpecificOrder> GetProductsOfSpecificOrder(int productId, int sizeId, int? flavourId, int? ColorId, string lang = "en");
     }
 }
