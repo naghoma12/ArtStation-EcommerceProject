@@ -423,6 +423,15 @@ namespace ArtStation.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string NoOrdersForThisUser {
+            get {
+                return ResourceManager.GetString("NoOrdersForThisUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string OffersList {
             get {
                 return ResourceManager.GetString("OffersList", resourceCulture);
@@ -437,24 +446,22 @@ namespace ArtStation.Core.Resources {
                 return ResourceManager.GetString("OffersNotFound", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string NoOrdersForThisUser
-        {
-            get
-            {
-                return ResourceManager.GetString("NoOrdersForThisUser", resourceCulture);
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         public static string OrderFailed {
             get {
                 return ResourceManager.GetString("OrderFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string OrderIshere {
+            get {
+                return ResourceManager.GetString("OrderIshere", resourceCulture);
             }
         }
         
@@ -707,6 +714,15 @@ namespace ArtStation.Core.Resources {
         public static string UserNotFound {
             get {
                 return ResourceManager.GetString("UserNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string YourOrderNotExsist {
+            get {
+                return ResourceManager.GetString("YourOrderNotExsist", resourceCulture);
             }
         }
     }

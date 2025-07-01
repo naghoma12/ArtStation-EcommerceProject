@@ -1,5 +1,6 @@
 ﻿using ArtStation.Core.Entities.Identity;
 using ArtStation.Core.Entities.Order;
+using ArtStation.Core.Helper;
 using ArtStation.Core.Repository.Contract;
 using ArtStation.Core.Resources;
 using ArtStation.Core.Roles;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.Contracts;
+using OrderDto = ArtStation.Dtos.Order.OrderDto;
 
 namespace ArtStation.Controllers
 {
@@ -133,7 +135,7 @@ namespace ArtStation.Controllers
 
         [Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrderForUser(int id)
+        public async Task<ActionResult<OrderWithItemsDto>> GetOrderForUser(int id)
         {
             try
             {
@@ -146,15 +148,11 @@ namespace ArtStation.Controllers
 
                 if (order == null)
                 {
-                    _logger.LogWarning($"Order with id {id} not found for user {user?.Email}");
-                    return NotFound(new { Message = "الطلب غير موجود" });
+                    _logger.LogWarning($"Order with id {id} not found for user {user?.PhoneNumber}");
+                    return NotFound(new { Message = ControllerMessages.YourOrderNotExsist ,data=(object?)null });
                 }
 
-
-                //var mappedOrder = _mapper.Map<OneOrderReturnDto>(order);
-
-
-                return Ok(order);
+                return Ok(new { message = ControllerMessages.OrderIshere, data = order });
             }
             catch (Exception ex)
             {
@@ -162,7 +160,7 @@ namespace ArtStation.Controllers
                 _logger.LogError(ex, $"An error occurred while retrieving order with id {id}");
 
 
-                return BadRequest(new { Message = "حدث خطأ أثناء استرجاع البيانات. حاول مرة أخرى لاحقاً." });
+                return BadRequest(new { Message = ControllerMessages.SomethingWrong,data=(object?)null });
             }
         }
     }
