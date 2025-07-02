@@ -55,6 +55,8 @@ namespace ArtStation.Repository.Repository
                     .ThenInclude(p => p.Reviews)
                 .Include(c => c.Products)
                     .ThenInclude(p => p.Favourites)
+                .Include(c => c.Products)
+                    .ThenInclude(x => x.ForWhoms)
                 .FirstOrDefaultAsync();
 
             if (categoryData == null) return null;
