@@ -1,5 +1,12 @@
+using ArtStation.Core.Repository.Contract;
+using ArtStation.Core;
+using ArtStation.Repository;
 using ArtStation.Repository.Data;
+using ArtStation.Repository.Repository;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using ArtStation_Dashboard.Helper;
 
 namespace ArtStation_Dashboard
 {
@@ -13,6 +20,22 @@ namespace ArtStation_Dashboard
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<ArtStationDbContext>(
               options => options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
+            builder.Services.AddAutoMapper(typeof(MappingProfiles));
+            builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
+            builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+            #region Localization
+            builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+            builder.Services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[] { "en", "ar" };
+                options.SetDefaultCulture("en")
+                       .AddSupportedCultures(supportedCultures)
+                       .AddSupportedUICultures(supportedCultures);
+
+                options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
+            });
+            #endregion
             #endregion
             var app = builder.Build();
 
@@ -23,7 +46,8 @@ namespace ArtStation_Dashboard
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            var localizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
+            app.UseRequestLocalization(localizationOptions);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

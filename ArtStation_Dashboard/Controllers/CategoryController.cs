@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ArtStation_Dashboard.ViewModels;
 using ArtStation_Dashboard.Helper;
+using Microsoft.AspNetCore.Localization;
 
 namespace ArtStation_Dashboard.Controllers
 {
@@ -26,8 +27,8 @@ namespace ArtStation_Dashboard.Controllers
         {
             try
             {
+                string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName;
                 var List = await _unitOfWork.Repository<Category>().GetAllAsync();
-                if (List == null) return NotFound();
                 return View(List);
             }
             catch (Exception ex)
