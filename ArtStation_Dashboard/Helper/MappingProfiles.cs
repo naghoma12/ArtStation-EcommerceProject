@@ -9,6 +9,7 @@ namespace ArtStation_Dashboard.Helper
         public MappingProfiles()
         {
             CreateMap<CreatedCategory, Category>().ReverseMap();
+            CreateMap<CategoryVM, Category>().ReverseMap();
         }
     }
 }

@@ -1,0 +1,54 @@
+﻿@model CreatedCategory
+@{
+    ViewData["Title"] = "Create";
+    var language = ViewData["Language"] as string ?? "en";
+}
+
+<h1>Create</h1>
+<div class="m-auto  bg-white p-5">
+    <h1>إضافة قسم جديد</h1>
+    @if (!string.IsNullOrEmpty(TempData["Message"] as string))
+    {
+        <div class="alert alert-primary mt-3 mb-2">
+            @TempData["message"]
+        </div>
+    }
+    <hr />
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-row  ">
+
+            <br />
+            <div class="col-md-4">
+
+                <input asp-for="NameAR" class="form-control" placeholder="اسم التصنيف باللغه العربية" />
+                <span asp-validation-for="NameAR" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+
+                <input asp-for="NameEN" class="form-control" placeholder="اسم التصنيف باللغه الإنجليزية" />
+                <span asp-validation-for="NameEN" class="text-danger"></span>
+            </div>
+
+            <div class="col">
+                <input asp-for="PhotoFile" class="form-control form-control-lg" type="file" placeholder="صوره" id="formFile" />
+                <span asp-validation-for="PhotoFile" class="text-danger"></span>
+            </div>
+
+
+        </div>
+
+        <div class="form-group mt-4">
+            <input type="submit" value="إضافه" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-light">العوده</a>
+        </div>
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+}
+

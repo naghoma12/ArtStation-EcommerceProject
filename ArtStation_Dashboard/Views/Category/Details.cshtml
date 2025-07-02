@@ -1,1 +1,32 @@
 ﻿@model CategoryVM
+
+@{
+    ViewData["Title"] = "Category Details";
+    var language = ViewData["Language"] as string ?? "en";
+    var name = (Model.NameAR, Model.NameEN).Localize(language);
+}
+<div class="container py-5 ">
+    <div class="card shadow-lg rounded-4 overflow-hidden">
+        <div class="row g-0">
+            <div class="col-md-5">
+                <img src="~/Uploads/Categories/skincare.jpeg" class="img-fluid h-100 w-100 object-fit-cover" alt="@name" style="min-height: 300px;" />
+            </div>
+            <div class="col-md-7">
+                <div class="card-body p-5">
+                    <h2 class="card-title mb-3">@name</h2>
+
+                    <ul class="list-group list-group-flush mt-4">
+                        <li class="list-group-item"><strong>@(language == "en" ? "ID" : "المعرف"):</strong> @Model.Id</li>
+                        <li class="list-group-item"><strong>@(language == "en" ? "CreatedDate" : "تاريخ الإنشاء"):</strong> @Model.CreatedDate.ToShortDateString()</li>
+                    </ul>
+
+                    <div class="mt-5">
+                        <a asp-action="Index" class="btn btn-outline-primary">
+                            @(language == "en" ? "Back to List" : "العودة إلى القائمة")
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

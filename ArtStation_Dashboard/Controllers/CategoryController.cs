@@ -23,13 +23,13 @@ namespace ArtStation_Dashboard.Controllers
 
         }
         // Get All Categories --GET
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1 , int pageSize = 8)
         {
             try
             {
                 string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName;
                 ViewData["Language"] = language;
-                var List = await _unitOfWork.Repository<Category>().GetAllAsync();
+                var List = await _unitOfWork.Repository<Category>().GetAllAsync(page , pageSize);
                 return View(List);
             }
             catch (Exception ex)
@@ -42,9 +42,8 @@ namespace ArtStation_Dashboard.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var item = await _unitOfWork.Repository<Category>().GetByIdAsync(id);
-            if (item == null) return RedirectToAction(nameof(Index));
+            if (item == null) return NotFound();
             var itemMapped = _mapper.Map<Category, CategoryVM>(item);
-
             return View(itemMapped);
         }
 

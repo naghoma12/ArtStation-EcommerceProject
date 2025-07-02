@@ -11,7 +11,9 @@ namespace ArtStation_Dashboard.ViewModels
         [Required(ErrorMessageResourceType = typeof(Messages), ErrorMessageResourceName = "RequiredField")]
         public string NameEN { get; set; }
         public IFormFile? PhotoFile { get; set; }
+        public DateTime CreatedDate { get; set; }
         public string? PhotoURL { get; set; }
         public string? FilePath { get; set; }
+
     }
 }
