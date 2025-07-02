@@ -234,6 +234,15 @@
   <data name="BannersNotFound" xml:space="preserve">
     <value>لا يوجد </value>
   </data>
+  <data name="ProductNameSearch" xml:space="preserve">
+    <value>اسم المنتج لا يمكن أن يكون فارغًا.</value>
+  </data>
+  <data name="OrderSuccesfully" xml:space="preserve">
+    <value>شكرًا لك! تم استلام طلبك وجارٍ ترتيبه للتوصيل.</value>
+  </data>
+  <data name="OrderFailed" xml:space="preserve">
+    <value>فشل الطلب. يرجى المحاولة مرة أخرى أو التواصل مع الدعم.</value>
+  </data>
   <data name="FavProductAdded" xml:space="preserve">
     <value>تم إضافة المنتج إلى المفضلة بنجاح .</value>
   </data>
@@ -309,17 +318,14 @@
   <data name="ReviewUpdated" xml:space="preserve">
     <value>تم تعديل التقييم بنجاح .</value>
   </data>
-  <data name="ProductNameSearch" xml:space="preserve">
-    <value>اسم المنتج لا يمكن أن يكون فارغًا.</value>
-  </data>
-  <data name="OrderSuccesfully" xml:space="preserve">
-    <value>شكرًا لك! تم استلام طلبك وجارٍ ترتيبه للتوصيل.</value>
-  </data>
-  <data name="OrderFailed" xml:space="preserve">
-    <value>فشل الطلب. يرجى المحاولة مرة أخرى أو التواصل مع الدعم.</value>
-  </data>
   <data name="CitiesReturnedSuccess" xml:space="preserve">
     <value>تم جلب المدن بنجاح</value>
+  </data>
+  <data name="NoOrdersForThisUser" xml:space="preserve">
+    <value>لا توجد لديك أي طلبات حتى الآن.</value>
+  </data>
+  <data name="UserHaveOrders" xml:space="preserve">
+    <value>طلباتك هنا.</value>
   </data>
   <data name="BrandsList" xml:space="preserve">
     <value>هذه هي مجموعة البراندات .</value>
@@ -327,10 +333,10 @@
   <data name="BrandsNotFound" xml:space="preserve">
     <value>لا يوجد براندات .</value>
   </data>
-	<data name="NoOrdersForThisUser" xml:space="preserve">
-    <value>لا توجد لديك أي طلبات حتى الآن.</value>
+  <data name="YourOrderNotExsist" xml:space="preserve">
+    <value>طلبك غير موجود.</value>
   </data>
-	<data name="UserHaveOrders" xml:space="preserve">
-    <value>طلباتك هنا.</value>
+  <data name="OrderIshere" xml:space="preserve">
+    <value>طلبك موجود</value>
   </data>
 </root>

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
+using ArtStation.Core.Helper;
 
 namespace ArtStation.Services
 {
@@ -83,19 +84,12 @@ namespace ArtStation.Services
             return (IReadOnlyList<Order>)orders;
         }
 
-        public async Task<Order> GetOrderForUserAsync(int orderid)
+        public async Task<OrderWithItemsDto> GetOrderForUserAsync(int orderid)
         {
             var order = await _orderRepo.GetOrderForUserAsync(orderid);
 
             return order;
         }
-
-
-
-
-
-
-
 
 
     }

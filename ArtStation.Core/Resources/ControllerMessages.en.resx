@@ -238,6 +238,12 @@ Please try again or request a new code. </value>
   <data name="ProductNameSearch" xml:space="preserve">
     <value>Product name cannot be empty.</value>
   </data>
+  <data name="OrderSuccesfully" xml:space="preserve">
+    <value>Your order has been received and will be delivered</value>
+  </data>
+  <data name="OrderFailed" xml:space="preserve">
+    <value>Order failed. Please try again or contact support.</value>
+  </data>
   <data name="FavProductAdded" xml:space="preserve">
     <value>Product added to favourite successfully.</value>
   </data>
@@ -313,14 +319,14 @@ Please try again or request a new code. </value>
   <data name="ReviewUpdated" xml:space="preserve">
     <value>Review updated successfully .</value>
   </data>
-  <data name="OrderSuccesfully" xml:space="preserve">
-    <value>Your order has been received and will be delivered</value>
-  </data>
-  <data name="OrderFailed" xml:space="preserve">
-    <value>Order failed. Please try again or contact support.</value>
-  </data>
   <data name="CitiesReturnedSuccess" xml:space="preserve">
     <value>Cities returned successfully!</value>
+  </data>
+  <data name="NoOrdersForThisUser" xml:space="preserve">
+    <value>You do not have any orders yet.</value>
+  </data>
+  <data name="UserHaveOrders" xml:space="preserve">
+    <value>Your orders are here.</value>
   </data>
   <data name="BrandsList" xml:space="preserve">
     <value>There is a list of brands. </value>
@@ -328,10 +334,10 @@ Please try again or request a new code. </value>
   <data name="BrandsNotFound" xml:space="preserve">
     <value>There is no brands found .</value>
   </data>
-	<data name="NoOrdersForThisUser" xml:space="preserve">
-    <value>You do not have any orders yet.</value>
+  <data name="YourOrderNotExsist" xml:space="preserve">
+    <value>Your order does not exist</value>
   </data>
-	<data name="UserHaveOrders" xml:space="preserve">
-    <value>Your orders are here.</value>
+  <data name="OrderIshere" xml:space="preserve">
+    <value>Your order Is here</value>
   </data>
 </root>

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Twilio.TwiML.Voice;
 
 namespace ArtStation.Repository.Repository
 {
@@ -227,6 +228,47 @@ namespace ArtStation.Repository.Repository
 
             };
             
+        }
+
+        public async Task<ProductsOFSpecificOrder> GetProductsOfSpecificOrder( int productId,int sizeId, int? flavourId,int? ColorId, string lang = "en")
+        {
+            var product = await _context.Products
+               .Where(p => p.IsActive && !p.IsDeleted && p.Id == productId)
+               .Include(p => p.Sales)
+               .Include(p => p.ProductSizes)
+               .Include(p => p.ProductColors)
+               .Include(p => p.ProductFlavours)
+                .Include(p => p.ProductPhotos)
+               .FirstOrDefaultAsync();
+
+            if (product == null)
+                return null;
+
+            var activeSale = product.Sales
+                .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
+                .OrderByDescending(s => s.Id)
+                .FirstOrDefault();
+
+            var discount = activeSale?.Discount ?? 0;
+            var size = product.ProductSizes.Where(s => s.Id == sizeId).FirstOrDefault();
+
+            var color = product.ProductColors.Where(s => s.Id == ColorId).FirstOrDefault();
+            var flavour = product.ProductFlavours.Where(s => s.Id == flavourId).FirstOrDefault();
+            var priceAfterSale = size.Price - (size.Price * discount / 100m);
+            return new ProductsOFSpecificOrder()
+            {
+                ProductId = product.Id,
+                ProductName = lang == "en" ? product.NameEN : product.NameAR,
+                //OriginalPrice = size.Price,
+                PhotoUrl = product.ProductPhotos.FirstOrDefault()?.Photo,
+                Size= lang == "en" ? size.SizeEN :size.SizeAR,
+                Color = color == null ? null : (lang == "en" ? color.NameEN : color.NameAR),
+                Flavour = flavour == null ? null : (lang == "en" ? flavour.NameEN : flavour.NameAR),
+                //PriceAfterSale = priceAfterSale,
+
+
+            };
+
         }
 
         public async Task<IEnumerable<SimpleProduct>> GetRelatedProducts(int productId, string language, int? userId = null)
