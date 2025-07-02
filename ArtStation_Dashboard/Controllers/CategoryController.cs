@@ -28,6 +28,7 @@ namespace ArtStation_Dashboard.Controllers
             try
             {
                 string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName;
+                ViewData["Language"] = language;
                 var List = await _unitOfWork.Repository<Category>().GetAllAsync();
                 return View(List);
             }
@@ -43,7 +44,6 @@ namespace ArtStation_Dashboard.Controllers
             var item = await _unitOfWork.Repository<Category>().GetByIdAsync(id);
             if (item == null) return RedirectToAction(nameof(Index));
             var itemMapped = _mapper.Map<Category, CategoryVM>(item);
-            //item.PhotoURL = itemMapped.PhotoURL;
 
             return View(itemMapped);
         }
