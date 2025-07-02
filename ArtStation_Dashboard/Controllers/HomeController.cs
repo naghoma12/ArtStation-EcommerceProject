@@ -1,4 +1,5 @@
 using ArtStation_Dashboard.Models;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -12,7 +13,16 @@ namespace ArtStation_Dashboard.Controllers
         {
             _logger = logger;
         }
+        public IActionResult SetLanguage(string culture)
+        {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
 
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
         public IActionResult Index()
         {
             return View();

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using ArtStation_Dashboard.Helper;
+using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace ArtStation_Dashboard
 {
@@ -17,14 +18,19 @@ namespace ArtStation_Dashboard
             var builder = WebApplication.CreateBuilder(args);
             #region Services    
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                    .AddDataAnnotationsLocalization(); ;
             builder.Services.AddDbContext<ArtStationDbContext>(
               options => options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
             builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
             builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+
             #region Localization
-            builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+           
+   
+            builder.Services.AddLocalization(options => options.ResourcesPath = "Resource");
 
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
