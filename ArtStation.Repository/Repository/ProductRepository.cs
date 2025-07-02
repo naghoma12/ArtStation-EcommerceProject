@@ -334,22 +334,47 @@ namespace ArtStation.Repository.Repository
         }
     
 
-        public async Task<IEnumerable<SimpleProduct>> FilterProducts(List<SimpleProduct> products,int? minPriceRange, int? maxPriceRange , string? brand , bool? men , bool? women , bool? kids , int? discount)
+        public async Task<IEnumerable<SimpleProduct>> FilterProducts(List<SimpleProduct> products,int? minPriceRange, int? maxPriceRange , string? brand , bool men , bool women , bool kids , bool offer )
         {
-            var detailedList = _context.Products.
-                Where(p => p.IsActive && !p.IsDeleted);
-
             if(minPriceRange.HasValue && maxPriceRange.HasValue)
             {
                 products = products
                     .Where(p => p.TotalPrice >= (decimal)minPriceRange && p.TotalPrice <= (decimal)maxPriceRange)
                     .ToList();
             }
-            //if (string.IsNullOrEmpty(brand))
-            //{
-            //    products = products
-            //        .Where(p => p.)
-            //}
+            if (!string.IsNullOrEmpty(brand))
+            {
+                products = products
+                    .Where(p => p.Brand == brand)
+                    .ToList();
+            }
+            if (men)
+            {
+                products = products
+                     .Where(p => p.ForWhom.Any(f => f.ForWhom == ForWhom.Men.ToString() 
+                     || f.ForWhom == ForWhom.رجال.ToString()))
+                     .ToList();
+            }
+            if (women)
+            {
+                products = products
+                     .Where(p => p.ForWhom.Any(f => f.ForWhom == ForWhom.Women.ToString()
+                     || f.ForWhom == ForWhom.نساء.ToString()))
+                     .ToList();
+            }
+            if (kids)
+            {
+                products = products
+                     .Where(p => p.ForWhom.Any(f => f.ForWhom == ForWhom.Kids.ToString()
+                     || f.ForWhom == ForWhom.أطفال.ToString()))
+                     .ToList();
+            }
+            if (offer)
+            {
+                products = products
+                    .Where(p => p.IsSale)
+                    .ToList();
+            }
             return products;
         }
 

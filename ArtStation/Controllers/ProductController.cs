@@ -240,9 +240,17 @@ namespace ArtStation.Controllers
         }
 
         [HttpGet("FilterProducts")]
-        public async Task<IActionResult> FilterProducts(List<SimpleProduct> products, int? minPriceRange, int? maxPriceRange, string? brand, bool? men, bool? women, bool? kids, int? discount)
+        public async Task<IActionResult> FilterProducts(List<SimpleProduct> products, int? minPriceRange, int? maxPriceRange, string? brand, bool men = false, bool women = false, bool kids = false, bool offer = false)
         {
-            var list = _productRepository.FilterProducts(products, minPriceRange, maxPriceRange , brand , men , women , kids , discount);
+            var list = await _productRepository.FilterProducts(products, minPriceRange, maxPriceRange , brand , men , women , kids , offer);
+            if (list == null || !list.Any())
+            {
+                return Ok(new
+                {
+                    Message = ControllerMessages.ProductsListNotFound,
+                    List = list
+                });
+            }
             return Ok(new
             {
                 Message = ControllerMessages.ProductsList,
