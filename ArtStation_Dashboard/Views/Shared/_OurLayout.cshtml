@@ -28,10 +28,10 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <!-- CSS Files -->
     <link id="pagestyle" href="~/assets/css/material-dashboard.css?v=3.0.0" rel="stylesheet" />
-
+ 
 </head>
 <body class="@(dir == " rtl" ? "rtl" : "ltr" ) g-sidenav-show bg-gray-200">
-    <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl @(dir == "rtl" ? "my-3 fixed-end me-3" : "my-3 fixed-start ms-3" )    bg-gradient-dark" id="sidenav-main">
+    <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3   @(dir == "rtl" ? "fixed-end rotate-caret" : "fixed-start ms-3" )    bg-gradient-dark" id="sidenav-main">
         <div class="sidenav-header">
             <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
@@ -125,12 +125,19 @@
             </div>
         </div>
     </aside>
-
+  
     @* <partial name="_aside"></partial> *@
-    <div class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-        <partial name="_Navbar"></partial>
-        @RenderBody()
+    <div class="main-content position-relative  h-100 border-radius-lg  @(dir == "rtl" ? "overflow-x-hidden" :"overflow-x-hidden" ) ">
+        <partial name="_Navbar"></partial> 
+
+      <div class="@(dir == "rtl" ? "overflow-x-hidden" :"" )">
+            @RenderBody()
+      </div>
+      
+
     </div>
+   
+    
     <div class="fixed-plugin">
         <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
             <i class="material-icons py-2">settings</i>
@@ -467,6 +474,8 @@
           }
           Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
         }
+
+       
     </script>
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
