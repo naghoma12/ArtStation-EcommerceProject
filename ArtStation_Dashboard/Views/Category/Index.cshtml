@@ -1,5 +1,4 @@
-﻿@using ArtStation_Dashboard.Helper
-@model IEnumerable<Category>
+﻿@model PagedResult<Category>
 
 @{
     var language = "en";
@@ -18,12 +17,12 @@
                         <thead>
                             <tr>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center ">
-                                    @(("المعرف", Html.DisplayNameFor(model => model.Id)).Localize(language))
+                                    @(("المعرف", "Id").Localize(language))
                                 </th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                    @((Html.DisplayNameFor(model => model.NameAR), Html.DisplayNameFor(model => model.NameEN)).Localize(language))</th>
+                                    @(("اسم التصنيف","Category Name").Localize(language))</th>
                                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                    @(("الصورة", Html.DisplayNameFor(model => model.Image)).Localize(language))
+                                    @(("الصورة", "Image").Localize(language))
                                 </th>
                                 <th class="text-secondary opacity-7"></th>
                                 <th class="text-secondary opacity-7"></th>
@@ -31,7 +30,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach(var category in Model)
+                            @foreach(var category in Model.Items)
                             {
                                 <tr>
                                     <td class="align-middle text-center">
@@ -69,4 +68,17 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="mt-4">
+    <nav>
+        <ul class="pagination pagination-primary justify-content-center">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
 </div>

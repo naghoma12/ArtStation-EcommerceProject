@@ -127,6 +127,7 @@
     </aside>
   
     @* <partial name="_aside"></partial> *@
+
     <div class="main-content position-relative  h-100 border-radius-lg  @(dir == "rtl" ? "overflow-x-hidden" :"overflow-x-hidden" ) ">
         <partial name="_Navbar"></partial> 
 
@@ -135,6 +136,14 @@
       </div>
       
 
+    <div class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+        <partial name="_Navbar"></partial>
+        <div class="container">
+            <main role="main" class="pb-3">
+        @RenderBody()
+        </main>
+        </div>
+>>>>>>> d3c5c8d87fbbc52af6cd9470b42ede005b381558
     </div>
    
     
@@ -481,5 +490,7 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="~/assets/js/material-dashboard.min.js?v=3.0.0"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

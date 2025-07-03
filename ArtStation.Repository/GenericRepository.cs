@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ArtStation.Repository.Data;
 using Microsoft.EntityFrameworkCore;
+using ArtStation_Dashboard.ViewModels;
 
 namespace ArtStation.Repository
 {
@@ -19,13 +20,28 @@ namespace ArtStation.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<PagedResult<T>> GetAllAsync(int page , int pageSize)
         {
+            var query = _context.Set<T>().AsNoTracking();
 
-            return await _context.Set<T>()
+            var totalItems = await query.CountAsync();
+
+            var items = await query
                 .Where(z => z.IsDeleted == false 
                 && z.IsActive == true)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .AsNoTracking()
                 .ToListAsync();
+               
+
+            return new PagedResult<T>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                PageNumber = page,
+                PageSize = pageSize
+            };
         }
 
         public async Task<T> GetByIdAsync(int id)
@@ -48,6 +64,14 @@ namespace ArtStation.Repository
         public void Delete(T entity)
         {
             _context.Remove(entity);
+        }
+
+        public async Task<IEnumerable<T>> GetAllAsync()
+        {
+            return await _context.Set<T>()
+           .Where(z => z.IsDeleted == false
+           && z.IsActive == true
+          ).ToListAsync();
         }
     }
 }
