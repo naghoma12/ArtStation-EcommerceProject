@@ -12,5 +12,6 @@ namespace ArtStation.Core.Helper
         public Product Product { get; set; }
         public decimal Price { get; set; }
         public decimal PriceAfterSale { get; set; }
+        public int UserId { get; set; }
     }
 }

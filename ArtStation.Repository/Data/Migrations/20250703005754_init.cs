@@ -269,6 +269,7 @@ namespace ArtStation.Repository.Data.Migrations
                     BrandEN = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     SellersCount = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
@@ -277,6 +278,12 @@ namespace ArtStation.Repository.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Products_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Products_Categories_CategoryId",
                         column: x => x.CategoryId,
@@ -589,7 +596,7 @@ namespace ArtStation.Repository.Data.Migrations
                         column: x => x.ReviewId,
                         principalTable: "Reviews",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -621,6 +628,21 @@ namespace ArtStation.Repository.Data.Migrations
                         principalTable: "Order",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderItem_ProductColors_ProductItem_ColorId",
+                        column: x => x.ProductItem_ColorId,
+                        principalTable: "ProductColors",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_OrderItem_ProductFlavours_ProductItem_FlavourId",
+                        column: x => x.ProductItem_FlavourId,
+                        principalTable: "ProductFlavours",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_OrderItem_ProductSizes_ProductItem_SizeId",
+                        column: x => x.ProductItem_SizeId,
+                        principalTable: "ProductSizes",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_OrderItem_Products_ProductItem_ProductId",
                         column: x => x.ProductItem_ProductId,
@@ -704,9 +726,24 @@ namespace ArtStation.Repository.Data.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderItem_ProductItem_ColorId",
+                table: "OrderItem",
+                column: "ProductItem_ColorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItem_ProductItem_FlavourId",
+                table: "OrderItem",
+                column: "ProductItem_FlavourId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderItem_ProductItem_ProductId",
                 table: "OrderItem",
                 column: "ProductItem_ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItem_ProductItem_SizeId",
+                table: "OrderItem",
+                column: "ProductItem_SizeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductColors_ProductId",
@@ -732,6 +769,11 @@ namespace ArtStation.Repository.Data.Migrations
                 name: "IX_Products_CategoryId",
                 table: "Products",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_UserId",
+                table: "Products",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductSizes_ProductId",
@@ -795,19 +837,10 @@ namespace ArtStation.Repository.Data.Migrations
                 name: "OrderItem");
 
             migrationBuilder.DropTable(
-                name: "ProductColors");
-
-            migrationBuilder.DropTable(
-                name: "ProductFlavours");
-
-            migrationBuilder.DropTable(
                 name: "ProductForWhoms");
 
             migrationBuilder.DropTable(
                 name: "ProductPhotos");
-
-            migrationBuilder.DropTable(
-                name: "ProductSizes");
 
             migrationBuilder.DropTable(
                 name: "ReviewLikes");
@@ -822,6 +855,15 @@ namespace ArtStation.Repository.Data.Migrations
                 name: "Order");
 
             migrationBuilder.DropTable(
+                name: "ProductColors");
+
+            migrationBuilder.DropTable(
+                name: "ProductFlavours");
+
+            migrationBuilder.DropTable(
+                name: "ProductSizes");
+
+            migrationBuilder.DropTable(
                 name: "Reviews");
 
             migrationBuilder.DropTable(
@@ -831,10 +873,10 @@ namespace ArtStation.Repository.Data.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Shippings");
 
             migrationBuilder.DropTable(
-                name: "Shippings");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Categories");

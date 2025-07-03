@@ -224,6 +224,7 @@ namespace ArtStation.Repository.Repository
                 Product=product,
                 Price=size.Price,
                 PriceAfterSale = priceAfterSale,
+                UserId = product.UserId
 
 
             };

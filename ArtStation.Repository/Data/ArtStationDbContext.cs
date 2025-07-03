@@ -29,7 +29,13 @@ namespace ArtStation.Repository.Data
             base.OnModelCreating(modelBuilder);
       
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-           
+
+            modelBuilder.Entity<Product>()
+            .HasOne(p => p.User)
+            .WithMany() // Or .WithMany(u => u.Products) if a reverse nav exists
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         }
 
         public DbSet<Product> Products { get; set; }

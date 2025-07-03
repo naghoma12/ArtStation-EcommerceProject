@@ -49,8 +49,8 @@ namespace ArtStation.Services
                     productDetails = new ProductItemDetails(product.Product.Id,item.ColorId,item.SizeId,item.FlavourId);
 
                     var orderitem = new OrderItem(productDetails, item.Quantity,1); //static userid
-                    //var orderitem = new OrderItem(productDetails, item.Quantity, product.UserId);
-                 
+                    var orderitem = new OrderItem(productDetails, item.Quantity, product.UserId);
+
                     orderitem.TotalPrice = (decimal)(product.PriceAfterSale == 0 ? product.Price * item.Quantity : product.PriceAfterSale * item.Quantity);
 
                     OrderItems.Add(orderitem);

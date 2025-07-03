@@ -43,7 +43,10 @@ namespace ArtStation.Core.Entities
         public  ICollection<Favourite> Favourites { get; set; } = new List<Favourite>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
         public ICollection<ProductForWhom> ForWhoms { get; set; } = new List<ProductForWhom>();
+        public int UserId { get; set; }= 9;
 
+        [ForeignKey("UserId")]
+        public AppUser User { get; set; }
     }
    
     public enum ForWhom
