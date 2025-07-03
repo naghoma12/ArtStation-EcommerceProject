@@ -1,14 +1,21 @@
 ﻿@model PagedResult<Category>
 
 @{
-    var language = "en";
+    var language = ViewData["Language"] as string ?? "en";
+    ViewData["Title"] = ("مجموعة التصنيفات" , "Category List").Localize(language);
+}
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <div class="alert alert-success mt-3 mb-2">
+        @TempData["message"]
+    </div>
 }
 <div class="row">
     <div class="col-12">
         <div class="card my-4">
             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                    <h6 class="text-white text-capitalize ps-3">Category table</h6>
+                <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 pe-3">
+                    <h6 class="text-white text-capitalize ps-3">@(("جدول التصنيفات" ,"Category Table").Localize(language))</h6>
                 </div>
             </div>
             <div class="card-body px-0 pb-2">
@@ -40,8 +47,7 @@
                                         <span class="text-secondary text-xs font-weight-bold">@((category.NameAR, category.NameEN).Localize(language))</span>
                                     </td>
                                     <td class="align-middle text-center">
-                                       <img src="../assets/img/team-3.jpg" class="avatar avatar-sm border-radius-lg" alt="user2">
-    
+                                       <img src="~/Uploads/Categories/@category.Image" class="avatar avatar-sm border-radius-lg" alt="user2">
                                     </td>
 
                                     <td class="align-middle text-center">
