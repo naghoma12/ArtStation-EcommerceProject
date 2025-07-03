@@ -285,31 +285,32 @@
 }
 // Media fixes for iPhone 5 like resolutions
 @include media-breakpoint-down(xl) {
-  .g-sidenav-show {
-    &.rtl {
-      .sidenav {
-        transform: translateX($navbar-vertical-open-width + 1.5);
-      }
-    }
+    .g-sidenav-show {
+        &.rtl {
+            .sidenav {
+                transform: translateX(17.125rem);
+            }
+        }
 
-    &:not(.rtl) {
-      .sidenav {
-        transform: translateX(-($navbar-vertical-open-width + 1.5));
-      }
-    }
+        &:not(.rtl) {
+            .sidenav {
+                transform: translateX(17.125rem) !important;
+                //transform: translateX($navbar-vertical-open-width + 1.5);
+            }
+        }
 
-    .sidenav {
-      &.fixed-start+.main-content {
-        margin-left: 0 !important;
-      }
-    }
+        .sidenav {
+            &.fixed-start + .main-content {
+                margin-left: 0 !important;
+            }
+        }
 
-    &.g-sidenav-pinned {
-      .sidenav {
-        transform: translateX(0);
-      }
+        &.g-sidenav-pinned {
+            .sidenav {
+                transform: translateX(0);
+            }
+        }
     }
-  }
 }
 
 .navbar-vertical {

@@ -51,18 +51,18 @@
                                     </td>
 
                                     <td class="align-middle text-center">
-                                        <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                                        <a asp-action="Details" asp-route-id="@category.Id" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
                                             @(("تفاصيل","Details").Localize(language))
                                         </a>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                                        <a asp-action="Edit" asp-route-id="@category.Id" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
                                             @(("تعديل" , "Edit").Localize(language))
 
                                         </a>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                                        <a asp-action="Delete" asp-route-id="@category.Id" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
                                             @(("حذف", "Delete").Localize(language))
                                         </a>
                                     </td>

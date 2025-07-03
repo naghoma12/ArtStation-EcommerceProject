@@ -47,6 +47,7 @@ namespace ArtStation_Dashboard.Controllers
             var item = await _unitOfWork.Repository<Category>().GetByIdAsync(id);
             if (item == null) return NotFound();
             var itemMapped = _mapper.Map<Category, CategoryVM>(item);
+            
             return View(itemMapped);
         }
 
