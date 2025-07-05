@@ -90,7 +90,7 @@ namespace ArtStation.Controllers
 
         //Register EndPoint Domain/Api/Account/register
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> VerifyCode(RegisterDto registerDto)
+        public async Task<ActionResult<UserDto>> VerifyCode(RegisterDto registerDto,string? fcmToken)
         {
              try
                 {
@@ -109,7 +109,8 @@ namespace ArtStation.Controllers
                         FullName = registerDto.FullName,
                         PhoneNumber = registerDto.PhoneNumber,
                         UserName = registerDto.PhoneNumber,
-                        PhoneNumberConfirmed = true
+                        PhoneNumberConfirmed = true,
+                        FCMToken = fcmToken ?? string.Empty
                     };
 
                     var result = await _userManager.CreateAsync(user);
@@ -229,7 +230,7 @@ namespace ArtStation.Controllers
         //Login EndPoint Domain/Api/Account/login
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto, string? fcmToken)
         {
             try
             {
@@ -246,6 +247,16 @@ namespace ArtStation.Controllers
 
                 await _signInManager.SignInAsync(user, isPersistent: false);
 
+                user.FCMToken = fcmToken ?? string.Empty;
+                var updateResult = await _userManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
+                {
+                    return BadRequest(new
+                    {
+                        message = "حدث خطأ غير متوقع أثناء تسجيل الدخول.",
+                        data = (object?)null
+                    });
+                }
                 return Ok(new
                 {
                     message = ControllerMessages.LoginSuccessfull,

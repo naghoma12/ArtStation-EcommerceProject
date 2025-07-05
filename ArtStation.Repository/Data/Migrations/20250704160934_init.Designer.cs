@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArtStation.Repository.Data.Migrations
 {
     [DbContext(typeof(ArtStationDbContext))]
-    [Migration("20250703005754_init")]
+    [Migration("20250704160934_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -307,16 +307,13 @@ namespace ArtStation.Repository.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("ArtStation.Core.Entities.Notification", b =>
+            modelBuilder.Entity("ArtStation.Core.Entities.NotificationRequest", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AppUserId")
-                        .HasColumnType("int");
 
                     b.Property<string>("ContentAR")
                         .IsRequired()
@@ -354,7 +351,7 @@ namespace ArtStation.Repository.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Notifications");
                 });
@@ -1030,15 +1027,15 @@ namespace ArtStation.Repository.Data.Migrations
                     b.Navigation("Shipping");
                 });
 
-            modelBuilder.Entity("ArtStation.Core.Entities.Notification", b =>
+            modelBuilder.Entity("ArtStation.Core.Entities.NotificationRequest", b =>
                 {
-                    b.HasOne("ArtStation.Core.Entities.Identity.AppUser", "AppUser")
-                        .WithMany("Notifications")
-                        .HasForeignKey("AppUserId")
+                    b.HasOne("ArtStation.Core.Entities.Identity.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AppUser");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ArtStation.Core.Entities.Order.Order", b =>
@@ -1307,8 +1304,6 @@ namespace ArtStation.Repository.Data.Migrations
                     b.Navigation("Address");
 
                     b.Navigation("Favourites");
-
-                    b.Navigation("Notifications");
                 });
 
             modelBuilder.Entity("ArtStation.Core.Entities.Order.Order", b =>

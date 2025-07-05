@@ -32,7 +32,7 @@ namespace ArtStation.Core.Entities.Identity
         public IList<Address>? Address { get; set; } =new List<Address>();
 
         public ICollection<Favourite> Favourites { get; set; } = new List<Favourite>();
-        public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+       // public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
 
     }

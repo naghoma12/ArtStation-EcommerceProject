@@ -233,7 +233,6 @@ namespace ArtStation.Repository.Data.Migrations
                     ContentAR = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ContentEN = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    AppUserId = table.Column<int>(type: "int", nullable: false),
                     IsRead = table.Column<bool>(type: "bit", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -244,8 +243,8 @@ namespace ArtStation.Repository.Data.Migrations
                 {
                     table.PrimaryKey("PK_Notifications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Notifications_AspNetUsers_AppUserId",
-                        column: x => x.AppUserId,
+                        name: "FK_Notifications_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -596,7 +595,7 @@ namespace ArtStation.Repository.Data.Migrations
                         column: x => x.ReviewId,
                         principalTable: "Reviews",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -711,9 +710,9 @@ namespace ArtStation.Repository.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Notifications_AppUserId",
+                name: "IX_Notifications_UserId",
                 table: "Notifications",
-                column: "AppUserId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_AddressId",
