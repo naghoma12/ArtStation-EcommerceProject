@@ -41,13 +41,13 @@ namespace ArtStation.Controllers
             {
                 return Ok(new {
                     Message = ControllerMessages.CategoriesNotFound ,
-                    List = list
+                    CategoryList = list
                 });
             }
             return Ok(new
             {
                 Message = ControllerMessages.CategoriesFound,
-                List = list
+                CategoryList = list
             });
         }
 
@@ -66,7 +66,7 @@ namespace ArtStation.Controllers
             return Ok(new
             {
                 Message = ControllerMessages.CategoryFound,
-                Category = category
+                CategoryDetails = category
             });
         }
     }

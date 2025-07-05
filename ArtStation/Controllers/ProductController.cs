@@ -36,13 +36,13 @@ namespace ArtStation.Controllers
                 return Ok(new
                 {
                     Message = ControllerMessages.ProductsListNotFound,
-                    List = products
+                    ProductList = products
                 });
             }
             return Ok(new
             {
                 Message = ControllerMessages.ProductsList,
-                List = products
+                ProductList = products
             });
         }
 
@@ -59,13 +59,13 @@ namespace ArtStation.Controllers
                 return Ok(new
                 {
                     Message = ControllerMessages.ProductsListNotFound,
-                    List = products
+                    ProductList = products
                 });
             }
             return Ok(new
             {
                 Message = ControllerMessages.ProductsList,
-                List = products
+                ProductList = products
             });
         }
 
@@ -81,13 +81,13 @@ namespace ArtStation.Controllers
                 return Ok(new
                 {
                     Message = ControllerMessages.OffersNotFound,
-                    List = offers
+                   OfferList = offers
                 });
             }
             return Ok(new
             {
                 Message = ControllerMessages.OffersList,
-                List = offers
+                OfferList = offers
             });
         }
 
@@ -105,13 +105,13 @@ namespace ArtStation.Controllers
                 return Ok(new
                 {
                     Message = ControllerMessages.ProductsListNotFound,
-                    List = products
+                    ProductList = products
                 });
             }
             return Ok(new
             {
                 Message = ControllerMessages.ProductsList,
-                List = products
+                ProductList = products
             });
 
         }
@@ -131,7 +131,7 @@ namespace ArtStation.Controllers
             return Ok(new
             {
                 Message = ControllerMessages.ProductFound,
-                Product = product
+                ProductDetails = product
             });
         }
 
@@ -154,13 +154,13 @@ namespace ArtStation.Controllers
                 return Ok(new
                 {
                     Message = ControllerMessages.ProductsListNotFound,
-                    List = products
+                    ProductList = products
                 });
             }
             return Ok(new
             {
                 Message = ControllerMessages.ProductsList,
-                List = products
+                ProductList = products
             });
         }
 
@@ -185,13 +185,13 @@ namespace ArtStation.Controllers
                 return Ok(new
                 {
                     Message = ControllerMessages.ProductNotFound,
-                    List = products
+                    ProductList = products
                 });
             }
             return Ok(new
             {
                 Message = ControllerMessages.ProductsList,
-                List = products
+                ProductList = products
             });
         }
 
@@ -208,13 +208,13 @@ namespace ArtStation.Controllers
                 return Ok(new
                 {
                     Message = ControllerMessages.ProductsListNotFound,
-                    List = aiProducts
+                    ProductList = aiProducts
                 });
             }
             return Ok(new
             {
                 Message = ControllerMessages.ProductsList,
-                List = aiProducts
+                ProductList = aiProducts
             });
         }
         [HttpGet("GetBrands")]
@@ -229,13 +229,13 @@ namespace ArtStation.Controllers
                 return Ok(new
                 {
                     Message = ControllerMessages.BrandsNotFound,
-                    List = brands
+                    ProductList = brands
                 });
             }
             return Ok(new
             {
                 Message = ControllerMessages.BrandsList,
-                List = brands
+                ProductList = brands
             });
         }
 
@@ -248,13 +248,13 @@ namespace ArtStation.Controllers
                 return Ok(new
                 {
                     Message = ControllerMessages.ProductsListNotFound,
-                    List = list
+                    ProductList = list
                 });
             }
             return Ok(new
             {
                 Message = ControllerMessages.ProductsList,
-                List = list
+                ProductList = list
             });
         }
     }

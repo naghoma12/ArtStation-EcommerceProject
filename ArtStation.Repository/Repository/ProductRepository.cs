@@ -346,7 +346,7 @@ namespace ArtStation.Repository.Repository
             if (!string.IsNullOrEmpty(brand))
             {
                 products = products
-                    .Where(p => p.Brand == brand)
+                    .Where(p => p.Brand.ToLower() == brand.ToLower())
                     .ToList();
             }
             if (men)
@@ -377,6 +377,17 @@ namespace ArtStation.Repository.Repository
                     .ToList();
             }
             return products;
+        }
+
+        public async Task<IEnumerable<Product>> GetProducts()
+        {
+            return await _context.Products
+                .Where(p => p.IsActive && !p.IsDeleted)
+                .Include(p => p.ProductPhotos)
+                .Include(p => p.ProductSizes)
+                .Include(p => p.Sales)
+                .Include(p => p.Category)
+                .ToListAsync();
         }
 
     }

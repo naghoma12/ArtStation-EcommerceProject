@@ -23,5 +23,6 @@ namespace ArtStation.Dtos.AuthDtos
        // [Required(ErrorMessageResourceType = typeof(Messages),
        //ErrorMessageResourceName = "RequiredField")]
         public string? Code { get; set; }
+
     }
 }

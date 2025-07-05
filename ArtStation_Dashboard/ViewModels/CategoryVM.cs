@@ -12,7 +12,7 @@ namespace ArtStation_Dashboard.ViewModels
         public string NameEN { get; set; }
         public IFormFile? PhotoFile { get; set; }
         public DateTime CreatedDate { get; set; }
-        public string? PhotoURL { get; set; }
+        public string? Image { get; set; }
         public string? FilePath { get; set; }
 
     }

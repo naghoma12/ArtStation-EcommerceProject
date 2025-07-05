@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using ArtStation_Dashboard.ViewModels;
 using ArtStation_Dashboard.Helper;
 using Microsoft.AspNetCore.Localization;
+using ArtStation_Dashboard.Resource;
 
 namespace ArtStation_Dashboard.Controllers
 {
@@ -41,9 +42,12 @@ namespace ArtStation_Dashboard.Controllers
         // Get Category By Id --GET
         public async Task<IActionResult> Details(int id)
         {
+            string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName;
+            ViewData["Language"] = language;
             var item = await _unitOfWork.Repository<Category>().GetByIdAsync(id);
             if (item == null) return NotFound();
             var itemMapped = _mapper.Map<Category, CategoryVM>(item);
+            
             return View(itemMapped);
         }
 
@@ -51,6 +55,8 @@ namespace ArtStation_Dashboard.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName;
+            ViewData["Language"] = language;
             return View();
         }
         //Create New Category --post  Category/Create
@@ -64,26 +70,23 @@ namespace ArtStation_Dashboard.Controllers
                 {
                     if (category.PhotoFile != null)
                     {
-                        category.PhotoURL = Guid.NewGuid().ToString() + Path.GetExtension(category.PhotoFile.FileName);
+                        category.Image = Guid.NewGuid().ToString() + Path.GetExtension(category.PhotoFile.FileName);
                         await FileSettings.UploadFile(category.PhotoFile, "Categories", _environment.WebRootPath);
                     }
-                    //else
-                    //{
-                    //    ModelState.AddModelError("Image", "Please Enter Photo");
-                    //}
                     var CatMapped = _mapper.Map<CreatedCategory, Category>(category);
                     _unitOfWork.Repository<Category>().Add(CatMapped);
                     var count = await _unitOfWork.Complet();
-
+                    string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
                     if (count > 0)
-                        TempData["message"] = "تم إضافة تفاصيل القسم بنجاح"; 
+                    {
+                        TempData["message"] = ("تم إضافة تفاصيل القسم بنجاح","Category details added successfully").Localize(language); 
+                        return RedirectToAction(nameof(Index));
+                    }
                     else
-                        TempData["message"] = "فشلت عملية الإضافه";
-                    return RedirectToAction(nameof(Index));
+                        TempData["message"] = ("فشلت عملية الإضافه", "The Addion operration failed").Localize(language);
                 }
                 catch (Exception ex)
                 {
-
                     ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
                 }
             }
@@ -110,9 +113,9 @@ namespace ArtStation_Dashboard.Controllers
                 {
                     if (categoryVM.PhotoFile != null)
                     {
-                        FileSettings.DeleteFile("Categories",categoryVM.PhotoURL,_environment.WebRootPath);
-                        categoryVM.PhotoURL = Guid.NewGuid().ToString() + Path.GetExtension(categoryVM.PhotoFile.FileName);
-                        await FileSettings.UploadFile(categoryVM.PhotoFile, "Categories", _environment.WebRootPath);
+                        FileSettings.DeleteFile("Categories",categoryVM.Image,_environment.WebRootPath);
+                        categoryVM.Image = Guid.NewGuid().ToString() + Path.GetExtension(categoryVM.PhotoFile.FileName);
+                        categoryVM.Image = await FileSettings.UploadFile(categoryVM.PhotoFile, "Categories", _environment.WebRootPath);
                     }
                     var catMapped = _mapper.Map<CategoryVM, Category>(categoryVM);
                    // catMapped.FilePath = Path.Combine(_environment.ContentRootPath, "wwwroot\\Uploads\\category", catMapped.PhotoURL);
@@ -137,6 +140,8 @@ namespace ArtStation_Dashboard.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
+            string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
+            ViewData["Language"] = language;
             return await Details(id);
         }
 
@@ -145,23 +150,24 @@ namespace ArtStation_Dashboard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id, CategoryVM categoryVM)
         {
+             string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
             try
             {
-                var category = _mapper.Map<CategoryVM, Category>(categoryVM);
-                FileSettings.DeleteFile("Categories", categoryVM.PhotoURL, _environment.WebRootPath);
-                category.IsDeleted = true;
-                category.IsActive = false;
-                _unitOfWork.Repository<Category>().Update(category);
+                var  existCategory = await _unitOfWork.Repository<Category>().GetByIdAsync(id);
+                FileSettings.DeleteFile("Categories", existCategory.Image, _environment.WebRootPath);
+                existCategory.IsDeleted = true;
+                existCategory.IsActive = false;
+                _unitOfWork.Repository<Category>().Update(existCategory);
                 var count = await _unitOfWork.Complet();
                 if (count > 0)
                 {
-                    TempData["Message"] = "تم حذف تفاصيل القسم بنجاح";
+                    TempData["Message"] = ("تم حذف تفاصيل القسم بنجاح" , "Category deleted successfully").Localize(language);
                     return RedirectToAction(nameof(Index));
                 }
             }
             catch
             {
-                TempData["Message"] = "فشلت عملية الحذف";
+                TempData["Message"] = ("فشلت عملية الحذف","The deletion operation failed").Localize(language);
             }
                return View(categoryVM);
         }

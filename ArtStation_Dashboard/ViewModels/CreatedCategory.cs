@@ -13,6 +13,6 @@ namespace ArtStation_Dashboard.ViewModels
         public string NameEN { get; set; }
         [Required(ErrorMessageResourceType = typeof(Messages), ErrorMessageResourceName = "RequiredField")]
         public IFormFile PhotoFile { get; set; }
-        public string? PhotoURL { get; set; }
+        public string? Image { get; set; }
     }
 }

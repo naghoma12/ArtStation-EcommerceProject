@@ -10,6 +10,8 @@ using ArtStation.Repository;
 using ArtStation.Repository.Data;
 using ArtStation.Repository.Repository;
 using ArtStation.Services;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +37,10 @@ namespace ArtStation
                 //    options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
                 //})
                 ;
+            FirebaseApp.Create(new AppOptions()
+            {
+                Credential = GoogleCredential.FromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, builder.Configuration["Firebase:ServiceAccountPath"])),
+            });
             builder.Services.AddScoped<IAuthorizationMiddlewareResultHandler, ValidationAuthorization>();
             ;
             builder.Services.AddDbContext<ArtStationDbContext>(
@@ -58,18 +64,18 @@ namespace ArtStation
                 var connection = builder.Configuration.GetConnectionString("Redis");
                 return ConnectionMultiplexer.Connect(connection);
             });
-            builder.Services.AddScoped<ICartRepository, CartRepository>();
-
             builder.Services.AddIdentityServices(builder.Configuration);
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
             builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
             builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
             builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
             builder.Services.AddScoped(typeof(IFavouriteRepository), typeof(FavouriteRepository));
             builder.Services.AddScoped(typeof(IAddressRepository), typeof(AddressRepository));
             builder.Services.AddScoped(typeof(IBannerRepository), typeof(BannerRepository));
             builder.Services.AddScoped(typeof(ICartService), typeof(CartService));
 
+            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
             builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
 
             builder.Services.AddScoped(typeof(IOrderService), typeof(OrderService));
