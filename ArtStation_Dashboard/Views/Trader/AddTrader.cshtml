@@ -11,10 +11,10 @@
         <div class="container">
             <div class="row">
               
-                <div class="col-xl-7 col-lg-6 col-md-8 d-flex flex-column m-auto ">
+                <div class="col-xl-9 col-lg-6 col-md-8 d-flex flex-column m-auto ">
                     <div class="card card-plain">
                         <div class="card-header">
-                            <h4 class="font-weight-bolder">Add New Trader Account </h4>
+                            <h4 class="font-weight-bolder">@(("اضف حساب جديد لشركه", "Add New Company Account").Localize(lang)) </h4>
                             <p class="mb-0"></p>
                         </div>
                         <div class="card-body">
@@ -22,43 +22,57 @@
                                 <div class="input-group input-group-outline mb-3">
                                     <label asp-for="UserName" class="form-label">@(("اسم المستخدم", "User Name").Localize(lang))</label>
                                     <input asp-for="UserName" type="text" class="form-control">
+                                    <br />
+                                    <span asp-validation-for="UserName" class="text-danger"></span>
                                 </div>
                                 <div class="input-group input-group-outline mb-3">
                                     <label class="form-label"> @(("اسم الشركة", "Company Name").Localize(lang))</label>
                                     <input asp-for="DispalyName" type="text" class="form-control">
-                                </div>
+                                    <br />
+                                    <span asp-validation-for="DispalyName" class="text-danger"></span>
+                                </div> 
                                 <div class="input-group input-group-outline mb-3">
                                     <label class="form-label">@(("الايميل", "Email").Localize(lang))</label>
                                     <input asp-for="Email" class="form-control">
+                                    <span asp-validation-for="Email" class="text-danger"></span>
                                 </div>
                                 <div class="input-group input-group-outline mb-3">
                                     <label class="form-label">@(("رقم الموبايل", "Phone Number").Localize(lang)) </label>
                                     <input asp-for="PhoneNumber" class="form-control">
+                                    <br />
+                                    <br />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                                 </div>
                                 <div class="input-group input-group-outline mb-3">
                                     <label class="form-label">@(("الجنسيه", "Nationality").Localize(lang))</label>
                                     <input asp-for="Nationality" class="form-control">
+                                    <span asp-validation-for="Nationality" class="text-danger"></span>
                                 </div>
                                
                                 
                                 <div class="form-group form-control input-group input-group-outline mb-3">
-                                    <label class="form-label fw-bold fs-2">@(("الصوره الشركه", "Company Logo").Localize(lang))</label>
+                                    <label class="form-label ">@(("صوره الشركه", "Company Logo").Localize(lang))</label>
                                     <input asp-for="PhotoFile" class="form-control " type="file" id="formFile" />
+                                    <span asp-validation-for="PhotoFile" class="text-danger"></span>
                                 </div>
-                                <select asp-for="City" class="form-control form-select-lg input-group-outline mb-3" aria-label="Large select example"
+                                @* <div class="input-group input-group-outline mb-3"> *@
+                                <select asp-for="City" class="input-group input-group-outline mb-3 " aria-label="Large select example"
                                         asp-items="@(Model.Cities != null ?new SelectList(Model.Cities,"City","City"): new SelectList(""))">
-                                    <option value="0">Select a City</option>
-                                </select>
+                                    <option value=" ">Select a City</option>
 
+                                </select>
+                                @* </div> *@
 
                                 <div class="input-group input-group-outline mb-3">
                                     <label class="form-label">@(("كلمه السر", "Password").Localize(lang))</label>
                                     <input asp-for="Password" type="password" class="form-control">
+                                    <br />
+                                    <span asp-validation-for="Password" class="text-danger"></span>
                                 </div>
                               
                               
                                 <div class="text-center">
-                                    <button type="submit" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Add Trader Account</button>
+                                    <button type="submit" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">@(("اضف حساب جديد", "Add New Account").Localize(lang))</button>
                                 </div>
                             </form>
                         </div>

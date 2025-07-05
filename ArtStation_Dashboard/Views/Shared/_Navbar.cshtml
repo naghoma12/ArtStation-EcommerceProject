@@ -20,15 +20,20 @@
                 </div>
             </div>
             <ul class="navbar-nav  justify-content-end">
-                @* <li class="nav-item d-flex align-items-center"> *@
-                @*     <a href="javascript:;" class="nav-link text-body font-weight-bold px-0"> *@
-                @*         <i class="fa fa-user me-sm-1"></i> *@
-                @*         <span class="d-sm-inline d-none">Sign In</span> *@
-                @*     </a> *@
-                @* </li> *@
+                <li class="nav-item d-flex align-items-center"> 
+                    <button type="button" class="btn bg-gradient-secondary btn-tooltip" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Tooltip on bottom" data-container="body" data-animation="true">
+                        <span class="">
+                            <i class="fa-solid fa-user me-sm-1"></i>
+                            <a asp-action="Logout" asp-controller="Auth">@(("تسجيل الخروج", "Logout").Localize(lang))</a></span>
+                       
+                    </button>
+                        @* <i class="fa fa-user me-sm-1"></i> *@
+                        @* <span class="d-sm-inline d-none ms-2 me-2"><a asp-action="Logout" asp-controller="Auth">@(("تسجيل الخروج", "Logout").Localize(lang))</a></span> *@
+                    
+               </li>
 
                 <li>
-                    <div class="dropdown">
+                    <div class="dropdown ms-2 me-2">
                         <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             @(("اللغه", "Language").Localize(lang))
                         </button>

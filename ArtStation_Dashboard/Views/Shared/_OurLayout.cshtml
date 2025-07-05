@@ -25,11 +25,15 @@
     </title>
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+    
     <!-- Nucleo Icons -->
     <link href="~/assets/css/nucleo-icons.css" rel="stylesheet" />
     <link href="~/assets/css/nucleo-svg.css" rel="stylesheet" />
     <!-- Font Awesome Icons -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <!-- Latest Font Awesome via CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <!-- CSS Files -->
@@ -60,6 +64,14 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-white " asp-action="Index" asp-controller="Trader">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-building"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">@(("الشركات","Companies").Localize(lang))</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-white " href="./pages/tables.html">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">table_view</i>
@@ -75,7 +87,7 @@
                         <span class="nav-link-text ms-1">Billing</span>
                     </a>
 
-                    <a asp-action="AddTrader" asp-controller="Trader">Trader</a>
+                
 
                 </li>
                 <li class="nav-item">

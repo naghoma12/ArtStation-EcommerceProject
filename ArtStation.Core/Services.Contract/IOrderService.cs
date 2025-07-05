@@ -11,7 +11,7 @@ namespace ArtStation.Core.Services.Contract
 {
     public interface IOrderService
     {
-        Task<Order?> CreateOrderAsync(string CustomerEmail, string CartId,int addressId);
+        Task<(Order? order, string? redirectUrl, string? paymentToken)> CreateOrderAsync(AppUser user, string CartId,int addressId,string paymentType);
         Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string PhoneNumber);
         Task<OrderWithItemsDto> GetOrderForUserAsync(int orderid);
 

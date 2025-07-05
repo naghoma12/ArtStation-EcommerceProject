@@ -117,13 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AddTraderSucessfully" xml:space="preserve">
-    <value>تم إضافة حساب الشركة بنجاح!</value>
+  <data name="MaxName" xml:space="preserve">
+    <value>اكبر عدد حروف هوا 20 حرف </value>
   </data>
-  <data name="Dashboard" xml:space="preserve">
-    <value>لوحة التحكم</value>
-  </data>
-  <data name="WelcomeWhenLogin" xml:space="preserve">
-    <value>مرحبا بك فى Art Station !</value>
+  <data name="RequiredField" xml:space="preserve">
+    <value>هذا الحقل مطلوب!</value>
   </data>
 </root>

@@ -3,6 +3,7 @@ using ArtStation.Core.Entities;
 using ArtStation.Core.Entities.Identity;
 using ArtStation.Core.Roles;
 using ArtStation_Dashboard.Helper;
+using ArtStation_Dashboard.Resource;
 using ArtStation_Dashboard.ViewModels.User;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
@@ -32,27 +33,32 @@ namespace ArtStation_Dashboard.Controllers
             _environment = environment;
 
         }
-        //public async Task<IActionResult> Index()
-        //{
-        //    var users = await _userManager.Users.Select(u => new UserViewModel()
-        //    {
-        //        Id = u.Id,
-        //        Photo = u.Photo,
-        //        UserName = u.UserName,
+        public async Task<IActionResult> Index(int page = 1, int pageSize =5)
+        {
+            var traderUsers = await _userManager.GetUsersInRoleAsync(Roles.Trader);
 
+            var totalUsers = traderUsers.Count;
+            var totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
 
-        //        IsCompany = u.IsCompany,
-        //        Roles = new List<string>()
-        //    }).Where(u => u.IsCompany == false).ToListAsync();
+            var users = traderUsers
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(u => new TraderViewModel
+                {
+                    Id = u.Id,
+                    Photo = u.Image,
+                    UserName = u.UserName,
+                    DispalyName = u.FullName,
+                    Email = u.Email,
+                    PhoneNumber = u.PhoneNumber
+                }).ToList();
 
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
 
-        //    foreach (var user in users)
-        //    {
-        //        user.Roles = await _userManager.GetRolesAsync(await _userManager.FindByIdAsync(user.Id));
-        //    }
+            return View(users);
+        }
 
-        //    return View(users);
-        //}
 
         public async Task<IActionResult> AddTrader()
         {
@@ -67,59 +73,67 @@ namespace ArtStation_Dashboard.Controllers
         [HttpPost]
         public async Task<IActionResult> AddTrader(TraderViewModel addUser)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(addUser);
+            }
+
             try
             {
+                // Upload photo if exists
                 if (addUser.PhotoFile != null)
                 {
-                    addUser.Photo = await FileSettings.UploadFile(addUser.PhotoFile,"Users",_environment.WebRootPath);
+                    addUser.Photo = await FileSettings.UploadFile(addUser.PhotoFile, "Users", _environment.WebRootPath);
                 }
 
-                // Create a new AppUser object
-                var user = new AppUser()
+                // Create AppUser object
+                var user = new AppUser
                 {
                     UserName = addUser.UserName,
-                    FullName=addUser.DispalyName,
+                    FullName = addUser.DispalyName,
                     Email = addUser.Email,
                     PhoneNumber = addUser.PhoneNumber,
-                    Nationality= addUser.Nationality,
-                    Country=addUser.City,
-
-
-                    Image = $"Uploads/Users/{addUser.Photo}"
+                    Nationality = addUser.Nationality,
+                    Country = addUser.City,
+                    Image = string.IsNullOrEmpty(addUser.Photo) ? null : $"Uploads/Users/{addUser.Photo}"
                 };
 
-                // Create the user in the system
+                // Create the user
                 var createUserResult = await _userManager.CreateAsync(user, addUser.Password);
 
-                if (createUserResult.Succeeded)
+                if (!createUserResult.Succeeded)
                 {
-                    // Add the role to the user after the user has been successfully created
-                 
-                        var addRoleResult = await _userManager.AddToRoleAsync(user, Roles.Trader);
-
-                        if (!addRoleResult.Succeeded)
-                        {
-                            ModelState.AddModelError(string.Empty, "Failed to add role to the user.");
-                            return View(addUser);
-                        }
-                    
-                    
-
-                    return RedirectToAction("Index","Home");
-                }
-                else
-                {
-                    // If user creation failed, add the errors to the ModelState
                     foreach (var error in createUserResult.Errors)
                     {
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
+
+                    return View(addUser);
                 }
+
+                // Assign role
+                var addRoleResult = await _userManager.AddToRoleAsync(user, Roles.Trader);
+
+                if (!addRoleResult.Succeeded)
+                {
+                    foreach (var error in addRoleResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+
+                    
+
+                    return View(addUser);
+                }
+                TempData["SuccessMessage"] = ViewMessages.AddTraderSucessfully;
+                return RedirectToAction("Index", "Trader");
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
+                ModelState.AddModelError(string.Empty, ex.InnerException?.Message ?? ex.Message);
+                return View(addUser);
             }
+        }
 
     }
 }

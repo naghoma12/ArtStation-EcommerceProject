@@ -20,6 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Resource\AnnotationMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AnnotationMessages.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resource\ViewMessages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -28,6 +33,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Resource\AnnotationMessages.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AnnotationMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resource\ViewMessages.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ViewMessages.Designer.cs</LastGenOutput>

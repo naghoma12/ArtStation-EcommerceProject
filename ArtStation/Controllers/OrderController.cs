@@ -6,6 +6,7 @@ using ArtStation.Core.Resources;
 using ArtStation.Core.Roles;
 using ArtStation.Core.Services.Contract;
 using ArtStation.Dtos.Order;
+using ArtStation.Extensions;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -56,44 +57,55 @@ namespace ArtStation.Controllers
 
         [Authorize(Roles =Roles.Customer)]
         [HttpPost]
+      
         public async Task<ActionResult> CreateOrder(OrderDto orderDto)
         {
             try
             {
-
-               
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null)
                 {
                     return Unauthorized(new { Message = "المستخدم غير مصرح له" });
                 }
 
+                // استدعاء الخدمة مع إرجاع order + paymentToken + redirectUrl
+                var (order, redirectUrl, paymentToken) = await _orderService.CreateOrderAsync(
+                    user,
+                    orderDto.CartId,
+                    orderDto.AddressId,
+                    orderDto.PaymentType
+                );
 
-                var order = await _orderService.CreateOrderAsync(user.PhoneNumber, orderDto.CartId, orderDto.AddressId);
                 if (order == null)
                 {
-                    return BadRequest(new { Message = ControllerMessages.OrderFailed});
+                    return BadRequest(new { Message = ControllerMessages.OrderFailed });
                 }
+
+                // حذف السلة بعد إنشاء الطلب
                 var cart = await _cartRepository.GetCartAsync(orderDto.CartId);
-                var orderData = await _cartService.MapCartToReturnDto(cart,"");
-                var deletedcart = await _cartRepository.DeleteCartAsync(orderDto.CartId);
+                var orderData = await _cartService.MapCartToReturnDto(cart, "");
+                await _cartRepository.DeleteCartAsync(orderDto.CartId);
 
                 return Ok(new
                 {
                     Message = ControllerMessages.OrderSuccesfully,
-                    data = new { orderData.CartSummary ,orderData.Address}
-                }
-                );
+                    OrderId = order.Id,
+                    PaymentType = orderDto.PaymentType,
+                    PaymentToken = paymentToken,
+                    PaymentUrl = redirectUrl,
+                    Data = new
+                    {
+                        orderData.CartSummary,
+                        orderData.Address
+                    }
+                });
             }
             catch (Exception ex)
             {
-
                 _logger.LogError(ex, "Error occurred while creating the order.");
-
                 return BadRequest(new { Message = "حدث خطأ غير متوقع. يرجى المحاولة لاحقًا." });
             }
         }
-
 
 
         [Authorize]
