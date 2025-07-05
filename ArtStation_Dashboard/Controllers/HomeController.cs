@@ -1,4 +1,5 @@
 using ArtStation_Dashboard.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -23,6 +24,7 @@ namespace ArtStation_Dashboard.Controllers
 
             return Redirect(Request.Headers["Referer"].ToString());
         }
+        [Authorize(AuthenticationSchemes = "Cookies")]
         public IActionResult Index()
         {
             return View();

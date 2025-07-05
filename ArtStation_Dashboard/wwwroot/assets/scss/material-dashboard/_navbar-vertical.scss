@@ -283,19 +283,19 @@
     }
   }
 }
-// Media fixes for iPhone 5 like resolutions
+ //Media fixes for iPhone 5 like resolutions
 @include media-breakpoint-down(xl) {
     .g-sidenav-show {
         &.rtl {
             .sidenav {
-                transform: translateX(17.125rem);
+                transform: translateX($navbar-vertical-open-width + 1.5);
             }
         }
 
         &:not(.rtl) {
             .sidenav {
-                transform: translateX(17.125rem) !important;
-                //transform: translateX($navbar-vertical-open-width + 1.5);
+                //transform: translateX(-17.125rem) !important;
+                transform: translateX(-($navbar-vertical-open-width + 1.5));
             }
         }
 
@@ -312,6 +312,7 @@
         }
     }
 }
+
 
 .navbar-vertical {
   &.bg-white {

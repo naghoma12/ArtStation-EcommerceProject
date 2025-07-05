@@ -21,7 +21,8 @@ namespace ArtStation.Core.Entities.Identity
     public class AppUser : IdentityUser<int>
     {
         public string FullName { get; set; }
-      
+
+     
         public string? Country { get; set; }
         public Gender? Gender { get; set; }
         public DateOnly? BirthDay { get; set; }

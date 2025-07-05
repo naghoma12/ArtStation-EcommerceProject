@@ -35,6 +35,7 @@ namespace ArtStation.Repository.Data
             .WithMany() // Or .WithMany(u => u.Products) if a reverse nav exists
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Restrict);
+     
 
         }
 
