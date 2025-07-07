@@ -89,15 +89,17 @@ namespace ArtStation.Controllers
                 return Ok(new
                 {
                     Message = ControllerMessages.OrderSuccesfully,
-                    OrderId = order.Id,
-                    PaymentType = orderDto.PaymentType,
-                    PaymentToken = paymentToken,
-                    PaymentUrl = redirectUrl,
-                    Data = new
-                    {
-                        orderData.CartSummary,
-                        orderData.Address
+                    data = new {
+                        OrderId = order.Id,
+                        PaymentType = orderDto.PaymentType,
+                        //PaymentToken = paymentToken,
+                        PaymentUrl = redirectUrl,
+                        
+                            orderData.CartSummary,
+                            orderData.Address
+               
                     }
+                   
                 });
             }
             catch (Exception ex)

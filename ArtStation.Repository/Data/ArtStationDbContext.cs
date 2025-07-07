@@ -1,5 +1,6 @@
 ﻿using ArtStation.Core.Entities;
 using ArtStation.Core.Entities.Identity;
+using ArtStation.Core.Entities.Payment;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

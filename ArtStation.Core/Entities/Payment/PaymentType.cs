@@ -5,9 +5,9 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ArtStation.Core.Helper.PaymobDtos
+namespace ArtStation.Core.Entities.Payment
 {
-  public  enum PaymentType
+    public enum PaymentType
     {
         [EnumMember(Value = "card")]
         Card,

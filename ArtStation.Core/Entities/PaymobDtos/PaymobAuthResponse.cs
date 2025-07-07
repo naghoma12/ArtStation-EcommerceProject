@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ArtStation.Dtos.PaymobDtos
+namespace ArtStation.Core.Entities.PaymobDtos
 {
     public class PaymobAuthResponse
     {

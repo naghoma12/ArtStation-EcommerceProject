@@ -4,6 +4,7 @@ using ArtStation.Repository.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArtStation.Repository.Data.Migrations
 {
     [DbContext(typeof(ArtStationDbContext))]
-    partial class ArtStationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250705234215_paymenttrans")]
+    partial class paymenttrans
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -486,11 +489,7 @@ namespace ArtStation.Repository.Data.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("OrderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OrderId1")
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("PaymentDate")
@@ -505,13 +504,12 @@ namespace ArtStation.Repository.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("TransactionId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("TransactionId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId1");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("PaymentTransactions");
                 });
@@ -1193,7 +1191,7 @@ namespace ArtStation.Repository.Data.Migrations
                 {
                     b.HasOne("ArtStation.Core.Entities.Order.Order", "Order")
                         .WithMany()
-                        .HasForeignKey("OrderId1")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

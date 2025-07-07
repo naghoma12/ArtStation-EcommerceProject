@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using ArtStation.Repository.Data;
 using Microsoft.EntityFrameworkCore;
 using ArtStation_Dashboard.ViewModels;
+using System.Linq.Expressions;
+using Twilio.TwiML.Voice;
 
 namespace ArtStation.Repository
 {
@@ -71,7 +73,12 @@ namespace ArtStation.Repository
             return await _context.Set<T>()
            .Where(z => z.IsDeleted == false
            && z.IsActive == true
-          ).ToListAsync();
+            ).ToListAsync();
+        }
+
+        public async Task<T?> FindAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _context.Set<T>().FirstOrDefaultAsync(predicate);
         }
     }
 }

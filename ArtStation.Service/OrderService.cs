@@ -13,8 +13,9 @@ using System.Globalization;
 using ArtStation.Core.Helper;
 using Twilio.Types;
 using Microsoft.AspNetCore.Identity;
-using ArtStation.Core.Helper.PaymobDtos;
 using Microsoft.Extensions.Configuration;
+using ArtStation.Core.Entities.Payment;
+using ArtStation.Core.Entities.PaymobDtos;
 
 namespace ArtStation.Services
 {
@@ -119,7 +120,10 @@ namespace ArtStation.Services
 
                 var paymobOrderId = await _paymentService.CreateOrderAsync(token, dto);
                 paymentToken = await _paymentService.GeneratePaymentKeyAsync(token, paymobOrderId, dto);
-                order.PaymentId = paymentToken;
+                order.PaymentToken = paymentToken;
+                
+                order.PaymobOrderId = paymobOrderId;
+                order.PaymentMethod = paymentTypeEnum; 
 
                 switch (paymentType.ToLower())
                 {

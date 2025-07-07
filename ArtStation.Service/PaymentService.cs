@@ -1,6 +1,6 @@
-﻿using ArtStation.Core.Helper.PaymobDtos;
+﻿using ArtStation.Core.Entities.Payment;
+using ArtStation.Core.Entities.PaymobDtos;
 using ArtStation.Core.Services.Contract;
-using ArtStation.Dtos.PaymobDtos;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,4 @@
-﻿namespace ArtStation.Dtos.PaymobDtos
+﻿namespace ArtStation.Core.Entities.PaymobDtos
 {
     public class PaymobAuthRequest
     {

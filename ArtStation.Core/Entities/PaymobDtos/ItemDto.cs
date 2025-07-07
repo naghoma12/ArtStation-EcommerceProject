@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ArtStation.Core.Helper.PaymobDtos
+namespace ArtStation.Core.Entities.PaymobDtos
 {
     public class ItemDto
     {

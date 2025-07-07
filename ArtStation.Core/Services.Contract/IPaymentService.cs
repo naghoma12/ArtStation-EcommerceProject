@@ -1,4 +1,4 @@
-﻿using ArtStation.Core.Helper.PaymobDtos;
+﻿using ArtStation.Core.Entities.PaymobDtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;

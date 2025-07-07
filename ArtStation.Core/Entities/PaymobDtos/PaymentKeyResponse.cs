@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace ArtStation.Core.Helper.PaymobDtos
+namespace ArtStation.Core.Entities.PaymobDtos
 {
     public class PaymentKeyResponse
     {
