@@ -59,5 +59,22 @@ namespace ArtStation.Core.Helper
             }
             return userId;
         }
+        public static int GetUserId(string token)
+        {
+            int userId = 0;
+            if (!string.IsNullOrEmpty(token))
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+
+                userId = int.Parse(jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
+                              ?? jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value);
+                return userId;
+            }
+            return userId;
+        }
+
+
     }
 }

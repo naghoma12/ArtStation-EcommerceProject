@@ -339,4 +339,28 @@
   <data name="OrderIshere" xml:space="preserve">
     <value>طلبك موجود</value>
   </data>
+  <data name="NoNotiCount" xml:space="preserve">
+    <value>لا يوجد إشعارات غير مقروءه .</value>
+  </data>
+  <data name="NotiCount" xml:space="preserve">
+    <value>هذا هو عدد الإشعارات الغير مقروءه .</value>
+  </data>
+  <data name="NoNotiFound" xml:space="preserve">
+    <value>لا يوجد إشعارات .</value>
+  </data>
+  <data name="NotiDeleted" xml:space="preserve">
+    <value>تم حذف الإشعار بنجاح .</value>
+  </data>
+  <data name="NotiDeleteFailed" xml:space="preserve">
+    <value>حدث خطأ أثناء حذف الإشعار .</value>
+  </data>
+  <data name="NotiFound" xml:space="preserve">
+    <value>هذه مجموعة الإشعارات .</value>
+  </data>
+  <data name="NotiMarkedAsRead" xml:space="preserve">
+    <value>تم تمييز الإشعار أنه مقروء .</value>
+  </data>
+  <data name="NotiMarkedAsReadFailed" xml:space="preserve">
+    <value>حدث خطأ اثناء تمييو الإشعار أنه مقروء</value>
+  </data>
 </root>

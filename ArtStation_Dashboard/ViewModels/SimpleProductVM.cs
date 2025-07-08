@@ -11,6 +11,6 @@
         public string Image { get; set; }
 
         public string CategoryName { get; set; }
-        public int UserName { get; set; } 
+        public string UserName { get; set; } 
     }
 }

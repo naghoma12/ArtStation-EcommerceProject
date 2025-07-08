@@ -1,0 +1,91 @@
+﻿@model ProductDetailsVM
+
+@{
+    var language = ViewData["Language"] as string ?? "en";
+    ViewData["Title"] = ("تفاصيل المنتج", "Product Details").Localize(language);
+    var backToList = language == "en" ? "Back to List" : "العودة إلى القائمة";
+}
+
+<div class="container py-5">
+    <div class="card shadow-lg rounded-4 overflow-hidden">
+        <div class="row g-0">
+            <div class="col-md-5">
+                @if (Model.Images.Any())
+                {
+                    <div id="productCarousel" class="carousel slide h-100" data-bs-ride="carousel">
+                        <div class="carousel-inner h-100">
+                            @for (int i = 0; i < Model.Images.Count; i++)
+                            {
+                                <div class="carousel-item @(i == 0 ? "active" : "") h-100">
+                                    <img src="~/Uploads/Products/@Model.Images[i]" class="d-block w-100 h-100 object-fit-cover" alt="Product Image @(i + 1)" />
+                                </div>
+                            }
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <img src="~/images/no-image.png" class="img-fluid h-100 w-100 object-fit-cover" alt="No image available" />
+                }
+            </div>
+
+            <div class="col-md-7">
+                <div class="card-body p-5">
+                    <h2 class="card-title mb-3">@Model.Name</h2>
+                    <p class="mb-2">@Model.Description</p>
+
+                    <ul class="list-group list-group-flush mt-4">
+                        <li class="list-group-item"><strong>@(language == "en" ? "ID" : "المعرف"):</strong> @Model.Id</li>
+                        <li class="list-group-item"><strong>@(language == "en" ? "Brand" : "العلامة التجارية"):</strong> @Model.Brand</li>
+                        <li class="list-group-item"><strong>@(language == "en" ? "Category" : "التصنيف"):</strong> @Model.Category</li>
+                        <li class="list-group-item"><strong>@(language == "en" ? "Trader" : "التاجر"):</strong> @Model.Trader</li>
+                        <li class="list-group-item"><strong>@(language == "en" ? "Shipping Details" : "تفاصيل الشحن"):</strong> @Model.ShippingDetails</li>
+                        <li class="list-group-item"><strong>@(language == "en" ? "Delivered On" : "تاريخ التوصيل"):</strong> @Model.DeliveredOn</li>
+                        @if (Model.Colors.Any())
+                        {
+                            <li class="list-group-item">
+                                <strong>@(language == "en" ? "Colors" : "الألوان"):</strong>
+                                @foreach (var color in Model.Colors)
+                                {
+                                    <span class="badge bg-secondary me-1">@color</span>
+                                }
+                            </li>
+                        }
+                        @if (Model.Sizes.Any())
+                        {
+                            <li class="list-group-item">
+                                <strong>@(language == "en" ? "Sizes" : "المقاسات"):</strong>
+                                @foreach (var size in Model.Sizes)
+                                {
+                                    <span class="badge bg-info text-dark me-1">
+                                        @((size.SizeAR, size.SizeEN).Localize(language)) - @size.Price.ToString("C")
+                                    </span>
+                                }
+                            </li>
+                        }
+                        @if (Model.Flavours.Any())
+                        {
+                            <li class="list-group-item">
+                                <strong>@(language == "en" ? "Flavours" : "النكهات"):</strong>
+                                @foreach (var flavour in Model.Flavours)
+                                {
+                                    <span class="badge bg-warning text-dark me-1">@flavour</span>
+                                }
+                            </li>
+                        }
+                    </ul>
+
+                    <div class="mt-5">
+                        <a asp-action="Index" class="btn btn-outline-primary">@backToList</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

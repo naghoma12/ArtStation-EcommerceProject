@@ -2,6 +2,7 @@
 using ArtStation.Core.Helper;
 using ArtStation.Core.Repository.Contract;
 using ArtStation.Repository.Data;
+using ArtStation_Dashboard.ViewModels;
 using AutoMapper;
 using FuzzySharp;
 using Microsoft.EntityFrameworkCore;
@@ -381,14 +382,47 @@ namespace ArtStation.Repository.Repository
 
         public async Task<IEnumerable<Product>> GetProducts()
         {
-            return await _context.Products
+            return  _context.Products
                 .Where(p => p.IsActive && !p.IsDeleted)
                 .Include(p => p.ProductPhotos)
                 .Include(p => p.ProductSizes)
                 .Include(p => p.Sales)
                 .Include(p => p.Category)
-                .ToListAsync();
+                .Include(p => p.User)
+                .AsNoTracking();
         }
-
+        public async Task<IEnumerable<Product>> GetTraderProducts(int userId)
+        {
+            return _context.Products
+                .Where(p => p.IsActive && !p.IsDeleted
+                && p.User.Id == userId)
+                .Include(p => p.ProductPhotos)
+                .Include(p => p.ProductSizes)
+                .Include(p => p.Sales)
+                .Include(p => p.Category)
+                .Include(p => p.User)
+                .AsNoTracking();
+        }
+        public async Task<ProductDetailsVM> GetProductDetails(int id , string language)
+        {
+            return await _context.Products
+                .Where(p => p.Id == id && !p.IsDeleted && p.IsActive)
+                .Select(p => new ProductDetailsVM
+                {
+                    Id = p.Id,
+                    Name = language == "en" ? p.NameEN : p.NameAR,
+                    Description = language == "en" ?  p.DeliveredOnEN : p.DeliveredOnAR,
+                    ShippingDetails = language == "en" ? p.ShippingDetailsEN : p.ShippingDetailsAR,
+                    DeliveredOn = language == "en" ?  p.DeliveredOnEN : p.DeliveredOnAR,
+                    Brand = language == "en" ? p.BrandEN : p.BrandAR,
+                    Category = language == "en" ? p.Category.NameEN : p.Category.NameAR,
+                    Trader = p.User.FullName,
+                    Images = p.ProductPhotos.Select(i => i.Photo).ToList(),
+                    Colors = p.ProductColors.Select(c => language == "en" ? c.NameEN : c.NameAR).ToList(),
+                    Sizes = p.ProductSizes.ToList(), 
+                    Flavours = p.ProductFlavours.Select(f => language == "en" ? f.NameEN : f.NameAR).ToList()
+                })
+                .FirstOrDefaultAsync();
+        }
     }
 }

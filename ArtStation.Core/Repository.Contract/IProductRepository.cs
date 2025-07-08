@@ -1,5 +1,6 @@
 ﻿using ArtStation.Core.Entities;
 using ArtStation.Core.Helper;
+using ArtStation_Dashboard.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,5 +27,7 @@ namespace ArtStation.Core.Repository.Contract
          Task<ProductsOFSpecificOrder> GetProductsOfSpecificOrder(int productId, int sizeId, int? flavourId, int? ColorId, string lang = "en");
 
         Task<IEnumerable<Product>> GetProducts();
+        Task<IEnumerable<Product>> GetTraderProducts(int traderId);
+        Task<ProductDetailsVM> GetProductDetails(int productId, string language);
     }
 }

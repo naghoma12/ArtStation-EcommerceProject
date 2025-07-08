@@ -340,4 +340,28 @@ Please try again or request a new code. </value>
   <data name="OrderIshere" xml:space="preserve">
     <value>Your order Is here</value>
   </data>
+  <data name="NoNotiCount" xml:space="preserve">
+    <value>There is no unread notifications .</value>
+  </data>
+  <data name="NotiCount" xml:space="preserve">
+    <value>There is the count of unread notifications.</value>
+  </data>
+  <data name="NoNotiFound" xml:space="preserve">
+    <value>No Notification Found .</value>
+  </data>
+  <data name="NotiDeleted" xml:space="preserve">
+    <value>Notification deleted successfully.</value>
+  </data>
+  <data name="NotiDeleteFailed" xml:space="preserve">
+    <value>Failed to delete notification .</value>
+  </data>
+  <data name="NotiFound" xml:space="preserve">
+    <value>There is a list of notifications .</value>
+  </data>
+  <data name="NotiMarkedAsRead" xml:space="preserve">
+    <value>Notification marked as read successfully .</value>
+  </data>
+  <data name="NotiMarkedAsReadFailed" xml:space="preserve">
+    <value>Failed to mark notification .</value>
+  </data>
 </root>
