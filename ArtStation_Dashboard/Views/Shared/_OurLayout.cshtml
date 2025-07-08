@@ -1,8 +1,14 @@
-﻿@{
+﻿
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Localization
+@using  ArtStation_Dashboard.Resource
+
+@{
     var culture = System.Globalization.CultureInfo.CurrentUICulture;
     var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
     var lang = culture.Name;
 }
+
 <!DOCTYPE html>
 
 <html lang="@lang" dir="@dir">
@@ -19,11 +25,15 @@
     </title>
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+    
     <!-- Nucleo Icons -->
     <link href="~/assets/css/nucleo-icons.css" rel="stylesheet" />
     <link href="~/assets/css/nucleo-svg.css" rel="stylesheet" />
     <!-- Font Awesome Icons -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <!-- Latest Font Awesome via CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <!-- CSS Files -->
@@ -47,7 +57,18 @@
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">dashboard</i>
                         </div>
-                        <span class="nav-link-text ms-1">Dashboard</span>
+                       
+                        <span class="nav-link-text ms-1">@(("لوحة التحكم","DashBoard").Localize(lang))</span>
+                     
+
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white " asp-action="Index" asp-controller="Trader">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-building"></i>
+                        </div>
+                        <span class="nav-link-text ms-1">@(("الشركات","Companies").Localize(lang))</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -65,6 +86,9 @@
                         </div>
                         <span class="nav-link-text ms-1">Billing</span>
                     </a>
+
+                
+
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white " href="./pages/virtual-reality.html">
@@ -88,6 +112,7 @@
                             <i class="material-icons opacity-10">notifications</i>
                         </div>
                         <span class="nav-link-text ms-1">Notifications</span>
+                        
                     </a>
                 </li>
                 <li class="nav-item mt-3">

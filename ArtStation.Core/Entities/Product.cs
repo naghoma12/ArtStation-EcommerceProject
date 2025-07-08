@@ -47,6 +47,11 @@ namespace ArtStation.Core.Entities
 
         [ForeignKey("UserId")]
         public AppUser User { get; set; }
+
+        public static implicit operator string(Product v)
+        {
+            throw new NotImplementedException();
+        }
     }
    
     public enum ForWhom

@@ -20,17 +20,26 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resource\Layout.Designer.cs">
+    <Compile Update="Resource\AnnotationMessages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Layout.resx</DependentUpon>
+      <DependentUpon>AnnotationMessages.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resource\ViewMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ViewMessages.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resource\Layout.resx">
+    <EmbeddedResource Update="Resource\AnnotationMessages.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Layout.Designer.cs</LastGenOutput>
+      <LastGenOutput>AnnotationMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resource\ViewMessages.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ViewMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

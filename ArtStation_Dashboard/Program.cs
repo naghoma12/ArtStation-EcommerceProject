@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using ArtStation_Dashboard.Helper;
 using Microsoft.AspNetCore.Mvc.Razor;
+using ArtStation.Core.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace ArtStation_Dashboard
 {
@@ -20,9 +22,25 @@ namespace ArtStation_Dashboard
             // Add services to the container.
             builder.Services.AddControllersWithViews()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-                    .AddDataAnnotationsLocalization(); ;
+                    .AddDataAnnotationsLocalization();
+
+
             builder.Services.AddDbContext<ArtStationDbContext>(
               options => options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
+
+            builder.Services.AddIdentity<AppUser, AppRole>(
+               options =>
+               {
+                   options.Password.RequireDigit = true;
+                   options.Password.RequireLowercase = true;
+                   options.Password.RequireNonAlphanumeric = false;
+                   options.Password.RequireUppercase = true;
+                   options.Password.RequiredLength = 8;
+               })
+               .AddEntityFrameworkStores<ArtStationDbContext>()
+               .AddDefaultTokenProviders();
+
+
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
             builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
             builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
@@ -42,6 +60,23 @@ namespace ArtStation_Dashboard
                 options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
             });
             #endregion
+
+
+            #region Cookie Configurations
+            builder.Services.AddAuthentication("Cookies")
+                       .AddCookie(options =>
+                       {
+                           options.LoginPath = "/Auth/Signin";
+                           // options.AccessDeniedPath = "/Account/AccessDenied"; 
+                           options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+
+                       });
+            builder.Services.ConfigureApplicationCookie(conf =>
+            {
+                conf.LoginPath = "/Auth/Signin";
+            });
+            builder.Services.AddAuthorization();
+            #endregion
             #endregion
             var app = builder.Build();
 
@@ -59,6 +94,8 @@ namespace ArtStation_Dashboard
 
             app.UseRouting();
 
+           
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

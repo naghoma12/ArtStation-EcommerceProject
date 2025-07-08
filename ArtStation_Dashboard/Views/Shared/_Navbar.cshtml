@@ -1,5 +1,8 @@
-﻿
+﻿@{
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
 
+    var lang = culture.Name;
+}
 <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
     <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
@@ -17,16 +20,30 @@
                 </div>
             </div>
             <ul class="navbar-nav  justify-content-end">
-                <li class="nav-item d-flex align-items-center">
-                    <a href="javascript:;" class="nav-link text-body font-weight-bold px-0">
-                        <i class="fa fa-user me-sm-1"></i>
-                        <span class="d-sm-inline d-none">Sign In</span>
-                    </a>
-                </li>
+                <li class="nav-item d-flex align-items-center"> 
+                    <button type="button" class="btn bg-gradient-secondary btn-tooltip" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Tooltip on bottom" data-container="body" data-animation="true">
+                        <span class="">
+                            <i class="fa-solid fa-user me-sm-1"></i>
+                            <a asp-action="Logout" asp-controller="Auth">@(("تسجيل الخروج", "Logout").Localize(lang))</a></span>
+                       
+                    </button>
+                        @* <i class="fa fa-user me-sm-1"></i> *@
+                        @* <span class="d-sm-inline d-none ms-2 me-2"><a asp-action="Logout" asp-controller="Auth">@(("تسجيل الخروج", "Logout").Localize(lang))</a></span> *@
+                    
+               </li>
 
                 <li>
-                    <a href="/Home/SetLanguage?culture=en">English</a> |
-                    <a href="/Home/SetLanguage?culture=ar">العربية</a>
+                    <div class="dropdown ms-2 me-2">
+                        <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            @(("اللغه", "Language").Localize(lang))
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li><a class="dropdown-item" href="/Home/SetLanguage?culture=en">English</a> </li>
+                            <li><a class="dropdown-item" href="/Home/SetLanguage?culture=ar">العربية</a></li>
+                           
+                        </ul>
+                    </div>
+                
                 </li>
                 <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">

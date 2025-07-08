@@ -11,6 +11,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
 using ArtStation.Core.Helper;
+using Twilio.Types;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using ArtStation.Core.Entities.Payment;
+using ArtStation.Core.Entities.PaymobDtos;
 
 namespace ArtStation.Services
 {
@@ -21,16 +26,27 @@ namespace ArtStation.Services
         private readonly ICartService _cartService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOrderRepository _orderRepo;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly IPaymentService _paymentService;
+        private readonly IConfiguration _config;
 
-        public OrderService(IProductRepository productRepo,ICartRepository cartRepository, ICartService cartService, IUnitOfWork unitOfWork, IOrderRepository orderRepo)
+        public OrderService(IProductRepository productRepo,ICartRepository cartRepository, 
+            ICartService cartService, IUnitOfWork unitOfWork, IOrderRepository orderRepo,
+            UserManager<AppUser> userManager
+            ,IPaymentService paymentService,
+             IConfiguration config
+            )
         {
            _productRepo = productRepo;
             _cartRepository = cartRepository;
             _cartService = cartService;
             _unitOfWork = unitOfWork;
             _orderRepo = orderRepo;
+            _userManager = userManager;
+            _paymentService = paymentService;
+           _config = config;
         }
-        public async Task<Order?> CreateOrderAsync(string CustomerPhone, string CartId, int AddressId)
+        public async Task<(Order? order, string? redirectUrl, string? paymentToken)> CreateOrderAsync(AppUser user, string CartId, int AddressId,string paymentType)
         {
             //1.Get Cart from cart repo
             var cart = await _cartRepository.GetCartAsync(CartId);
@@ -46,7 +62,7 @@ namespace ArtStation.Services
                     var Photos = string.Empty;
 
                     var product = await _productRepo.GetProductWithPrice(item.ProductId, (int)item.SizeId);
-                    productDetails = new ProductItemDetails(product.Product.Id,item.ColorId,item.SizeId,item.FlavourId);
+                    productDetails = new ProductItemDetails(product.Product.Id,item.ColorId>0?item.ColorId:null,item.SizeId,item.FlavourId>0?item.FlavourId:null);
 
                     //var orderitem = new OrderItem(productDetails, item.Quantity,1); //static userid
                     var orderitem = new OrderItem(productDetails, item.Quantity, product.UserId);
@@ -58,20 +74,86 @@ namespace ArtStation.Services
                 }
             }
 
-            //calc subtotal
+            //3. calc subtotal
 
             var TotalPrice = OrderItems.Sum(OI => OI.TotalPrice);
            
-            //createorder
+           
+            //5. createorder
 
-            var order = new Order(CustomerPhone,AddressId, TotalPrice, OrderItems);
+            var order = new Order(user.PhoneNumber,AddressId, TotalPrice, OrderItems);
+            //  الدفع عبر Paymob
+            string? redirectUrl = null;
+            string? paymentToken = null;
+
+            if (paymentType.ToLower() != "cash")
+            {
+                var totalCents = (int)(TotalPrice * 100);
+                var token = await _paymentService.AuthenticateAsync();
+
+                var itemTasks = OrderItems.Select(async i =>
+                {
+                    //var product = await _productRepo.GetProductById(CultureInfo.CurrentUICulture.Name, i.ProductItem.ProductId, null);
+                    return new ItemDto
+                    {
+                        ProductName = "product?.Name",
+                        AmountCent = (int)(i.TotalPrice * 100),
+                        Quantity = i.Quantity
+                    };
+                });
+
+                var itemDtos = (await Task.WhenAll(itemTasks)).ToList();
+                if (!Enum.TryParse<PaymentType>(paymentType, true, out var paymentTypeEnum))
+                {
+                    throw new ArgumentException("نوع الدفع غير مدعوم");
+                }
+                var dto = new PaymentRequestDto
+                {
+                    AmountCents = totalCents,
+                    Currency = "EGP",
+                    Email = string.IsNullOrEmpty(user.Email) ? "no@email.com" : user.Email,
+                    FullName = user.FullName,
+                    Phone = user.PhoneNumber,
+                    PaymentType = paymentTypeEnum,
+                    Items = itemDtos
+                };
+
+                var paymobOrderId = await _paymentService.CreateOrderAsync(token, dto);
+                paymentToken = await _paymentService.GeneratePaymentKeyAsync(token, paymobOrderId, dto);
+                order.PaymentToken = paymentToken;
+                
+                order.PaymobOrderId = paymobOrderId;
+                order.PaymentMethod = paymentTypeEnum; 
+
+                switch (paymentType.ToLower())
+                {
+                    case "card":
+                        redirectUrl = $"https://accept.paymob.com/api/acceptance/iframes/{_config["Paymob:IframeId"]}?payment_token={paymentToken}";
+                        break;
+
+                    case "wallet":
+                        // يتم فتح هذه الصفحة ليدخل المستخدم رقم هاتفه ويختار شبكة المحفظة
+                        redirectUrl = $"https://accept.paymob.com/api/acceptance/iframes/937215?payment_token={paymentToken}";
+                        break;
+
+                    case "cash":
+                    default:
+                        redirectUrl = null;
+                        break;
+                }
+            }
+
+            //// 3. حفظ الـ token
+            //order.PaymentId = paymentToken;
+
+
             //save to db
             _unitOfWork.Repository<Order>().Add(order);
             var rows = await _unitOfWork.Complet();
             if (rows <= 0)
-                return null;
+                return (null, null, null);
 
-            return order;
+            return (order, redirectUrl, paymentToken);
 
 
         }

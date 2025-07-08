@@ -3,14 +3,17 @@ using ArtStation_Dashboard.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Twilio.TwiML.Voice;
 
 namespace ArtStation.Core
 {
     public interface IGenericRepository<T> where T : BaseEntity
     {
         Task<IEnumerable<T>> GetAllAsync();
+        Task<T?> FindAsync(Expression<Func<T, bool>> predicate);
         Task<PagedResult<T>> GetAllAsync(int page , int pageSize);
         Task<T> GetByIdAsync(int id);
 

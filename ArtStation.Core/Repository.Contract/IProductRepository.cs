@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ArtStation.Core.Repository.Contract
 {
-    public interface IProductRepository
+    public interface IProductRepository:IGenericRepository<Product>
     {
          Task<IEnumerable<SimpleProduct>> GetAllProducts(string language , int? userId);
         Task<IEnumerable<SimpleProduct>> GetNewProducts(string language , int? userId);

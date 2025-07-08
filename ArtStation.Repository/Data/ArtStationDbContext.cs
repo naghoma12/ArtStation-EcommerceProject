@@ -1,5 +1,6 @@
 ﻿using ArtStation.Core.Entities;
 using ArtStation.Core.Entities.Identity;
+using ArtStation.Core.Entities.Payment;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +36,12 @@ namespace ArtStation.Repository.Data
             .WithMany() // Or .WithMany(u => u.Products) if a reverse nav exists
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<PaymentTransaction>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.Currency).HasMaxLength(10);
+                entity.Property(x => x.Status).HasMaxLength(50);
+            });
 
         }
 
@@ -57,6 +64,7 @@ namespace ArtStation.Repository.Data
         public DbSet<Banner> Banners { get; set; }
         public DbSet<ReviewLikes> ReviewLikes { get; set; }
         public DbSet<ProductForWhom> ProductForWhoms { get; set; }
+        public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
 
     }
 }

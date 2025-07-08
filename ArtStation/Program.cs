@@ -79,6 +79,7 @@ namespace ArtStation
             builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
 
             builder.Services.AddScoped(typeof(IOrderService), typeof(OrderService));
+            builder.Services.AddScoped(typeof(IPaymentService), typeof(PaymentService));
             builder.Services.AddScoped(typeof(IReviewRepository), typeof(ReviewRepository));
 
 
@@ -130,6 +131,15 @@ namespace ArtStation
                 };
             });
 
+
+            #region Paymob
+            
+
+            builder.Services.AddHttpClient<PaymentService>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["Paymob:BaseUrl"]);
+            });
+            #endregion
 
             var app = builder.Build();
             using (var scope = app.Services.CreateScope())
