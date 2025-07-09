@@ -70,5 +70,18 @@ namespace ArtStation.Repository.Repository
 
             return result;
         }
+
+        public async Task<IEnumerable<SimpleCategoryDTO>> GetSimpleCategory(string language)
+        {
+            return await _context.Categories
+                .Where(c => c.IsActive && !c.IsDeleted)
+                .Select(c => new SimpleCategoryDTO
+                {
+                    Id = c.Id,
+                    Name = language == "en" ? c.NameEN : c.NameAR,
+                })
+                .ToListAsync();
+                
+        }
     }
 }

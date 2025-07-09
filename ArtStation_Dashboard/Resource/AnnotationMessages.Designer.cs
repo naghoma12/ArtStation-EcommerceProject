@@ -63,6 +63,42 @@ namespace ArtStation_Dashboard.Resource {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string MaxLength1000 {
+            get {
+                return ResourceManager.GetString("MaxLength1000", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string MaxLength150 {
+            get {
+                return ResourceManager.GetString("MaxLength150", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string MaxLength30 {
+            get {
+                return ResourceManager.GetString("MaxLength30", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string MaxLength50 {
+            get {
+                return ResourceManager.GetString("MaxLength50", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string MaxName {
             get {
                 return ResourceManager.GetString("MaxName", resourceCulture);

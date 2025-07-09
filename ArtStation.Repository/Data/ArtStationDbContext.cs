@@ -1,4 +1,5 @@
 ﻿using ArtStation.Core.Entities;
+using ArtStation.Core.Entities.AI;
 using ArtStation.Core.Entities.Identity;
 using ArtStation.Core.Entities.Payment;
 using Microsoft.AspNetCore.Identity;
@@ -65,6 +66,10 @@ namespace ArtStation.Repository.Data
         public DbSet<ReviewLikes> ReviewLikes { get; set; }
         public DbSet<ProductForWhom> ProductForWhoms { get; set; }
         public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
+        public DbSet<ChatResponseRecommendation> Recommendations { get; set; }
+        public DbSet<RecommendedProduct> RecommendedProducts { get; set; }
+        public DbSet<SkinAnalysis> SkinAnalyses { get; set; }
+        public DbSet<SkinMetric> SkinMetrics { get; set; }
 
     }
 }

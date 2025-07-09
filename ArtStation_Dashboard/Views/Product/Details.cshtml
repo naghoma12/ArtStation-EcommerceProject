@@ -1,9 +1,15 @@
-﻿@model ProductDetailsVM
+﻿@using System.Globalization
+@model ProductDetailsVM
 
 @{
     var language = ViewData["Language"] as string ?? "en";
     ViewData["Title"] = ("تفاصيل المنتج", "Product Details").Localize(language);
     var backToList = language == "en" ? "Back to List" : "العودة إلى القائمة";
+    var culture = language == "ar" ? new CultureInfo("ar-EG") : CultureInfo.InvariantCulture;
+    Func<decimal, string> formatPrice = price =>
+        language == "ar"
+            ? price.ToString("C", culture)                  
+            : $"EGP {price.ToString("0.00")}";
 }
 
 <div class="container py-5">
@@ -53,7 +59,7 @@
                                 <strong>@(language == "en" ? "Colors" : "الألوان"):</strong>
                                 @foreach (var color in Model.Colors)
                                 {
-                                    <span class="badge bg-secondary me-1">@color</span>
+                                    <span class="badge me-1" style="background-color:@color">@color</span>
                                 }
                             </li>
                         }
@@ -63,8 +69,8 @@
                                 <strong>@(language == "en" ? "Sizes" : "المقاسات"):</strong>
                                 @foreach (var size in Model.Sizes)
                                 {
-                                    <span class="badge bg-info text-dark me-1">
-                                        @((size.SizeAR, size.SizeEN).Localize(language)) - @size.Price.ToString("C")
+                                    <span class="badge bg-success text-light me-1">
+                                        @((size.SizeAR, size.SizeEN).Localize(language)) - @formatPrice(size.Price)
                                     </span>
                                 }
                             </li>
@@ -75,7 +81,7 @@
                                 <strong>@(language == "en" ? "Flavours" : "النكهات"):</strong>
                                 @foreach (var flavour in Model.Flavours)
                                 {
-                                    <span class="badge bg-warning text-dark me-1">@flavour</span>
+                                    <span class="badge bg-warning text-light me-1">@flavour</span>
                                 }
                             </li>
                         }

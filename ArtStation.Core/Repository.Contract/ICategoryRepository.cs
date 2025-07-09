@@ -12,5 +12,6 @@ namespace ArtStation.Core.Repository.Contract
     {
         Task<IEnumerable<CategoryDTO>> GetAllCategories(string language);
         Task<CategoryWithProducts> GetCategoryById(string language , int id , int? userId);
+        Task<IEnumerable<SimpleCategoryDTO>> GetSimpleCategory(string language);
     }
 }
