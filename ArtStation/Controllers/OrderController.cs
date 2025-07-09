@@ -68,7 +68,7 @@ namespace ArtStation.Controllers
                     return Unauthorized(new { Message = "المستخدم غير مصرح له" });
                 }
 
-                // استدعاء الخدمة مع إرجاع order + paymentToken + redirectUrl
+                
                 var (order, redirectUrl, paymentToken) = await _orderService.CreateOrderAsync(
                     user,
                     orderDto.CartId,
@@ -81,7 +81,7 @@ namespace ArtStation.Controllers
                     return BadRequest(new { Message = ControllerMessages.OrderFailed });
                 }
 
-                // حذف السلة بعد إنشاء الطلب
+                
                 var cart = await _cartRepository.GetCartAsync(orderDto.CartId);
                 var orderData = await _cartService.MapCartToReturnDto(cart, "");
                 await _cartRepository.DeleteCartAsync(orderDto.CartId);
@@ -92,7 +92,7 @@ namespace ArtStation.Controllers
                     data = new {
                         OrderId = order.Id,
                         PaymentType = orderDto.PaymentType,
-                        //PaymentToken = paymentToken,
+                      
                         PaymentUrl = redirectUrl,
                         
                             orderData.CartSummary,

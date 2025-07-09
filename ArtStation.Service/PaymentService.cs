@@ -50,7 +50,7 @@ namespace ArtStation.Services
             response.EnsureSuccessStatusCode();
 
             var result = await response.Content.ReadFromJsonAsync<CreateOrderResponse>();
-            return result.Id; // ID هو order id من Paymob
+            return result.Id; 
         }
 
 
@@ -58,7 +58,7 @@ namespace ArtStation.Services
         {
             if (dto.PaymentType == PaymentType.CashOnDelivery)
             {
-                // لا حاجة لطلب payment key من Paymob
+                
                 return null!;
             }
           

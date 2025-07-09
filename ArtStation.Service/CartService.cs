@@ -45,6 +45,7 @@ namespace ArtStation.Services
                 //shippingCity = await unitOfWork.Repository<Shipping>().GetByIdAsync(address.ShippingId);
 
                 cartReturnDto.Address = _mapper.Map<DeliveryAddress>(address);
+                shippingCity = address.Shipping;
                 //cartReturnDto.Address.City = shippingCity.City;
             }
 
