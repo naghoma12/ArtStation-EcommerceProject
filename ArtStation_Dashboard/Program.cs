@@ -44,10 +44,11 @@ namespace ArtStation_Dashboard
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
             builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
             builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+            builder.Services.AddScoped(typeof(UserHelper), typeof(UserHelper));
 
             #region Localization
-           
-   
+
+
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resource");
 
             builder.Services.Configure<RequestLocalizationOptions>(options =>

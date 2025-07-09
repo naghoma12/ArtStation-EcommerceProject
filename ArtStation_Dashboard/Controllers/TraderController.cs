@@ -21,19 +21,21 @@ namespace ArtStation_Dashboard.Controllers
         private readonly RoleManager<AppRole> _roleManager;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _environment;
+        private readonly UserHelper _userHelper;
 
         public TraderController(UserManager<AppUser> userManager, IUnitOfWork unitOfWork,
-            RoleManager<AppRole> roleManager, IMapper mapper, IWebHostEnvironment environment)
+            RoleManager<AppRole> roleManager, IMapper mapper, IWebHostEnvironment environment,
+            UserHelper userHelper)
         {
-            
+
             _userManager = userManager;
             this.unitOfWork = unitOfWork;
             _roleManager = roleManager;
             _mapper = mapper;
             _environment = environment;
-
+            _userHelper = userHelper;
         }
-        public async Task<IActionResult> Index(int page = 1, int pageSize =5)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
             var traderUsers = await _userManager.GetUsersInRoleAsync(Roles.Trader);
 
@@ -59,17 +61,17 @@ namespace ArtStation_Dashboard.Controllers
             return View(users);
         }
 
-
+        //Post : Add Trader
         public async Task<IActionResult> AddTrader()
         {
 
             TraderViewModel user = new TraderViewModel();
-            //var roles = await _roleManager.Roles.ToListAsync();
-            //user.Roles = roles;
+
             user.Cities = await unitOfWork.Repository<Shipping>().GetAllAsync();
             return View(user);
         }
 
+        //Get : Add Trader
         [HttpPost]
         public async Task<IActionResult> AddTrader(TraderViewModel addUser)
         {
@@ -121,7 +123,7 @@ namespace ArtStation_Dashboard.Controllers
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
 
-                    
+
 
                     return View(addUser);
                 }
@@ -136,7 +138,80 @@ namespace ArtStation_Dashboard.Controllers
         }
 
 
+        //Get : Get Trader Details
+        public async Task<IActionResult> Details(int id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            var mappesuser = _mapper.Map<AppUser, TraderViewModel>(user);
+            return View(mappesuser);
+        }
 
+        //Get : Edit Trader
+        public async Task<IActionResult> Edit(int id)
+        {
+
+            var traderVM = await _userHelper.Edit(id);
+
+            traderVM.Cities = await unitOfWork.Repository<Shipping>().GetAllAsync();
+            ViewData["ActionOne"] = "EditVendor";
+            return View(traderVM);
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(TraderViewModel traderVM)
+        {
+            try
+            {
+                var trader = await _userManager.FindByIdAsync(traderVM.Id.ToString());
+
+                if (trader == null)
+                {
+                    ModelState.AddModelError("", "المستخدم غير موجود.");
+                    goto End;
+                }
+
+                // تحديث الصورة
+                if (traderVM.PhotoFile != null)
+                {
+                    if (!string.IsNullOrEmpty(trader.Image))
+                    {
+                        FileSettings.DeleteFile("Users", trader.Image, _environment.WebRootPath);
+                    }
+
+                    trader.Image = await FileSettings.UploadFile(traderVM.PhotoFile, "Users", _environment.WebRootPath);
+                }
+
+                // تحديث باقي الحقول (لا تقم بعمل Map)
+                trader.UserName = traderVM.UserName;
+                trader.Email = traderVM.Email;
+                trader.PhoneNumber = traderVM.PhoneNumber;
+                trader.FullName = traderVM.DispalyName;
+                trader.Country = traderVM.City;
+                trader.Nationality = traderVM.Nationality;
+
+                var result = await _userManager.UpdateAsync(trader);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                // عرض الأخطاء
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.InnerException?.Message ?? ex.Message);
+            }
+
+        End:
+            traderVM.Cities = await unitOfWork.Repository<Shipping>().GetAllAsync();
+            return View(traderVM);
+        }
+    
 
     }
 }

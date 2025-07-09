@@ -10,7 +10,7 @@
     <div class="alert alert-primary alert-dismissible text-white fade show" role="alert">
         <span class="alert-icon align-middle">
             <span class="material-symbols-rounded text-md">
-              
+
             </span>
         </span>
         <span class="alert-text"><strong>@TempData["SuccessMessage"]!</strong>  </span>
@@ -18,7 +18,7 @@
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-   
+
 }
 
 
@@ -49,15 +49,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                             @if (Model.Count()>0)
+                                @if (Model.Count()>0)
                                 {
                                     @foreach (var item in Model)
                                     {
                                         <tr>
                                             <td>
-                                                <div class="d-flex px-2 py-1">
+                                                <div class="d-flex px-2  py-2">
                                                     <div>
-                                                        <img src="~/@item.Photo" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
+                                                        <img src="~/Uploads/Users/@item.Photo" class="avatar avatar-sm me-3 ms-3 border-radius-lg" alt="user1">
                                                     </div>
                                                     <div class="d-flex flex-column justify-content-center">
                                                         <h6 class="mb-0 text-sm">@item.DispalyName</h6>
@@ -72,16 +72,16 @@
                                             <td class="align-middle text-center text-sm">
                                                 <span class="badge badge-sm bg-gradient-success">@item.PhoneNumber</span>
                                             </td>
-                                           
+
                                             <td class="align-middle">
                                                 <div class="dropdown">
                                                     <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        Primary
+                                                        @(("العمليات", "Actions").Localize(lang))
                                                     </button>
                                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                        <li><a class="dropdown-item">@(("تفاصيل", "Details").Localize(lang))</a></li>
-                                                        <li><a class="dropdown-item">@(("تعديل", "Edit").Localize(lang))</a></li>
-                                                        <li><a class="dropdown-item">@(("تغيير كلمه السر", "Change Password").Localize(lang))</a></li>
+                                                        <li><a class="dropdown-item" asp-action="Details" asp-controller="Trader"  asp-route-id="@item.Id">@(("تفاصيل", "Details").Localize(lang))</a></li>
+                                                        <li><a class="dropdown-item" asp-action="Edit" asp-controller="Trader" asp-route-id="@item.Id">@(("تعديل", "Edit").Localize(lang))</a></li>
+                                                        <li><a class="dropdown-item" asp-action="ChangePassword" asp-controller="Trader" asp-route-id="@item.Id">@(("تغيير كلمه السر", "Change Password").Localize(lang))</a></li>
                                                     </ul>
                                                 </div>
                                             </td>
