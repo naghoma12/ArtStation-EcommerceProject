@@ -363,4 +363,10 @@
   <data name="NotiMarkedAsReadFailed" xml:space="preserve">
     <value>حدث خطأ اثناء تمييو الإشعار أنه مقروء</value>
   </data>
+  <data name="HistoryFound" xml:space="preserve">
+    <value>تم استرجاع سجل المحادثات بنجاح.</value>
+  </data>
+  <data name="HistoryNotFound" xml:space="preserve">
+    <value>لا يوجد سجل محادثات.</value>
+  </data>
 </root>

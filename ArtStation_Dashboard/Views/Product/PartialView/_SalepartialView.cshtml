@@ -1,0 +1,58 @@
+﻿@model ProductCreation
+@{
+    var language = ViewData["Language"] as string ?? "en";
+}
+
+<div class="form-check form-switch mb-3">
+    <input class="form-check-input" type="checkbox" id="enableSaleSwitch">
+    <label class="form-check-label fw-bold" for="enableSaleSwitch">
+        <span>@(("هل تريد إضافة خصم؟", "Do you want to add a sale?").Localize(language))</span>
+    </label>
+</div>
+
+<div id="saleSection" style="display:none;" class="row gy-2 gx-3 align-items-end">
+    <div class="col-md-4">
+        <label class="form-label" for="SalePrice">@(("قيمة الخصم", "Discount").Localize(language))</label>
+        <input type="number" class="form-control ps-2" id="SalePrice" asp-for="Sale.Discount" step="0.01" min="0" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label" for="SaleStartDate">@(("تاريخ بداية الخصم", "Sale Start Date").Localize(language))</label>
+        <input type="datetime-local" class="form-control ps-2" id="SaleStartDate" asp-for="Sale.StartDate" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label" for="SaleEndDate">@(("تاريخ نهاية الخصم", "Sale End Date").Localize(language))</label>
+        <input type="datetime-local" class="form-control ps-2" id="SaleEndDate" asp-for="Sale.EndDate" />
+    </div>
+</div>
+
+    <script>
+    const startDateInput = document.getElementById("SaleStartDate");
+    const endDateInput = document.getElementById("SaleEndDate");
+
+    startDateInput.addEventListener("change", function () {
+        endDateInput.min = this.value;
+        if (endDateInput.value && endDateInput.value < this.value) {
+            endDateInput.value = this.value;
+        }
+    });
+
+    endDateInput.addEventListener("change", function () {
+        if (startDateInput.value && this.value < startDateInput.value) {
+            alert("تاريخ النهاية لا يمكن أن يكون قبل تاريخ البداية.");
+            this.value = startDateInput.value;
+        }
+    });
+
+        document.getElementById("enableSaleSwitch").addEventListener("change", function () {
+            const saleSection = document.getElementById("saleSection");
+            if (this.checked) {
+                saleSection.style.display = "flex";
+            } else {
+                saleSection.style.display = "none";
+                document.getElementById("SalePrice").value = "";
+                document.getElementById("SaleStartDate").value = "";
+                document.getElementById("SaleEndDate").value = "";
+            }
+        });
+    </script>
+

@@ -11,5 +11,6 @@ namespace ArtStation.Core.Repository.Contract
     public interface IForWhomRepository
     {
          List<ForWhomWithId> GetForWhoms(string language);
+        string GetLocalizedForWhomName(ForWhom f, string language);
     }
 }

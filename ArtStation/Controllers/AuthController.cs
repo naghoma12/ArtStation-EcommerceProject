@@ -90,7 +90,7 @@ namespace ArtStation.Controllers
 
         //Register EndPoint Domain/Api/Account/register
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> VerifyCode(RegisterDto registerDto,string? fcmToken)
+        public async Task<ActionResult<UserDto>> VerifyCode(RegisterDto registerDto)
         {
              try
                 {
@@ -110,7 +110,7 @@ namespace ArtStation.Controllers
                         PhoneNumber = registerDto.PhoneNumber,
                         UserName = registerDto.PhoneNumber,
                         PhoneNumberConfirmed = true,
-                        FCMToken = fcmToken ?? string.Empty
+                        FCMToken = registerDto.FCMToken ?? string.Empty
                     };
 
                     var result = await _userManager.CreateAsync(user);
@@ -230,7 +230,7 @@ namespace ArtStation.Controllers
         //Login EndPoint Domain/Api/Account/login
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto, string? fcmToken)
+        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             try
             {
@@ -247,7 +247,7 @@ namespace ArtStation.Controllers
 
                 await _signInManager.SignInAsync(user, isPersistent: false);
 
-                user.FCMToken = fcmToken ?? string.Empty;
+                user.FCMToken = loginDto.FCMToken ?? string.Empty;
                 var updateResult = await _userManager.UpdateAsync(user);
                 if (!updateResult.Succeeded)
                 {

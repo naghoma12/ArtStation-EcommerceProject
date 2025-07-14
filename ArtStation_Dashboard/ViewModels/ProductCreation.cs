@@ -42,15 +42,19 @@ namespace ArtStation_Dashboard.ViewModels
         [Required(ErrorMessageResourceType = typeof(AnnotationMessages), ErrorMessageResourceName = "RequiredField")]
         public int CategoryId { get; set; }
         public int? TraderId { get; set; }
+        public string? TraderName { get; set; }
         public int ForWhomId { get; set; }
+        public int SellersCount { get; set; }
+        public SaleVM Sale { get; set; } = new SaleVM();
         public IEnumerable<SimpleCategoryDTO> Categories { get; set; } = new List<SimpleCategoryDTO>();
         public IEnumerable<AppUser> Traders { get; set; } = new List<AppUser>();
         public List<string> Images { get; set; } = new List<string>();
         public List<IFormFile> Files { get; set; } = new List<IFormFile>();
 
-        public List<ColorsDTO> Colors { get; set; } = new List<ColorsDTO>();
-        public List<ProductSize> Sizes { get; set; } = new List<ProductSize>();
-        public List<FlavourDTO> Flavours { get; set; } = new List<FlavourDTO>();
+        public List<ColorVM> Colors { get; set; } = new List<ColorVM>();
+        public List<SizeVM> Sizes { get; set; } = new List<SizeVM>();
+        public List<FlavourVM> Flavours { get; set; } = new List<FlavourVM>();
         public List<ForWhomWithId> forWhoms { get; set; } = new List<ForWhomWithId>();
+        public List<string> SelectedForWhoms { get; set; } = new List<string>();
     }
 }

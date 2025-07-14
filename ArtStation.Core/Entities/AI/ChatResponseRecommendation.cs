@@ -13,7 +13,7 @@ namespace ArtStation.Core.Entities.AI
         public string? Image { get; set; }
         public string? Note { get; set; }
         public string Reply { get; set; }
-        public string UserId { get; set; }
+        public int UserId { get; set; }
 
         public AppUser User { get; set; }
         public ICollection<RecommendedProduct> RecommendedProducts { get; set; } = new List<RecommendedProduct>();

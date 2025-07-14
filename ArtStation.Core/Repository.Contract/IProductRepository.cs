@@ -1,5 +1,6 @@
 ﻿using ArtStation.Core.Entities;
 using ArtStation.Core.Helper;
+using ArtStation.Core.Helper.AiDtos;
 using ArtStation_Dashboard.ViewModels;
 using System;
 using System.Collections.Generic;

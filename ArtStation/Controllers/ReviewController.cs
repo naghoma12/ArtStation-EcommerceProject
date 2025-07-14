@@ -1,10 +1,13 @@
 ﻿using ArtStation.Core;
 using ArtStation.Core.Entities;
+using ArtStation.Core.Entities.Identity;
+using ArtStation.Core.Helper;
 using ArtStation.Core.Repository.Contract;
 using ArtStation.Core.Resources;
 using ArtStation.DTOS;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -15,11 +18,13 @@ namespace ArtStation.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IReviewRepository _reviewRepository;
+        private readonly UserManager<AppUser> _userManager;
 
-        public ReviewController(IUnitOfWork unitOfWork, IReviewRepository reviewRepository)
+        public ReviewController(IUnitOfWork unitOfWork, IReviewRepository reviewRepository, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _reviewRepository = reviewRepository;
+            _userManager = userManager;
         }
         [HttpPost("AddReview")]
         public async Task<IActionResult> AddReview(UserReview userReview)
@@ -29,6 +34,10 @@ namespace ArtStation.Controllers
                 try
                 {
                     var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                    if (userId <= 0)
+                    {
+                        return NotFound(new { Message = "Token not valid." });
+                    }
                     Review review = new Review()
                     {
                         Comment = userReview.Comment,
@@ -56,6 +65,10 @@ namespace ArtStation.Controllers
         public async Task<IActionResult> IsLiked(int reviewId)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (userId <= 0)
+            {
+                return NotFound(new { Message = "Token not valid." });
+            }
             var isLiked = await _reviewRepository.IsLiked(userId, reviewId);
 
             return Ok(new { Message = isLiked ? "User is Liked on this review" : "User is not liked on this review", IsLiked = isLiked });
@@ -64,6 +77,10 @@ namespace ArtStation.Controllers
         public async Task<IActionResult> AddLike(int reviewId)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (userId <= 0)
+            {
+                return NotFound(new { Message = "Token not valid." });
+            }
             var review = await _unitOfWork.Repository<Review>().GetByIdAsync(reviewId);
             if (review == null)
             {
@@ -91,6 +108,10 @@ namespace ArtStation.Controllers
         public async Task<IActionResult> DeleteLike(int reviewId)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (userId <= 0)
+            {
+                return NotFound(new { Message = "Token not valid." });
+            }
             var review = await _unitOfWork.Repository<Review>().GetByIdAsync(reviewId);
             if (review == null)
             {
@@ -119,6 +140,10 @@ namespace ArtStation.Controllers
                 try
                 {
                     var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                    if (userId <= 0)
+                    {
+                        return NotFound(new { Message = "Token not valid." });
+                    }
                     var review = await _unitOfWork.Repository<Review>().GetByIdAsync(id);
                     if (review == null || review.UserId != userId)
                     {
@@ -148,6 +173,10 @@ namespace ArtStation.Controllers
         public async Task<IActionResult> DeleteReview(int id)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (userId <= 0)
+            {
+                return NotFound(new { Message = "Token not valid." });
+            }
             var review = await _unitOfWork.Repository<Review>().GetByIdAsync(id);
             if (review == null || review.UserId != userId)
             {

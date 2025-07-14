@@ -10,6 +10,8 @@ namespace ArtStation_Dashboard.Helper
         {
             CreateMap<CreatedCategory, Category>().ReverseMap();
             CreateMap<CategoryVM, Category>().ReverseMap();
+            CreateMap<ProductCreation, Product>().ReverseMap();
+
         }
     }
 }

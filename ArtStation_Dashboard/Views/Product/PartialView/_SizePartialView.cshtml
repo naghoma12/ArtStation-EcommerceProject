@@ -1,0 +1,126 @@
+﻿@model ProductCreation
+@{
+    var language = ViewData["Language"] as string ?? "en";
+    var sizesCount = Model.Sizes?.Count ?? 0;
+}
+
+<p class="text-muted fw-bold nav-heading mt-4 mb-2 bol">
+    <span>@((" الأحجام", "Sizes").Localize(language))</span>
+</p>
+
+<div id="SizeInput">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <div class="input-group input-group-static">
+                <label class="form-label">@(("الحجم باللغه العربية", "Size in Arabic").Localize(language))</label>
+                <input type="text" id="sizeAR" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="input-group input-group-static">
+                <label class="form-label">@(("الحجم باللغه الإنجليزية", "Size in English").Localize(language))</label>
+                <input type="text" id="sizeEN" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="input-group input-group-static">
+                <label class="form-label">@(("سعر المنتج بهذا الحجم", "Product price for this size").Localize(language))</label>
+                <input type="number" step="0.01" id="sizePrice" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="button" id="addSizeBtn" class="btn btn-outline-secondary">
+                @(("إضافة الحجم", "Add Size").Localize(language))
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Dynamic size inputs will be added here -->
+<div id="dynamicSizeInputs" class="mt-4">
+    @for (int i = 0; i < sizesCount; i++)
+    {
+        <div class="row g-3 align-items-end mb-2 border p-3 rounded bg-light">
+            <div class="col-md-3">
+                <label class="form-label">@(("الحجم بالعربية", "Size (AR)").Localize(language))</label>
+                <input type="text" name="Sizes[@i].SizeAR" class="form-control" value="@Model.Sizes[i].SizeAR" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">@(("الحجم بالإنجليزية", "Size (EN)").Localize(language))</label>
+                <input type="text" name="Sizes[@i].SizeEN" class="form-control" value="@Model.Sizes[i].SizeEN" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">@(("السعر", "Price").Localize(language))</label>
+                <input type="number" step="0.01" name="Sizes[@i].Price" class="form-control" value="@Model.Sizes[i].Price" />
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="button" class="btn btn-danger w-100 deleteSizeBtn">@(("حذف", "Delete").Localize(language))</button>
+            </div>
+        </div>
+    }
+</div>
+
+<input type="hidden" id="sizeIndex" value="@sizesCount" />
+
+    <script>
+        let sizeIndex = parseInt(document.getElementById("sizeIndex").value || "0");
+        const sizeAR = document.getElementById("sizeAR");
+        const sizeEN = document.getElementById("sizeEN");
+        const sizePrice = document.getElementById("sizePrice");
+        const addSizeBtn = document.getElementById("addSizeBtn");
+        const dynamicSizeInputs = document.getElementById("dynamicSizeInputs");
+
+        addSizeBtn.addEventListener("click", () => {
+            const ar = sizeAR.value.trim();
+            const en = sizeEN.value.trim();
+            const price = sizePrice.value.trim();
+
+            if (!ar || !en || !price) {
+                alert("Please fill in all size fields.");
+                return;
+            }
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "row g-3 align-items-end mb-2 border p-3 rounded bg-light";
+
+            wrapper.innerHTML = `
+                    <div class="col-md-3">
+                        <label class="form-label">Size (AR)</label>
+                        <input type="text" name="Sizes[${sizeIndex}].SizeAR" class="form-control" value="${ar}" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Size (EN)</label>
+                        <input type="text" name="Sizes[${sizeIndex}].SizeEN" class="form-control" value="${en}" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Price</label>
+                        <input type="number" step="0.01" name="Sizes[${sizeIndex}].Price" class="form-control" value="${price}" />
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger w-100 deleteSizeBtn">Delete</button>
+                    </div>
+                `;
+
+            // Add delete button functionality
+            wrapper.querySelector(".deleteSizeBtn").addEventListener("click", () => {
+                wrapper.remove();
+            });
+
+            dynamicSizeInputs.appendChild(wrapper);
+
+            // Clear original inputs
+            sizeAR.value = "";
+            sizeEN.value = "";
+            sizePrice.value = "";
+
+            sizeIndex++;
+        });
+
+        // Enable delete for already rendered sizes
+        document.querySelectorAll(".deleteSizeBtn").forEach(btn => {
+            btn.addEventListener("click", function () {
+                this.closest(".row").remove();
+            });
+        });
+    </script>
+

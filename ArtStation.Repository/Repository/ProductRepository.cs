@@ -1,5 +1,6 @@
 ﻿using ArtStation.Core.Entities;
 using ArtStation.Core.Helper;
+using ArtStation.Core.Helper.AiDtos;
 using ArtStation.Core.Repository.Contract;
 using ArtStation.Repository.Data;
 using ArtStation_Dashboard.ViewModels;
@@ -354,21 +355,21 @@ namespace ArtStation.Repository.Repository
             {
                 products = products
                      .Where(p => p.ForWhom.Any(f => f.ForWhom == ForWhom.Men.ToString() 
-                     || f.ForWhom == ForWhom.رجال.ToString()))
+                     || f.ForWhom == "رجال"))
                      .ToList();
             }
             if (women)
             {
                 products = products
                      .Where(p => p.ForWhom.Any(f => f.ForWhom == ForWhom.Women.ToString()
-                     || f.ForWhom == ForWhom.نساء.ToString()))
+                     || f.ForWhom == "نساء"))
                      .ToList();
             }
             if (kids)
             {
                 products = products
                      .Where(p => p.ForWhom.Any(f => f.ForWhom == ForWhom.Kids.ToString()
-                     || f.ForWhom == ForWhom.أطفال.ToString()))
+                     || f.ForWhom == "أطفال"))
                      .ToList();
             }
             if (offer)
@@ -411,7 +412,7 @@ namespace ArtStation.Repository.Repository
                 {
                     Id = p.Id,
                     Name = language == "en" ? p.NameEN : p.NameAR,
-                    Description = language == "en" ?  p.DeliveredOnEN : p.DeliveredOnAR,
+                    Description = language == "en" ?  p.DescriptionEN : p.DescriptionAR,
                     ShippingDetails = language == "en" ? p.ShippingDetailsEN : p.ShippingDetailsAR,
                     DeliveredOn = language == "en" ?  p.DeliveredOnEN : p.DeliveredOnAR,
                     Brand = language == "en" ? p.BrandEN : p.BrandAR,

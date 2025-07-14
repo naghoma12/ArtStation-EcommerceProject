@@ -35,9 +35,12 @@ namespace ArtStation.Controllers
         //}
 
         [HttpGet("UnreadCount")]
-        public async Task<IActionResult> UnreadCount(string token)
+        public async Task<IActionResult> UnreadCount(string? token)
         {
-
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return Ok(new { Message = "Can not get the count of notifications before authorize" });
+            }
             var userId = Utility.GetUserId(token);
             if (userId <= 0)
             {
@@ -56,7 +59,7 @@ namespace ArtStation.Controllers
         {
             if (string.IsNullOrWhiteSpace(token))
             {
-                return BadRequest("Token is required.");
+                return Ok( new { Message = "Can not get notifications before authorize" });
             }
             var userId = Utility.GetUserId(token);
             if (userId <= 0)

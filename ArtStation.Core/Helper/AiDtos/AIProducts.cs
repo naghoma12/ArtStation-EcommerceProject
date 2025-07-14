@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ArtStation.Core.Helper
+namespace ArtStation.Core.Helper.AiDtos
 {
     public class AIProducts
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public int? Id { get; set; }
+        public string? Name { get; set; }
     }
 }

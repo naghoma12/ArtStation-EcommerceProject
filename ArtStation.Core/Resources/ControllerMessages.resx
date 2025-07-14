@@ -363,4 +363,10 @@
   <data name="NotiMarkedAsReadFailed" xml:space="preserve">
     <value />
   </data>
+  <data name="HistoryFound" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HistoryNotFound" xml:space="preserve">
+    <value />
+  </data>
 </root>

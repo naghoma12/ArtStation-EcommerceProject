@@ -57,10 +57,7 @@ namespace ArtStation.Core.Entities
     public enum ForWhom
     {
         Women = 1,
-        نساء = 2,
-        Kids =3,
-        أطفال =4,
-        Men =5,
-        رجال =6 ,
+        Men =2,
+        Kids =3
     }
 }

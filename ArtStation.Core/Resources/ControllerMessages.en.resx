@@ -364,4 +364,10 @@ Please try again or request a new code. </value>
   <data name="NotiMarkedAsReadFailed" xml:space="preserve">
     <value>Failed to mark notification .</value>
   </data>
+  <data name="HistoryFound" xml:space="preserve">
+    <value>Chat history retrieved successfully.</value>
+  </data>
+  <data name="HistoryNotFound" xml:space="preserve">
+    <value>No chat history found.</value>
+  </data>
 </root>

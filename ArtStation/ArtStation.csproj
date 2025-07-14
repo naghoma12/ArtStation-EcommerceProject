@@ -30,6 +30,8 @@
 
   <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="wwwroot\Images\ChatResponseImages\" />
+    <Folder Include="wwwroot\Images\FaceScanImages\" />
     <Folder Include="wwwroot\Images\Users\" />
   </ItemGroup>
 

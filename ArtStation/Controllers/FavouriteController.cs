@@ -35,6 +35,10 @@ namespace ArtStation.Controllers
             try
             {
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                if (userId <= 0)
+                {
+                    return NotFound(new { Message = "Token not valid." });
+                }
                 if (userId == null)
                 {
                     return BadRequest( new
@@ -85,7 +89,12 @@ namespace ArtStation.Controllers
         {
             try
             {
+
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                if (userId <= 0)
+                {
+                    return NotFound(new { Message = "Token not valid." });
+                }
                 if (userId == null)
                 {
                     return BadRequest(new { Message = ControllerMessages.UserNotFound });
@@ -129,6 +138,10 @@ namespace ArtStation.Controllers
             try
             {
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                if (userId <= 0)
+                {
+                    return NotFound(new { Message = "Token not valid." });
+                }
                 if (userId == null)
                 {
                     return BadRequest(new

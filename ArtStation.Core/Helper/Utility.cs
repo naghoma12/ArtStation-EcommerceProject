@@ -74,7 +74,16 @@ namespace ArtStation.Core.Helper
             }
             return userId;
         }
+        public static string GetForWhom(string forwhom, string language = "en")
+        {
+            return language == "en" ? forwhom : forwhom switch
+            {
+                "Men" => "للرجال",
+                "Women" => "للنساء",
+                "Kids" => "للأطفال"                
+            };
+        }
 
-
+       
     }
 }

@@ -13,17 +13,28 @@ namespace ArtStation.Repository.Repository
     public class ForWhomRepository :  IForWhomRepository
     {
         public List<ForWhomWithId> GetForWhoms(string language)
+        
         {
             return Enum.GetValues(typeof(ForWhom))
                 .Cast<ForWhom>()
                 .Select(f => new ForWhomWithId
                 {
                     Id = (int)f,
-                    Name = language == "en" ? ((int)f % 2 != 0).ToString()
-                : ((int)f % 2 == 0).ToString()
+                    Name = GetLocalizedForWhomName(f, language)
                 })
                 .ToList();
         }
-    
+
+        public string GetLocalizedForWhomName(ForWhom f, string language)
+        {
+            return language == "en" ? f.ToString() : f switch
+            {
+                ForWhom.Men => "للرجال",
+                ForWhom.Women => "للنساء",
+                ForWhom.Kids => "للأطفال",
+                _ => "غير معروف"
+            };
+        }
+
     }
 }
