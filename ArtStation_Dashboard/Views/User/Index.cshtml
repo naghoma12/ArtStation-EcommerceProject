@@ -1,0 +1,206 @@
+﻿@using ArtStation_Dashboard.ViewModels.User
+@model IEnumerable<UserViewModel>
+@{
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
+    var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
+    var lang = culture.Name;
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-primary alert-dismissible text-white fade show" role="alert">
+        <span class="alert-icon align-middle">
+            <span class="material-symbols-rounded text-md">
+
+            </span>
+        </span>
+        <span class="alert-text"><strong>@TempData["SuccessMessage"]!</strong>  </span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+}
+
+
+<div class="container-fluid py-4">
+   
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                        <h6 class="text-white text-capitalize ps-3 pe-3">@(("حسابات العملاء", "Customer Accounts").Localize(lang))</h6>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <form id="antiForgeryForm" style="display:none;">
+                        @Html.AntiForgeryToken()
+                    </form>
+
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("اسم العميل", "Customer Name").Localize(lang))</th>
+                                  
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("رقم العميل", "Customer Phone").Localize(lang))</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("نشط", "Is Active").Localize(lang))</th>
+                                   
+                                    <th class="text-secondary opacity-7"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Count() > 0)
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2  py-2">
+                                                    <div>
+                                                        <img src="~/Uploads/Users/@item.Image" class="avatar avatar-sm me-3 ms-3 border-radius-lg" alt="user1">
+                                                    </div>
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">@item.FullName</h6>
+                                                        @if (item.Email !=null)
+                                                        {
+                                                            <p class="text-xs text-secondary mb-0">@(string.IsNullOrEmpty(item.Email) ? "" : item.Email)</p>
+                                                        }
+                                                       
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">@item.PhoneNumber</p>
+                                               
+                                            </td>
+                                            
+                                            <td>
+                                                <div class="form-check form-switch">
+                                                    <input type="checkbox"
+                                                           class="form-check-input toggle-active"
+                                                           data-id="@item.Id"
+                                                           id="toggle_@item.Id"
+                                                    @(item.IsActive ? "checked=\"checked\"" : "") />
+
+
+                                                    <label class="form-check-label" for="toggle_@item.Id">
+                                                        @(item.IsActive ? ("مفعل", "Active").Localize(lang) : ("غير مفعل", "Inactive").Localize(lang))
+                                                    </label>
+                                                </div>
+                                            </td>
+
+
+
+                                            <td class="align-middle">
+                                                <div class="dropdown">
+                                                    <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        @(("العمليات", "Actions").Localize(lang))
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        <li><a class="dropdown-item" asp-action="Details" asp-controller="User" asp-route-id="@item.Id">@(("تفاصيل", "Details").Localize(lang))</a></li>
+                                                        <li><a class="dropdown-item" asp-action="Edit" asp-controller="User" asp-route-id="@item.Id">@(("تعديل", "Edit").Localize(lang))</a></li>
+                                                        <li>
+                                                            <button class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
+                                                                    data-user-id="@item.Id"
+                                                                    data-user-name="@item.FullName">
+                                                                @(("حذف", "Delete").Localize(lang))
+                                                            </button>
+                                                        </li>
+                                                        
+                                                        @* <li><a class="dropdown-item" asp-action="ChangePassword" asp-controller="Trader" asp-route-id="@item.Id">@(("تغيير كلمه السر", "Change Password").Localize(lang))</a></li> *@
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<nav aria-label="Page navigation">
+    <ul class="pagination pagination-primary pagination-sm justify-content-center">
+
+        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            var isActive = (i == ViewBag.CurrentPage) ? "active" : "";
+            var isDisabled = (i == ViewBag.CurrentPage) ? "disabled" : "";
+
+            <li class="page-item @isActive @isDisabled">
+                <a class="page-link page-item active" href="?page=@i" tabindex="-1">@i</a>
+            </li>
+        }
+
+    </ul>
+</nav>
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">@(("تأكيد الحذف", "Confirm Deletion").Localize(lang))</h5>
+                <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>@(("هل أنت متأكد أنك تريد حذف المستخدم", "Are you sure you want to delete user").Localize(lang))؟</p>
+                <strong id="userNameToDelete"></strong>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteForm" asp-action="Delete" asp-controller="User" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="userIdToDelete" name="id" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@(("إلغاء", "Cancel").Localize(lang))</button>
+                    <button type="submit" class="btn btn-danger">#@(("حذف", "Delete").Localize(lang))</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+            $(document).on("change", ".toggle-active", function () {
+
+
+            var checkbox = $(this);
+            var id = checkbox.data("id");
+            var isActive = checkbox.is(":checked");
+
+            $.ajax({
+                url: '/Trader/ToggleActive',
+                type: 'POST',
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                data: {
+                    id: id,
+                    isActive: isActive
+                },
+                success: function () {
+                    var label = checkbox.closest('.form-check').find('label');
+                    label.text(isActive ? "مفعل" : "غير مفعل");
+                },
+                error: function () {
+                    alert("حدث خطأ أثناء تحديث حالة التفعيل.");
+                    checkbox.prop("checked", !isActive);
+                }
+            });
+        });
+        $(document).on("click", "[data-bs-target='#confirmDeleteModal']", function () {
+            var userId = $(this).data("user-id");
+            var userName = $(this).data("user-name");
+
+            $("#userIdToDelete").val(userId);
+            $("#userNameToDelete").text(userName);
+        });
+
+    </script>
+}
