@@ -53,6 +53,7 @@ namespace ArtStation_Dashboard.Controllers
                     UserName = u.UserName,
                     DispalyName = u.FullName,
                     Email = u.Email,
+                    IsActive=u.IsActive,
                     PhoneNumber = u.PhoneNumber
                 }).ToList();
 

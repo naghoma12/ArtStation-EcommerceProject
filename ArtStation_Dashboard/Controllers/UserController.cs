@@ -47,7 +47,7 @@ namespace ArtStation_Dashboard.Controllers
                 {
                     Id = u.Id,
                     Image = u.Image,
-                   
+                   IsActive=u.IsActive,
                     FullName = u.FullName,
                     Email = u.Email,
                     PhoneNumber = u.PhoneNumber
@@ -137,32 +137,40 @@ namespace ArtStation_Dashboard.Controllers
             return View(traderVM);
         }
 
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> DeleteAjax(int id)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
             {
-                TempData["SuccessMessage"] = "المستخدم غير موجود.";
-                return RedirectToAction("Index");
+                return Json(new { success = false, message = "المستخدم غير موجود." });
             }
 
             var result = await _userManager.DeleteAsync(user);
             if (result.Succeeded)
             {
-                TempData["SuccessMessage"] = "تم حذف المستخدم بنجاح.";
+                return Json(new { success = true });
             }
             else
             {
-                TempData["SuccessMessage"] = "فشل في حذف المستخدم.";
+                var errorMessages = result.Errors.Select(e => e.Description).ToList();
+                return Json(new { success = false, message = string.Join(" - ", errorMessages) });
             }
-
-            return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleActive(int id, bool isActive)
+        {
+            var trader = await _userManager.FindByIdAsync(id.ToString());
+            if (trader == null) return NotFound();
+
+            trader.IsActive = isActive;
+            var result = await _userManager.UpdateAsync(trader);
+
+            return result.Succeeded ? Ok() : BadRequest(result.Errors);
+        }
 
     }
 }

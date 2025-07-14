@@ -14,7 +14,7 @@ namespace ArtStation_Dashboard.ViewModels.User
         public string? Nationality { get; set; }
         public string? Image { get; set; }
         public string PhoneNumber { get; set; }
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; }
      
     }
 }
