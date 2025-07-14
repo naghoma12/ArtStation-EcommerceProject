@@ -120,8 +120,14 @@
   <data name="AddTraderSucessfully" xml:space="preserve">
     <value>تم إضافة حساب الشركة بنجاح!</value>
   </data>
+  <data name="ChangePasswordSuccessfully" xml:space="preserve">
+    <value>تم تغيير كلمه السر بنجاح !</value>
+  </data>
   <data name="Dashboard" xml:space="preserve">
     <value>لوحة التحكم</value>
+  </data>
+  <data name="LoginInValid" xml:space="preserve">
+    <value>اسم المستخدم غير صحيح!</value>
   </data>
   <data name="WelcomeWhenLogin" xml:space="preserve">
     <value>مرحبا بك فى Art Station !</value>

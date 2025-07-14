@@ -120,8 +120,14 @@
   <data name="AddTraderSucessfully" xml:space="preserve">
     <value>Company Account Added Successfully!</value>
   </data>
+  <data name="ChangePasswordSuccessfully" xml:space="preserve">
+    <value>Password Changed Successfully!</value>
+  </data>
   <data name="Dashboard" xml:space="preserve">
     <value>Dashboard</value>
+  </data>
+  <data name="LoginInValid" xml:space="preserve">
+    <value>UserName Or Password is InCorrect!</value>
   </data>
   <data name="WelcomeWhenLogin" xml:space="preserve">
     <value>Welcome To Art Station !</value>

@@ -26,26 +26,26 @@
                                     <span asp-validation-for="UserName" class="text-danger"></span>
                                 </div>
                                 <div class="input-group input-group-outline mb-3">
-                                    <label class="form-label"> @(("اسم الشركة", "Company Name").Localize(lang))</label>
+                                    <label asp-for="DispalyName" class="form-label"> @(("اسم الشركة", "Company Name").Localize(lang))</label>
                                     <input asp-for="DispalyName" type="text" class="form-control">
                                     <br />
                                     <span asp-validation-for="DispalyName" class="text-danger"></span>
                                 </div> 
                                 <div class="input-group input-group-outline mb-3">
-                                    <label class="form-label">@(("الايميل", "Email").Localize(lang))</label>
-                                    <input asp-for="Email" class="form-control">
+                                    <label asp-for="Email" class="form-label">@(("الايميل", "Email").Localize(lang))</label>
+                                    <input asp-for="Email"  class="form-control">
                                     <span asp-validation-for="Email" class="text-danger"></span>
                                 </div>
                                 <div class="input-group input-group-outline mb-3">
-                                    <label class="form-label">@(("رقم الموبايل", "Phone Number").Localize(lang)) </label>
-                                    <input asp-for="PhoneNumber" class="form-control">
+                                    <label asp-for="PhoneNumber" class="form-label">@(("رقم الموبايل", "Phone Number").Localize(lang)) </label>
+                                    <input asp-for="PhoneNumber" type="text" class="form-control">
                                     <br />
-                                    <br />
+                                    
                                     <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                                 </div>
                                 <div class="input-group input-group-outline mb-3">
                                     <label class="form-label">@(("الجنسيه", "Nationality").Localize(lang))</label>
-                                    <input asp-for="Nationality" class="form-control">
+                                    <input asp-for="Nationality" type="text" class="form-control">
                                     <span asp-validation-for="Nationality" class="text-danger"></span>
                                 </div>
                                

@@ -27,7 +27,7 @@ namespace ArtStation.Repository.Repository
                 {
                     Id = c.Id,
                     Name = language == "en" ? c.NameEN : c.NameAR,
-                    Image = c.Image
+                    Image = $"http://artstationdashboard.runasp.net//Uploads//Categories/{c.Image}"
                 })
                 .ToListAsync();
         }

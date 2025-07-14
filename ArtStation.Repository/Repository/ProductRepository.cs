@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Twilio.TwiML.Voice;
+using static System.Net.WebRequestMethods;
 
 namespace ArtStation.Repository.Repository
 {
@@ -100,7 +101,8 @@ namespace ArtStation.Repository.Repository
 
                 return new ProductOffers
                 {
-                    Image = s.Product.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault() ?? "",
+                    Image = s.Product.ProductPhotos.Select(ph => string.IsNullOrEmpty(ph.Photo) ? null :
+                $"http://artstationdashboard.runasp.net//Uploads//Products/{ph.Photo}").FirstOrDefault() ?? "",
                     PriceAfterSale = priceAfterSale,
                     
                 };
@@ -115,6 +117,7 @@ namespace ArtStation.Repository.Repository
                 .Where(p => p.IsActive && !p.IsDeleted && p.Id == id)
                 .Include(p => p.ProductPhotos)
                 .Include(p => p.Reviews)
+                .ThenInclude(p => p.AppUser)
                 .Include(p => p.ProductColors)
                 .Include(p => p.ProductSizes)
                 .Include(p => p.ProductFlavours)
@@ -137,7 +140,8 @@ namespace ArtStation.Repository.Repository
                 Id = product.Id,
                 Name = language == "en" ? product.NameEN : product.NameAR,
                 Description = language == "en" ? product.DescriptionEN : product.DescriptionAR,
-                Images = product.ProductPhotos.Select(ph => ph.Photo).ToList(),
+                Images = product.ProductPhotos.Select(ph => $"http://artstationdashboard.runasp.net//Uploads//Products/{ph.Photo}")
+                .ToList(),
                 AvgRating = product.Reviews.Any() ? product.Reviews.Average(r => r.Rating) : 0,
                 ReviewsNumber = product.Reviews.Count,
                 Colors = product.ProductColors.Select(c => new ColorsDTO
@@ -166,8 +170,9 @@ namespace ArtStation.Repository.Repository
                         Id = r.Id,
                         Comment = r.Comment,
                         Rating = r.Rating,
-                        UserName = r.AppUser?.UserName ?? "Unknown",
-                        UserImage = r.AppUser?.Image ?? "",
+                        UserName = r.AppUser?.FullName ?? "Unknown",
+                        UserImage =string.IsNullOrEmpty(r.AppUser.Image) ? null:
+                        $"http://artstation.runasp.net//Uploads//Users/{r.AppUser?.Image}",
                         LikesCount = r.LikesCount
                     }).ToList(),
                 IsFav = userId.HasValue && product.Favourites.Any(f => f.UserId == userId.Value)
@@ -263,7 +268,7 @@ namespace ArtStation.Repository.Repository
                 ProductId = product.Id,
                 ProductName = lang == "en" ? product.NameEN : product.NameAR,
                 //OriginalPrice = size.Price,
-                PhotoUrl = product.ProductPhotos.FirstOrDefault()?.Photo,
+                PhotoUrl = $"http://artstationdashboard.runasp.net//Uploads//Products/{product.ProductPhotos.FirstOrDefault()?.Photo}",
                 Size= lang == "en" ? size.SizeEN :size.SizeAR,
                 Color = color == null ? null : (lang == "en" ? color.NameEN : color.NameAR),
                 Flavour = flavour == null ? null : (lang == "en" ? flavour.NameEN : flavour.NameAR),

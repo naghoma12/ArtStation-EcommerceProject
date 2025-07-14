@@ -1,0 +1,44 @@
+﻿@using ArtStation_Dashboard.ViewModels.User
+@model TraderViewModel
+@{
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
+    var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
+    var lang = culture.Name;
+}
+<div class="container py-5 ">
+    <div class="card shadow-lg rounded-4 overflow-hidden">
+        <div class="row g-0">
+            <div class="col-md-5">
+                <img src="~/Uploads/Users/@Model.Photo" class="img-fluid h-100 w-100 object-fit-cover" alt="@Model.DispalyName" style="min-height: 300px;" />
+            </div>
+            <div class="col-md-7">
+                <div class="card-body p-5">
+                    <h2 class="card-title mb-3">@Model.DispalyName</h2>
+
+                    <ul class="list-group list-group-flush mt-4">
+                        <li class="list-group-item"><strong>@(("اسم المستخدم", "User Name").Localize(lang)) : </strong>@Model.UserName </li>
+                        <li class="list-group-item"><strong>@(("الهاتف المحمول", "Phone Number").Localize(lang)) : </strong>@Model.PhoneNumber</li>
+                        @if (!(@Model.Email ==null))
+                        {
+                            <li class="list-group-item"><strong>@(("إيميل", "Email").Localize(lang)) : </strong>@Model.Email</li>
+                        }
+                        @if (!(@Model.City == null))
+                        {
+                            <li class="list-group-item"><strong>@(("المحافظة", "City").Localize(lang)) : </strong>@Model.City</li>
+                        }
+                        @if (!(@Model.Nationality == null))
+                        {
+                            <li class="list-group-item"><strong>@(("الجنسية", "Nationality").Localize(lang)) : </strong>@Model.Nationality</li>
+                        }
+                    </ul>
+
+                    <div class="mt-5">
+                        <a asp-action="Index" class="btn btn-outline-primary">
+                            @(( "Back to List","العودة إلى القائمة").Localize(lang))
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

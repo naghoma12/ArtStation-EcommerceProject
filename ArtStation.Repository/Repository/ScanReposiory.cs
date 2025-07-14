@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ArtStation.Repository.Repository
 {
-    public class ScanReposiory : GenericRepository<SkinMetric> , IScanRepository
+    public class ScanReposiory : GenericRepository<SkinAnalysis> , IScanRepository
     {
         private readonly ArtStationDbContext _context;
 
@@ -24,11 +24,13 @@ namespace ArtStation.Repository.Repository
         {
             return await _context.SkinAnalyses
                 .Where(x => x.IsActive && !x.IsDeleted && x.UserId  == userId)
+                .OrderByDescending(x => x.CreatedDate)
                 .Select(x => new FaceScan()
                 {
                     IsFaceDetected = x.IsFaceDetected,
                     FinalNote = x.FinalNote,
-                    Image = x.Image,
+                    Image = string.IsNullOrEmpty(x.Image) ? null :
+                $"http://artstation.runasp.net//Images//FaceScanImages/{x.Image}",
                     SkinAge = x.SkinAge,
                     SkinScore = x.SkinScore,
                     UserId = userId,

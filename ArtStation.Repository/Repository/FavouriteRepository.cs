@@ -32,7 +32,8 @@ namespace ArtStation.Repository.Repository
                 {
                     f.Product.Id,
                     Name = language== "en"? f.Product.NameEN : f.Product.NameAR,
-                    PhotoUrl = f.Product.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault(),
+                    PhotoUrl = f.Product.ProductPhotos.Select(ph => string.IsNullOrEmpty(ph.Photo) ? null :
+                $"http://artstationdashboard.runasp.net//Uploads//Products/{ph.Photo}").FirstOrDefault(),
                     Reviews = f.Product.Reviews,
                     Sizes = f.Product.ProductSizes,
                     Sales = f.Product.Sales,

@@ -27,7 +27,8 @@ namespace ArtStation.Core.Helper
             {
                 Id = p.Id,
                 Name = language == "en" ? p.NameEN : p.NameAR,
-                PhotoUrl = p.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault() ?? "",
+                PhotoUrl = p.ProductPhotos.Select(ph => string.IsNullOrEmpty(ph.Photo)? null : 
+                $"http://artstationdashboard.runasp.net//Uploads//Products/{ph.Photo}").FirstOrDefault(),
                 ReviewsNumber = p.Reviews.Count,
                 TotalPrice = basePrice,
                 Discount = discount,

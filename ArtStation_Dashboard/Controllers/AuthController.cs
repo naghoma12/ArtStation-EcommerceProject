@@ -1,4 +1,5 @@
 ﻿using ArtStation.Core.Entities.Identity;
+using ArtStation_Dashboard.Resource;
 using ArtStation_Dashboard.ViewModels.User;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -42,7 +43,7 @@ namespace ArtStation_Dashboard.Controllers
             var user = await _userManager.FindByNameAsync(login.UserName);
             if (user == null)
             {
-                ModelState.AddModelError("UserName", "Invalid username or password");
+                ModelState.AddModelError("", ViewMessages.LoginInValid);
                 return View(login); // Return view with error.
             }
 
@@ -75,7 +76,7 @@ namespace ArtStation_Dashboard.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            ModelState.AddModelError(string.Empty, "Invalid login attempt");
+            ModelState.AddModelError(string.Empty, ViewMessages.LoginInValid);
             return View(login);
         }
 

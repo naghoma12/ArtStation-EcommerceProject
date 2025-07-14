@@ -4,6 +4,7 @@ using ArtStation.Repository.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArtStation.Repository.Data.Migrations
 {
     [DbContext(typeof(ArtStationDbContext))]
-    partial class ArtStationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250711041100_addisactivetouser")]
+    partial class addisactivetouser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,173 +24,6 @@ namespace ArtStation.Repository.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ArtStation.Core.Entities.AI.ChatResponseRecommendation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Reply")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Recommendations");
-                });
-
-            modelBuilder.Entity("ArtStation.Core.Entities.AI.RecommendedProduct", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ChatResponseRecommendationId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChatResponseRecommendationId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("RecommendedProducts");
-                });
-
-            modelBuilder.Entity("ArtStation.Core.Entities.AI.SkinAnalysis", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FinalNote")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsFaceDetected")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("SkinAge")
-                        .IsRequired()
-                        .HasMaxLength(3)
-                        .HasColumnType("nvarchar(3)");
-
-                    b.Property<float>("SkinScore")
-                        .HasColumnType("real");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SkinAnalyses");
-                });
-
-            modelBuilder.Entity("ArtStation.Core.Entities.AI.SkinMetric", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ProblemName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Score")
-                        .IsRequired()
-                        .HasMaxLength(3)
-                        .HasColumnType("nvarchar(3)");
-
-                    b.Property<int>("SkinAnalysisId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SkinAnalysisId");
-
-                    b.ToTable("SkinMetrics");
-                });
 
             modelBuilder.Entity("ArtStation.Core.Entities.Banner", b =>
                 {
@@ -1230,47 +1066,6 @@ namespace ArtStation.Repository.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ArtStation.Core.Entities.AI.ChatResponseRecommendation", b =>
-                {
-                    b.HasOne("ArtStation.Core.Entities.Identity.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ArtStation.Core.Entities.AI.RecommendedProduct", b =>
-                {
-                    b.HasOne("ArtStation.Core.Entities.AI.ChatResponseRecommendation", "ChatResponseRecommendation")
-                        .WithMany("RecommendedProducts")
-                        .HasForeignKey("ChatResponseRecommendationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ArtStation.Core.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ChatResponseRecommendation");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("ArtStation.Core.Entities.AI.SkinMetric", b =>
-                {
-                    b.HasOne("ArtStation.Core.Entities.AI.SkinAnalysis", "SkinAnalysis")
-                        .WithMany("Metrics")
-                        .HasForeignKey("SkinAnalysisId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("SkinAnalysis");
-                });
-
             modelBuilder.Entity("ArtStation.Core.Entities.Favourite", b =>
                 {
                     b.HasOne("ArtStation.Core.Entities.Product", "Product")
@@ -1583,16 +1378,6 @@ namespace ArtStation.Repository.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ArtStation.Core.Entities.AI.ChatResponseRecommendation", b =>
-                {
-                    b.Navigation("RecommendedProducts");
-                });
-
-            modelBuilder.Entity("ArtStation.Core.Entities.AI.SkinAnalysis", b =>
-                {
-                    b.Navigation("Metrics");
                 });
 
             modelBuilder.Entity("ArtStation.Core.Entities.Category", b =>

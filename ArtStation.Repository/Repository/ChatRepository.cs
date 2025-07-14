@@ -24,10 +24,12 @@ namespace ArtStation.Repository.Repository
         {
             return await _context.Recommendations
                 .Where(x => x.IsActive && !x.IsDeleted && x.UserId == userId)
+                .OrderByDescending(x => x.CreatedDate)
                 .Select(p => new ChatResponse
                 {
                     Note = p.Note,
-                    Image = p.Image,
+                    Image = string.IsNullOrEmpty(p.Image) ? null :
+                $"http://artstation.runasp.net//Images//ChatResponseImages/{p.Image}",
                     Message = p.Message,
                     UserId = userId,
                     Reply = p.Reply,

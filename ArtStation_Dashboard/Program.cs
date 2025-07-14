@@ -46,10 +46,11 @@ namespace ArtStation_Dashboard
             builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
             builder.Services.AddScoped(typeof(IForWhomRepository), typeof(ForWhomRepository));
             builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+            builder.Services.AddScoped(typeof(UserHelper), typeof(UserHelper));
 
             #region Localization
-           
-   
+
+
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resource");
 
             builder.Services.Configure<RequestLocalizationOptions>(options =>

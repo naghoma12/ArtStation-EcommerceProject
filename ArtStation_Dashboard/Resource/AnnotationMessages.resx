@@ -129,7 +129,13 @@
   <data name="MaxLength50" xml:space="preserve">
     <value />
   </data>
+  <data name="ConfirmPasswordMismatch" xml:space="preserve">
+    <value />
+  </data>
   <data name="MaxName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PasswordComplexity" xml:space="preserve">
     <value />
   </data>
   <data name="RequiredField" xml:space="preserve">

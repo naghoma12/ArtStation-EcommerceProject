@@ -120,7 +120,13 @@
   <data name="AddTraderSucessfully" xml:space="preserve">
     <value />
   </data>
+  <data name="ChangePasswordSuccessfully" xml:space="preserve">
+    <value />
+  </data>
   <data name="Dashboard" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LoginInValid" xml:space="preserve">
     <value />
   </data>
   <data name="WelcomeWhenLogin" xml:space="preserve">

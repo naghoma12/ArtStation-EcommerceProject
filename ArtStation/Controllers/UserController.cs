@@ -51,7 +51,7 @@ namespace ArtStation.Controllers
                 }
 
                 var userData = _mapper.Map<AppUser, UserProfileDto>(user);
-                userData.Photo= userData.Photo!=null ? "Images/Users/" + userData.Photo : null;
+                userData.Photo= userData.Photo!=null ? $"http://artstation.runasp.net//Images/{userData.Photo}" : null;
                 return Ok(new { message=ControllerMessages.GetUserDataSuccess,data= userData });
             }
             catch (Exception)
