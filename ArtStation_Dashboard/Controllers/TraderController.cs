@@ -9,6 +9,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Security.AccessControl;
 
 namespace ArtStation_Dashboard.Controllers
@@ -61,7 +62,7 @@ namespace ArtStation_Dashboard.Controllers
             return View(users);
         }
 
-        //Post : Add Trader
+        //Get : Add Trader
         public async Task<IActionResult> AddTrader()
         {
 
@@ -71,8 +72,9 @@ namespace ArtStation_Dashboard.Controllers
             return View(user);
         }
 
-        //Get : Add Trader
+        //Post : Add Trader
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddTrader(TraderViewModel addUser)
         {
             if (!ModelState.IsValid)
@@ -158,6 +160,7 @@ namespace ArtStation_Dashboard.Controllers
 
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(TraderViewModel traderVM)
         {
             try
@@ -166,11 +169,11 @@ namespace ArtStation_Dashboard.Controllers
 
                 if (trader == null)
                 {
-                    ModelState.AddModelError("", "المستخدم غير موجود.");
-                    goto End;
+                    //var result=ModelState.AddModelError("", "المستخدم غير موجود.");
+                    //return result;
                 }
 
-                // تحديث الصورة
+
                 if (traderVM.PhotoFile != null)
                 {
                     if (!string.IsNullOrEmpty(trader.Image))
@@ -181,7 +184,7 @@ namespace ArtStation_Dashboard.Controllers
                     trader.Image = await FileSettings.UploadFile(traderVM.PhotoFile, "Users", _environment.WebRootPath);
                 }
 
-                // تحديث باقي الحقول (لا تقم بعمل Map)
+
                 trader.UserName = traderVM.UserName;
                 trader.Email = traderVM.Email;
                 trader.PhoneNumber = traderVM.PhoneNumber;
@@ -193,10 +196,11 @@ namespace ArtStation_Dashboard.Controllers
 
                 if (result.Succeeded)
                 {
+                    TempData["SuccessMessage"] = ViewMessages.AddTraderSucessfully;
                     return RedirectToAction("Index");
                 }
 
-                // عرض الأخطاء
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
@@ -207,11 +211,80 @@ namespace ArtStation_Dashboard.Controllers
                 ModelState.AddModelError(string.Empty, ex.InnerException?.Message ?? ex.Message);
             }
 
-        End:
+
             traderVM.Cities = await unitOfWork.Repository<Shipping>().GetAllAsync();
             return View(traderVM);
         }
-    
+
+
+
+
+        public async Task<IActionResult> ChangePassword(int id)
+        {
+            var trader = await _userManager.FindByIdAsync(id.ToString());
+            ViewBag.TraderName = trader.UserName;
+            ViewBag.TraderId = trader.Id;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordVM passwordVM)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var trader = await _userManager.FindByIdAsync(passwordVM.TraderId.ToString());
+                    if (trader == null)
+                    {
+                        ModelState.AddModelError("", "المستخدم غير موجود.");
+                        return View(passwordVM);
+                    }
+
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(trader);
+                    var result = await _userManager.ResetPasswordAsync(trader, token, passwordVM.NewPassword);
+
+                    if (result.Succeeded)
+                    {
+                        TempData["SuccessMessage"] = ViewMessages.ChangePasswordSuccessfully;
+                        return RedirectToAction("Index");
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.InnerException?.Message ?? ex.Message);
+                }
+            }
+
+            var traderFallback = await _userManager.FindByIdAsync(passwordVM.TraderId.ToString());
+            if (traderFallback != null)
+            {
+                ViewBag.TraderName = traderFallback.UserName;
+                ViewBag.TraderId = traderFallback.Id;
+            }
+
+            return View(passwordVM);
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleActive(int id, bool isActive)
+        {
+            var trader = await _userManager.FindByIdAsync(id.ToString());
+            if (trader == null) return NotFound();
+
+            trader.IsActive = isActive;
+            var result = await _userManager.UpdateAsync(trader);
+
+            return result.Succeeded ? Ok() : BadRequest(result.Errors);
+        }
+
 
     }
 }

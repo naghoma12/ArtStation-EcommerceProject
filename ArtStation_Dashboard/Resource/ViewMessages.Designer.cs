@@ -72,9 +72,27 @@ namespace ArtStation_Dashboard.Resource {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string ChangePasswordSuccessfully {
+            get {
+                return ResourceManager.GetString("ChangePasswordSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Dashboard {
             get {
                 return ResourceManager.GetString("Dashboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string LoginInValid {
+            get {
+                return ResourceManager.GetString("LoginInValid", resourceCulture);
             }
         }
         

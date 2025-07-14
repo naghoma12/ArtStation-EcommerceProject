@@ -63,9 +63,27 @@ namespace ArtStation_Dashboard.Resource {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string ConfirmPasswordMismatch {
+            get {
+                return ResourceManager.GetString("ConfirmPasswordMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string MaxName {
             get {
                 return ResourceManager.GetString("MaxName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string PasswordComplexity {
+            get {
+                return ResourceManager.GetString("PasswordComplexity", resourceCulture);
             }
         }
         

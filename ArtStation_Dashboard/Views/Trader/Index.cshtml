@@ -25,7 +25,7 @@
 <div class="container-fluid py-4">
     <button class="btn btn-icon btn-3 btn-primary" type="button">
         <span class="btn-inner--icon"><i class="fa-solid fa-plus"></i></span>
-        <span class="btn-inner--text"><a asp-action="AddTrader" asp-controller="Trader">@(("أضف حساب", "Add Account").Localize(lang))</a></span>
+        <span class=""><a asp-action="AddTrader" asp-controller="Trader">@(("أضف حساب", "Add Account").Localize(lang))</a></span>
     </button>
 
     <div class="row">
@@ -37,6 +37,10 @@
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
+                    <form id="antiForgeryForm" style="display:none;">
+                        @Html.AntiForgeryToken()
+                    </form>
+
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
                             <thead>
@@ -44,7 +48,8 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("اسم الشركات", "Company Name").Localize(lang))</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">@(("اسم المستخدم", "User Name").Localize(lang))</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("رقم الشركه", "Company Phone").Localize(lang))</th>
-                                    @* <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("ايميل الشركه", "Company Email").Localize(lang))</th> *@
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("نشطه", "Is Active").Localize(lang))</th>
+                                   
                                     <th class="text-secondary opacity-7"></th>
                                 </tr>
                             </thead>
@@ -72,6 +77,22 @@
                                             <td class="align-middle text-center text-sm">
                                                 <span class="badge badge-sm bg-gradient-success">@item.PhoneNumber</span>
                                             </td>
+                                            <td>
+                                                <div class="form-check form-switch">
+                                                    <input type="checkbox"
+                                                           class="form-check-input toggle-active"
+                                                           data-id="@item.Id"
+                                                           id="toggle_@item.Id"
+                                                    @(item.IsActive ? "checked=\"checked\"" : "") />
+
+
+                                                    <label class="form-check-label" for="toggle_@item.Id">
+                                                        @(item.IsActive ? ("مفعل", "Active").Localize(lang) : ("غير مفعل", "Inactive").Localize(lang))
+                                                    </label>
+                                                </div>
+                                            </td>
+
+
 
                                             <td class="align-middle">
                                                 <div class="dropdown">
@@ -112,3 +133,36 @@
 
     </ul>
 </nav>
+@section Scripts {
+    
+    <script>
+      
+            $(document).on("change", ".toggle-active", function () {
+           
+
+            var checkbox = $(this);
+            var id = checkbox.data("id");
+            var isActive = checkbox.is(":checked");
+
+            $.ajax({
+                url: '/Trader/ToggleActive',
+                type: 'POST',
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                data: {
+                    id: id,
+                    isActive: isActive
+                },
+                success: function () {
+                    var label = checkbox.closest('.form-check').find('label');
+                    label.text(isActive ? "مفعل" : "غير مفعل");
+                },
+                error: function () {
+                    alert("حدث خطأ أثناء تحديث حالة التفعيل.");
+                    checkbox.prop("checked", !isActive);
+                }
+            });
+        });
+    </script>
+}

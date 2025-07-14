@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ConfirmPasswordMismatch" xml:space="preserve">
+    <value>The new password and confirmation password do not match.</value>
+  </data>
   <data name="MaxName" xml:space="preserve">
     <value>Max Length Name is 20 charachter.</value>
+  </data>
+  <data name="PasswordComplexity" xml:space="preserve">
+    <value>Password must contain an uppercase letter, a lowercase letter, a digit, and be at least 5 characters long.</value>
   </data>
   <data name="RequiredField" xml:space="preserve">
     <value>This Field Is Required!</value>
