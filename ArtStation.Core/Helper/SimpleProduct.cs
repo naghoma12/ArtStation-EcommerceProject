@@ -12,10 +12,10 @@ namespace ArtStation.Core.Helper
         public string Name { get; set; }
         public int ReviewsNumber { get; set; }
         public decimal TotalPrice { get; set; }
-        public decimal PriceAfterSale { get; set; }
+        public decimal? PriceAfterSale { get; set; }
         public bool IsSale { get; set; }
 
-        public int Discount { get; set; }
+        public int? Discount { get; set; }
         public string PhotoUrl { get; set; }
         public float? AvgRating { get; set; }
         public string Brand { get; set; }

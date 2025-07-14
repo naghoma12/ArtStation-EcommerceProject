@@ -11,5 +11,10 @@ namespace ArtStation.Core.Repository.Contract
     public interface INotificationRepository : IGenericRepository<NotificationRequest>
     {
         Task<string> SendNotification(string language, int userId, MessageRequest request);
+        Task<int> IsUnReadNotification(int userId);
+        Task<IEnumerable<NotificationDTO>> GetNotifications(string language, int userId);
+        Task MarkAllNotificationAsRead(int userId);
+        Task DeleteNotification(int userId, int notificationId);
+        Task DeleteAllNotification (int userId);
     }
 }

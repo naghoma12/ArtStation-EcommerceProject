@@ -17,6 +17,8 @@ namespace ArtStation_Dashboard.Helper
                 .ForMember(dest => dest.City, src => src.MapFrom(opt => opt.Country))
                 .ForMember(dest => dest.Photo, src => src.MapFrom(opt => opt.Image))
                 .ReverseMap();
+            CreateMap<ProductCreation, Product>().ReverseMap();
+
         }
     }
 }

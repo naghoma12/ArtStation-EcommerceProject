@@ -1,4 +1,6 @@
-﻿namespace ArtStation_Dashboard.Helper
+﻿using Microsoft.AspNetCore.Localization;
+
+namespace ArtStation_Dashboard.Helper
 {
     public static class LocalizationExtensions
     {
@@ -6,5 +8,7 @@
         {
             return language == "en" ? pair.En : pair.Ar;
         }
+
+        
     }
 }

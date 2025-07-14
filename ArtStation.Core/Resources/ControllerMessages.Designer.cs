@@ -369,6 +369,24 @@ namespace ArtStation.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string HistoryFound {
+            get {
+                return ResourceManager.GetString("HistoryFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string HistoryNotFound {
+            get {
+                return ResourceManager.GetString("HistoryNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string InvalidVerificationCode {
             get {
                 return ResourceManager.GetString("InvalidVerificationCode", resourceCulture);
@@ -423,9 +441,81 @@ namespace ArtStation.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string NoNotiCount {
+            get {
+                return ResourceManager.GetString("NoNotiCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string NoNotiFound {
+            get {
+                return ResourceManager.GetString("NoNotiFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string NoOrdersForThisUser {
             get {
                 return ResourceManager.GetString("NoOrdersForThisUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string NotiCount {
+            get {
+                return ResourceManager.GetString("NotiCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string NotiDeleted {
+            get {
+                return ResourceManager.GetString("NotiDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string NotiDeleteFailed {
+            get {
+                return ResourceManager.GetString("NotiDeleteFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string NotiFound {
+            get {
+                return ResourceManager.GetString("NotiFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string NotiMarkedAsRead {
+            get {
+                return ResourceManager.GetString("NotiMarkedAsRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string NotiMarkedAsReadFailed {
+            get {
+                return ResourceManager.GetString("NotiMarkedAsReadFailed", resourceCulture);
             }
         }
         

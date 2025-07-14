@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ArtStation.Core;
+using Microsoft.EntityFrameworkCore;
 
 namespace ArtStation.Repository.Repository
 {
@@ -25,6 +26,14 @@ namespace ArtStation.Repository.Repository
             _context = context;
             _user = user;
             _unitOfWork = unitOfWork;
+        }
+        public async Task<int> IsUnReadNotification(int userId)
+        {
+            var unreadCount = await _context.Notifications
+                .Where(n => n.UserId == userId && !n.IsRead
+                && !n.IsDeleted && n.IsActive)
+                .CountAsync();
+            return unreadCount;
         }
 
         public async Task<string> SendNotification(string language, int userId, MessageRequest request)
@@ -60,6 +69,64 @@ namespace ArtStation.Repository.Repository
             return result;
         }
 
+        public async Task<IEnumerable<NotificationDTO>> GetNotifications(string language, int userId)
+        {
+            var notifications = await _context.Notifications
+                .Where(n => n.UserId == userId && !n.IsDeleted && n.IsActive)
+                .OrderByDescending(n => n.CreatedDate)
+                .Select(n => new NotificationDTO
+                {
+                    Id = n.Id,
+                    Content = language == "ar" ? n.ContentAR : n.ContentEN,
+                    Title = language == "ar" ? n.TitleAR : n.TitleEN,
+                    Date = n.CreatedDate
+                })
+                .ToListAsync();
+            return notifications;
+        }
 
+        public async Task MarkAllNotificationAsRead(int userId)
+        {
+            var notifications = await _context.Notifications
+                .Where(n => n.UserId == userId && !n.IsRead && !n.IsDeleted && n.IsActive)
+                .ToListAsync();
+            if (notifications.Any())
+            {
+                foreach (var notification in notifications)
+                {
+                    notification.IsRead = true;
+                    _context.Notifications.Update(notification);
+                }
+                await _unitOfWork.Complet();
+            }
+        }
+        public async Task DeleteNotification(int userId, int notificationId)
+        {
+            var notification = await _context.Notifications
+                .FirstOrDefaultAsync(n => n.UserId == userId && 
+                n.Id == notificationId && !n.IsDeleted && n.IsActive);
+            if (notification != null)
+            {
+                notification.IsDeleted = true;
+                _context.Notifications.Update(notification);
+                await _unitOfWork.Complet();
+            }
+        }
+
+        public async Task DeleteAllNotification(int userId)
+        {
+            var notifications = await _context.Notifications
+                .Where(n => n.UserId == userId && !n.IsDeleted && n.IsActive)
+                .ToListAsync();
+            if (notifications.Any())
+            {
+                foreach (var notification in notifications)
+                {
+                    notification.IsDeleted = true;
+                    _context.Notifications.Update(notification);
+                }
+                await _unitOfWork.Complet();
+            }
+        }
     }
 }

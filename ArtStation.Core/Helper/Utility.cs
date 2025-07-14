@@ -27,7 +27,8 @@ namespace ArtStation.Core.Helper
             {
                 Id = p.Id,
                 Name = language == "en" ? p.NameEN : p.NameAR,
-                PhotoUrl = p.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault() ?? "",
+                PhotoUrl = p.ProductPhotos.Select(ph => string.IsNullOrEmpty(ph.Photo)? null : 
+                $"http://artstationdashboard.runasp.net//Uploads//Products/{ph.Photo}").FirstOrDefault(),
                 ReviewsNumber = p.Reviews.Count,
                 TotalPrice = basePrice,
                 Discount = discount,
@@ -59,5 +60,31 @@ namespace ArtStation.Core.Helper
             }
             return userId;
         }
+        public static int GetUserId(string token)
+        {
+            int userId = 0;
+            if (!string.IsNullOrEmpty(token))
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+
+
+                userId = int.Parse(jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
+                              ?? jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value);
+                return userId;
+            }
+            return userId;
+        }
+        public static string GetForWhom(string forwhom, string language = "en")
+        {
+            return language == "en" ? forwhom : forwhom switch
+            {
+                "Men" => "للرجال",
+                "Women" => "للنساء",
+                "Kids" => "للأطفال"                
+            };
+        }
+
+       
     }
 }

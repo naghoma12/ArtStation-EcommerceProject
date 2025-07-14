@@ -339,4 +339,34 @@
   <data name="OrderIshere" xml:space="preserve">
     <value />
   </data>
+  <data name="NoNotiCount" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NotiCount" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NoNotiFound" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NotiDeleted" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NotiDeleteFailed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NotiFound" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NotiMarkedAsRead" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NotiMarkedAsReadFailed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HistoryFound" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HistoryNotFound" xml:space="preserve">
+    <value />
+  </data>
 </root>

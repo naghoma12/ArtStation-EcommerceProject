@@ -43,6 +43,8 @@ namespace ArtStation_Dashboard
 
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
             builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
+            builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
+            builder.Services.AddScoped(typeof(IForWhomRepository), typeof(ForWhomRepository));
             builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             builder.Services.AddScoped(typeof(UserHelper), typeof(UserHelper));
 

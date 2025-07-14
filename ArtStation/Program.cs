@@ -57,7 +57,6 @@ namespace ArtStation
                 .AddEntityFrameworkStores<ArtStationDbContext>()
                 .AddDefaultTokenProviders();
 
-
             //Redis Connection
             builder.Services.AddSingleton<IConnectionMultiplexer>((provider) =>
             {
@@ -66,6 +65,8 @@ namespace ArtStation
             });
             builder.Services.AddIdentityServices(builder.Configuration);
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
+            builder.Services.AddScoped(typeof(IChatRepository) , typeof(ChatRepository));
+            builder.Services.AddScoped(typeof(IScanRepository) , typeof(ScanReposiory));
             builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
             builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             builder.Services.AddScoped<ICartRepository, CartRepository>();

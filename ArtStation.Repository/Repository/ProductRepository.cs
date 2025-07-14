@@ -1,7 +1,9 @@
 ﻿using ArtStation.Core.Entities;
 using ArtStation.Core.Helper;
+using ArtStation.Core.Helper.AiDtos;
 using ArtStation.Core.Repository.Contract;
 using ArtStation.Repository.Data;
+using ArtStation_Dashboard.ViewModels;
 using AutoMapper;
 using FuzzySharp;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Twilio.TwiML.Voice;
+using static System.Net.WebRequestMethods;
 
 namespace ArtStation.Repository.Repository
 {
@@ -98,7 +101,8 @@ namespace ArtStation.Repository.Repository
 
                 return new ProductOffers
                 {
-                    Image = s.Product.ProductPhotos.Select(ph => ph.Photo).FirstOrDefault() ?? "",
+                    Image = s.Product.ProductPhotos.Select(ph => string.IsNullOrEmpty(ph.Photo) ? null :
+                $"http://artstationdashboard.runasp.net//Uploads//Products/{ph.Photo}").FirstOrDefault() ?? "",
                     PriceAfterSale = priceAfterSale,
                     
                 };
@@ -113,6 +117,7 @@ namespace ArtStation.Repository.Repository
                 .Where(p => p.IsActive && !p.IsDeleted && p.Id == id)
                 .Include(p => p.ProductPhotos)
                 .Include(p => p.Reviews)
+                .ThenInclude(p => p.AppUser)
                 .Include(p => p.ProductColors)
                 .Include(p => p.ProductSizes)
                 .Include(p => p.ProductFlavours)
@@ -135,7 +140,8 @@ namespace ArtStation.Repository.Repository
                 Id = product.Id,
                 Name = language == "en" ? product.NameEN : product.NameAR,
                 Description = language == "en" ? product.DescriptionEN : product.DescriptionAR,
-                Images = product.ProductPhotos.Select(ph => ph.Photo).ToList(),
+                Images = product.ProductPhotos.Select(ph => $"http://artstationdashboard.runasp.net//Uploads//Products/{ph.Photo}")
+                .ToList(),
                 AvgRating = product.Reviews.Any() ? product.Reviews.Average(r => r.Rating) : 0,
                 ReviewsNumber = product.Reviews.Count,
                 Colors = product.ProductColors.Select(c => new ColorsDTO
@@ -164,8 +170,9 @@ namespace ArtStation.Repository.Repository
                         Id = r.Id,
                         Comment = r.Comment,
                         Rating = r.Rating,
-                        UserName = r.AppUser?.UserName ?? "Unknown",
-                        UserImage = r.AppUser?.Image ?? "",
+                        UserName = r.AppUser?.FullName ?? "Unknown",
+                        UserImage =string.IsNullOrEmpty(r.AppUser.Image) ? null:
+                        $"http://artstation.runasp.net//Uploads//Users/{r.AppUser?.Image}",
                         LikesCount = r.LikesCount
                     }).ToList(),
                 IsFav = userId.HasValue && product.Favourites.Any(f => f.UserId == userId.Value)
@@ -261,7 +268,7 @@ namespace ArtStation.Repository.Repository
                 ProductId = product.Id,
                 ProductName = lang == "en" ? product.NameEN : product.NameAR,
                 //OriginalPrice = size.Price,
-                PhotoUrl = product.ProductPhotos.FirstOrDefault()?.Photo,
+                PhotoUrl = $"http://artstationdashboard.runasp.net//Uploads//Products/{product.ProductPhotos.FirstOrDefault()?.Photo}",
                 Size= lang == "en" ? size.SizeEN :size.SizeAR,
                 Color = color == null ? null : (lang == "en" ? color.NameEN : color.NameAR),
                 Flavour = flavour == null ? null : (lang == "en" ? flavour.NameEN : flavour.NameAR),
@@ -353,21 +360,21 @@ namespace ArtStation.Repository.Repository
             {
                 products = products
                      .Where(p => p.ForWhom.Any(f => f.ForWhom == ForWhom.Men.ToString() 
-                     || f.ForWhom == ForWhom.رجال.ToString()))
+                     || f.ForWhom == "رجال"))
                      .ToList();
             }
             if (women)
             {
                 products = products
                      .Where(p => p.ForWhom.Any(f => f.ForWhom == ForWhom.Women.ToString()
-                     || f.ForWhom == ForWhom.نساء.ToString()))
+                     || f.ForWhom == "نساء"))
                      .ToList();
             }
             if (kids)
             {
                 products = products
                      .Where(p => p.ForWhom.Any(f => f.ForWhom == ForWhom.Kids.ToString()
-                     || f.ForWhom == ForWhom.أطفال.ToString()))
+                     || f.ForWhom == "أطفال"))
                      .ToList();
             }
             if (offer)
@@ -381,14 +388,47 @@ namespace ArtStation.Repository.Repository
 
         public async Task<IEnumerable<Product>> GetProducts()
         {
-            return await _context.Products
+            return  _context.Products
                 .Where(p => p.IsActive && !p.IsDeleted)
                 .Include(p => p.ProductPhotos)
                 .Include(p => p.ProductSizes)
                 .Include(p => p.Sales)
                 .Include(p => p.Category)
-                .ToListAsync();
+                .Include(p => p.User)
+                .AsNoTracking();
         }
-
+        public async Task<IEnumerable<Product>> GetTraderProducts(int userId)
+        {
+            return _context.Products
+                .Where(p => p.IsActive && !p.IsDeleted
+                && p.User.Id == userId)
+                .Include(p => p.ProductPhotos)
+                .Include(p => p.ProductSizes)
+                .Include(p => p.Sales)
+                .Include(p => p.Category)
+                .Include(p => p.User)
+                .AsNoTracking();
+        }
+        public async Task<ProductDetailsVM> GetProductDetails(int id , string language)
+        {
+            return await _context.Products
+                .Where(p => p.Id == id && !p.IsDeleted && p.IsActive)
+                .Select(p => new ProductDetailsVM
+                {
+                    Id = p.Id,
+                    Name = language == "en" ? p.NameEN : p.NameAR,
+                    Description = language == "en" ?  p.DescriptionEN : p.DescriptionAR,
+                    ShippingDetails = language == "en" ? p.ShippingDetailsEN : p.ShippingDetailsAR,
+                    DeliveredOn = language == "en" ?  p.DeliveredOnEN : p.DeliveredOnAR,
+                    Brand = language == "en" ? p.BrandEN : p.BrandAR,
+                    Category = language == "en" ? p.Category.NameEN : p.Category.NameAR,
+                    Trader = p.User.FullName,
+                    Images = p.ProductPhotos.Select(i => i.Photo).ToList(),
+                    Colors = p.ProductColors.Select(c => language == "en" ? c.NameEN : c.NameAR).ToList(),
+                    Sizes = p.ProductSizes.ToList(), 
+                    Flavours = p.ProductFlavours.Select(f => language == "en" ? f.NameEN : f.NameAR).ToList()
+                })
+                .FirstOrDefaultAsync();
+        }
     }
 }

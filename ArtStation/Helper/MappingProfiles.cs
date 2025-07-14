@@ -65,7 +65,7 @@ namespace ArtStation.Helper
             //CreateMap<Cart, CartReturnDto>().ReverseMap();
 
             CreateMap<Banner, BannerDto>()
-     .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => $"Uploads/Banners/{src.ImageUrl}"))
+     .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => $"http://artstationdashboard.runasp.net//Uploads//Banners/{src.ImageUrl}"))
      .ForMember(dest => dest.Order, opt => opt.MapFrom(src =>src.OrderBanner))
      .ReverseMap();
 
