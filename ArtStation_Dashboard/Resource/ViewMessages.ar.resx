@@ -126,6 +126,9 @@
   <data name="Dashboard" xml:space="preserve">
     <value>لوحة التحكم</value>
   </data>
+  <data name="EditUserProfileSucess" xml:space="preserve">
+    <value>تم تعديل حساب العميل بنجاح!</value>
+  </data>
   <data name="LoginInValid" xml:space="preserve">
     <value>اسم المستخدم غير صحيح!</value>
   </data>

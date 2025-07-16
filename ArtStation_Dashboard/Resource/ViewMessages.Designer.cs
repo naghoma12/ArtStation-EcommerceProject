@@ -90,6 +90,15 @@ namespace ArtStation_Dashboard.Resource {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string EditUserProfileSucess {
+            get {
+                return ResourceManager.GetString("EditUserProfileSucess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string LoginInValid {
             get {
                 return ResourceManager.GetString("LoginInValid", resourceCulture);
