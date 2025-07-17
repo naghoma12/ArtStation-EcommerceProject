@@ -10,6 +10,9 @@ using ArtStation_Dashboard.Helper;
 using Microsoft.AspNetCore.Mvc.Razor;
 using ArtStation.Core.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using ArtStation.Core.Services.Contract;
+using ArtStation.Services;
+using StackExchange.Redis;
 
 namespace ArtStation_Dashboard
 {
@@ -39,11 +42,22 @@ namespace ArtStation_Dashboard
                })
                .AddEntityFrameworkStores<ArtStationDbContext>()
                .AddDefaultTokenProviders();
-
+            builder.Services.AddSingleton<IConnectionMultiplexer>((provider) =>
+            {
+                var connection = builder.Configuration.GetConnectionString("Redis");
+                return ConnectionMultiplexer.Connect(connection);
+            });
 
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
             builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
             builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
+            builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
+            builder.Services.AddScoped(typeof(IOrderService), typeof(OrderService));
+            builder.Services.AddScoped(typeof(ICartRepository), typeof(CartRepository));
+            builder.Services.AddScoped(typeof(ICartService), typeof(CartService));
+            builder.Services.AddScoped(typeof(IAddressRepository), typeof(AddressRepository));
+            builder.Services.AddScoped(typeof(IPaymentService), typeof(PaymentService));
+
             builder.Services.AddScoped(typeof(IForWhomRepository), typeof(ForWhomRepository));
             builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             builder.Services.AddScoped(typeof(UserHelper), typeof(UserHelper));
@@ -81,6 +95,7 @@ namespace ArtStation_Dashboard
             builder.Services.AddAuthorization();
             #endregion
             #endregion
+            builder.Services.AddHttpClient<IPaymentService, PaymentService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

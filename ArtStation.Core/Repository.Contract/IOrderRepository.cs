@@ -13,10 +13,9 @@ namespace ArtStation.Core.Repository.Contract
         public Task<IEnumerable<Order>> GetUserOrdersAsync(string PhoneNumber);
         public Task<OrderWithItemsDto> GetOrderForUserAsync(int OrderId);
 
-        //public Task<Order> CancelOrderForUserAsync(int OrderId);
-        //public Task<Order> ReOrderForUserAsync(int OrderId);
-        //public Task<Order> DeleteOrderForUserAsync(int OrderId);
-        //public Task<OrderItem> GetOrderItemAsync(int orderitemId);
+        //Dashboard
+        public Task<IEnumerable<Order>> GetOrdersAsync();
+        public Task<Order> GetOrderWithDetailsAsync();
 
     }
 }

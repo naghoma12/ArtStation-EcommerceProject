@@ -173,6 +173,14 @@ namespace ArtStation.Services
             return order;
         }
 
+        public async Task<IEnumerable<Order>> GetOrdersDashboardAsync()
+        {
+            return await _orderRepo.GetOrdersAsync();
+        }
 
+        public async Task<Order> GetOrderWithDetailsDashboardAsync()
+        {
+            return await _orderRepo.GetOrderWithDetailsAsync();
+        }
     }
 }

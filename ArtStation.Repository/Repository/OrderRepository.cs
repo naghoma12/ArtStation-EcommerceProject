@@ -53,20 +53,31 @@ namespace ArtStation.Repository.Repository
            
         }
 
-
-        //public async Task<Order> GetOrderForUserAsync(int OrderId)
-        //{
-        //    var order = await _context.Set<Order>().Where(O => O.Id == OrderId)
-        //        .Include(OI => OI.OrderItems).ThenInclude(p => p.ProductItem.Product)
-        //        .ThenInclude(p => p.ProductSizes).FirstAsync();
-        //    return order;
-        //}
-
         public async Task<IEnumerable<Order>> GetUserOrdersAsync(string PhoneNumber)
         {
             var order = await _context.Set<Order>().Where(O => O.CustomerPhone == PhoneNumber && O.IsDeleted == false).Include(o => o.Address).ThenInclude(a=>a.Shipping).ToListAsync();
             return order;
         }
+
+        //Dashboard 
+
+        public async Task<IEnumerable<Order>> GetOrdersAsync()
+        {
+            return await _context.Set<Order>()
+                .Where(o => o.IsDeleted == false)
+                .ToListAsync();
+        }
+
+        public async Task<Order> GetOrderWithDetailsAsync()
+        {
+            return await _context.Set<Order>()
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.ProductItem)
+                .ThenInclude(pi => pi.Product)
+                .Include(o => o.Address).ThenInclude(a => a.Shipping)
+                .FirstOrDefaultAsync(o => o.IsDeleted == false && o.IsActive == true);
+        }
+
 
     }
 }

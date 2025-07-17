@@ -15,7 +15,11 @@ namespace ArtStation.Core.Services.Contract
         Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string PhoneNumber);
         Task<OrderWithItemsDto> GetOrderForUserAsync(int orderid);
 
-        //Task<OrderItem> GetOrderItemForOrder(int orderItemId);
-        //Task<Order> DeleteOrderForUserAsync(int orderid);
+
+        //Dashboard
+        Task<IEnumerable<Order>> GetOrdersDashboardAsync();
+        Task<Order> GetOrderWithDetailsDashboardAsync();
+
+
     }
 }
