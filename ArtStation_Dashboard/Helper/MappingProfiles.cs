@@ -19,6 +19,7 @@ namespace ArtStation_Dashboard.Helper
                 .ReverseMap();
             CreateMap<ProductCreation, Product>().ReverseMap();
 
+
         }
     }
 }

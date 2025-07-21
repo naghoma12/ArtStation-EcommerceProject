@@ -1,0 +1,17 @@
+﻿@model ProductDetailsVM
+@{
+    var language = ViewData["Language"] as string ?? "en";
+    ViewData["Title"] = ("حذف تفاصل المنتج","Delete Product Details").Localize(language);
+}
+
+<form asp-action="Delete" method="post">
+
+    <partial name="PartialView/_DetailsDeleteView" />
+
+<div class="form-group mt-4">
+    <input type="submit" value="@(("حذف المنتج","Delete Product").Localize(language))" class="btn btn-danger" />
+    <a asp-action="Index" class="btn btn-light ms-2">
+        @(language == "en" ? "Back to List" : "العودة إلى القائمة")
+    </a>
+</div>
+</form>

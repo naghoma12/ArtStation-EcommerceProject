@@ -48,3 +48,22 @@
         return;
     }
 });
+document.addEventListener('DOMContentLoaded', function () {
+    const inputs = document.querySelectorAll('.input-group-static input');
+
+    inputs.forEach(input => {
+        // On page load
+        if (input.value.trim() !== '') {
+            input.classList.add('not-empty');
+        }
+
+        // On change
+        input.addEventListener('input', function () {
+            if (this.value.trim() !== '') {
+                this.classList.add('not-empty');
+            } else {
+                this.classList.remove('not-empty');
+            }
+        });
+    });
+});

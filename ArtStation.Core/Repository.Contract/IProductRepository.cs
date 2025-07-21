@@ -30,5 +30,6 @@ namespace ArtStation.Core.Repository.Contract
         Task<IEnumerable<Product>> GetProducts();
         Task<IEnumerable<Product>> GetTraderProducts(int traderId);
         Task<ProductDetailsVM> GetProductDetails(int productId, string language);
+        Task<Product> GetProductAsync(int id);
     }
 }

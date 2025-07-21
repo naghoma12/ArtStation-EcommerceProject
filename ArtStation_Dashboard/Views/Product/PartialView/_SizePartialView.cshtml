@@ -9,6 +9,7 @@
 </p>
 
 <div id="SizeInput">
+
     <div class="row g-3 align-items-end">
         <div class="col-md-4">
             <div class="input-group input-group-static">
@@ -40,7 +41,8 @@
 <div id="dynamicSizeInputs" class="mt-4">
     @for (int i = 0; i < sizesCount; i++)
     {
-        <div class="row g-3 align-items-end mb-2 border p-3 rounded bg-light">
+        <input type="hidden" name="Sizes[@i].Id" value="@Model.Sizes[i].Id" />
+        <div class="row g-3 align-items-end mb-2 border p-3 rounded bg-light size-row">
             <div class="col-md-3">
                 <label class="form-label">@(("الحجم بالعربية", "Size (AR)").Localize(language))</label>
                 <input type="text" name="Sizes[@i].SizeAR" class="form-control" value="@Model.Sizes[i].SizeAR" />
@@ -58,69 +60,79 @@
             </div>
         </div>
     }
+
 </div>
 
 <input type="hidden" id="sizeIndex" value="@sizesCount" />
 
     <script>
-        let sizeIndex = parseInt(document.getElementById("sizeIndex").value || "0");
-        const sizeAR = document.getElementById("sizeAR");
-        const sizeEN = document.getElementById("sizeEN");
-        const sizePrice = document.getElementById("sizePrice");
-        const addSizeBtn = document.getElementById("addSizeBtn");
-        const dynamicSizeInputs = document.getElementById("dynamicSizeInputs");
+    let sizeIndex = parseInt(document.getElementById("sizeIndex").value);
+    const addSizeBtn = document.getElementById("addSizeBtn");
 
-        addSizeBtn.addEventListener("click", () => {
-            const ar = sizeAR.value.trim();
-            const en = sizeEN.value.trim();
-            const price = sizePrice.value.trim();
+    function reindexSizeInputs() {
+        const sizeRows = document.querySelectorAll("#dynamicSizeInputs .size-row");
+        sizeRows.forEach((row, newIndex) => {
+            row.querySelector('input[name*=".Id"]').setAttribute("name", `Sizes[${newIndex}].Id`);
+            row.querySelector('input[name*=".SizeAR"]').setAttribute("name", `Sizes[${newIndex}].SizeAR`);
+            row.querySelector('input[name*=".SizeEN"]').setAttribute("name", `Sizes[${newIndex}].SizeEN`);
+            row.querySelector('input[name*=".Price"]').setAttribute("name", `Sizes[${newIndex}].Price`);
+        });
+        document.getElementById("sizeIndex").value = sizeRows.length;
+    }
 
-            if (!ar || !en || !price) {
-                alert("Please fill in all size fields.");
-                return;
-            }
+    addSizeBtn.addEventListener("click", function () {
+        const ar = document.getElementById("sizeAR").value.trim();
+        const en = document.getElementById("sizeEN").value.trim();
+        const price = document.getElementById("sizePrice").value.trim();
 
-            const wrapper = document.createElement("div");
-            wrapper.className = "row g-3 align-items-end mb-2 border p-3 rounded bg-light";
+        if (!ar || !en || !price) {
+            alert("Please fill in all fields.");
+            return;
+        }
 
-            wrapper.innerHTML = `
+        const wrapper = document.createElement("div");
+        wrapper.className = "row g-3 align-items-end mb-2 border p-2 rounded bg-light size-row";
+        wrapper.innerHTML = `
+                        <input type="hidden" name="Sizes[${sizeIndex}].Id" value="0" />
                     <div class="col-md-3">
-                        <label class="form-label">Size (AR)</label>
-                        <input type="text" name="Sizes[${sizeIndex}].SizeAR" class="form-control" value="${ar}" />
+                        <label class="form-label">Size AR</label>
+                            <input type="text" name="Sizes[${sizeIndex}].SizeAR" class="form-control" value="${ar}" />
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">Size (EN)</label>
-                        <input type="text" name="Sizes[${sizeIndex}].SizeEN" class="form-control" value="${en}" />
+                        <label class="form-label">Size EN</label>
+                            <input type="text" name="Sizes[${sizeIndex}].SizeEN" class="form-control" value="${en}" />
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Price</label>
-                        <input type="number" step="0.01" name="Sizes[${sizeIndex}].Price" class="form-control" value="${price}" />
+                            <input type="number" name="Sizes[${sizeIndex}].Price" step="0.01" class="form-control" value="${price}" />
                     </div>
                     <div class="col-md-3 d-flex align-items-end">
                         <button type="button" class="btn btn-danger w-100 deleteSizeBtn">Delete</button>
                     </div>
                 `;
 
-            // Add delete button functionality
-            wrapper.querySelector(".deleteSizeBtn").addEventListener("click", () => {
-                wrapper.remove();
-            });
+        document.getElementById("dynamicSizeInputs").appendChild(wrapper);
 
-            dynamicSizeInputs.appendChild(wrapper);
+        // Reset fields
+        document.getElementById("sizeAR").value = "";
+        document.getElementById("sizeEN").value = "";
+        document.getElementById("sizePrice").value = "";
 
-            // Clear original inputs
-            sizeAR.value = "";
-            sizeEN.value = "";
-            sizePrice.value = "";
-
-            sizeIndex++;
+        // Re-attach delete event
+        wrapper.querySelector(".deleteSizeBtn").addEventListener("click", function () {
+            wrapper.remove();
+            reindexSizeInputs();
         });
 
-        // Enable delete for already rendered sizes
-        document.querySelectorAll(".deleteSizeBtn").forEach(btn => {
-            btn.addEventListener("click", function () {
-                this.closest(".row").remove();
-            });
+        reindexSizeInputs();
+    });
+
+    // Re-attach delete on existing inputs
+    document.querySelectorAll(".deleteSizeBtn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            this.closest(".size-row").remove();
+            reindexSizeInputs();
         });
+    });
     </script>
 

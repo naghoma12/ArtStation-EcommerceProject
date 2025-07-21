@@ -10,6 +10,7 @@ using ArtStation_Dashboard.Helper;
 using Microsoft.AspNetCore.Mvc.Razor;
 using ArtStation.Core.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using ArtStation.Core.Entities;
 
 namespace ArtStation_Dashboard
 {
@@ -44,6 +45,11 @@ namespace ArtStation_Dashboard
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
             builder.Services.AddScoped(typeof(IProductRepository), typeof(ProductRepository));
             builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
+            builder.Services.AddScoped(typeof(IProductTypeRepository<ProductSize>), typeof(SizeRepository));
+            builder.Services.AddScoped(typeof(IProductTypeRepository<ProductColor>), typeof(ColorRepository));
+            builder.Services.AddScoped(typeof(IProductTypeRepository<ProductFlavour>), typeof(FlavourRepository));
+            builder.Services.AddScoped(typeof(IProductTypeRepository<ProductForWhom>), typeof(ForWhomRepository));
+            builder.Services.AddScoped(typeof(IProductTypeRepository<ProductPhotos>), typeof(PhotoRepository));
             builder.Services.AddScoped(typeof(IForWhomRepository), typeof(ForWhomRepository));
             builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             builder.Services.AddScoped(typeof(UserHelper), typeof(UserHelper));

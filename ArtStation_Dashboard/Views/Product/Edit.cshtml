@@ -1,12 +1,13 @@
 ﻿@model ProductCreation
+
 @{
     var language = ViewData["Language"] as string ?? "en";
-    ViewData["Title"] = ("إضافة منتج جديد", "Create New Product").Localize(language);
+    ViewData["Title"] = ("تعديل بيانات المنتج", "Edit Product Details").Localize(language);
 }
 
 
 <div class="m-auto  bg-white p-5">
-    <h1>@(("إضافة منتج جديد", "Create New Product").Localize(language))</h1>
+    <h1>@(("تعديل بيانات المنتج", "Edit Product Details").Localize(language))</h1>
     @if (!string.IsNullOrEmpty(TempData["Message"] as string))
     {
         <div class="alert alert-primary mt-3 mb-2">
@@ -14,12 +15,12 @@
         </div>
     }
     <hr />
-    <form asp-action="Create" method="post" enctype="multipart/form-data">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
         <partial name="PartialView/_CreateEditView" />
 
-      
+
         <div class="form-group mt-4">
-            <input type="submit" value="@(("إضافة","Add").Localize(language))" class="btn btn-primary" />
+            <input type="submit" value="@(("تعديل","Edit").Localize(language))" class="btn btn-primary" />
             <a asp-action="Index" class="btn btn-light ms-2">
                 @(language == "en" ? "Back to List" : "العودة إلى القائمة")
             </a>
@@ -32,6 +33,5 @@
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/ProductJS.js"></script>
 }
-
 
 

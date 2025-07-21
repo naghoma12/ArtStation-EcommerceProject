@@ -4,6 +4,7 @@ using ArtStation.Core.Helper;
 using ArtStation_Dashboard.Resource;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 
 namespace ArtStation_Dashboard.ViewModels
 {
@@ -41,7 +42,7 @@ namespace ArtStation_Dashboard.ViewModels
         public string DeliveredOnEN { get; set; }
         [Required(ErrorMessageResourceType = typeof(AnnotationMessages), ErrorMessageResourceName = "RequiredField")]
         public int CategoryId { get; set; }
-        public int? TraderId { get; set; }
+        public int? UserId { get; set; }
         public string? TraderName { get; set; }
         public int ForWhomId { get; set; }
         public int SellersCount { get; set; }
@@ -56,5 +57,7 @@ namespace ArtStation_Dashboard.ViewModels
         public List<FlavourVM> Flavours { get; set; } = new List<FlavourVM>();
         public List<ForWhomWithId> forWhoms { get; set; } = new List<ForWhomWithId>();
         public List<string> SelectedForWhoms { get; set; } = new List<string>();
+        public List<string> DeletedPhotos { get; set; } = new List<string>();
+
     }
 }

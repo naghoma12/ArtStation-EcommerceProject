@@ -10,6 +10,11 @@
         @TempData["message"]
     </div>
 }
+<div class="container-fluid py-4">
+    <a asp-action="Create" asp-controller="Product" class="btn btn-icon btn-3 btn-primary">
+        <i class="fa-solid fa-plus"></i>
+    @(("أضف منتج", "Add Product").Localize(language))</a>
+
 <div class="row">
     <div class="col-12">
         <div class="card my-4">
@@ -118,4 +123,5 @@
             }
         </ul>
     </nav>
+</div>
 </div>

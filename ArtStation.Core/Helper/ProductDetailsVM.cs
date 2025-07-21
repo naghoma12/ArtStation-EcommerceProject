@@ -1,4 +1,5 @@
 ﻿using ArtStation.Core.Entities;
+using ArtStation.Core.Helper;
 
 namespace ArtStation_Dashboard.ViewModels
 {
@@ -16,7 +17,8 @@ namespace ArtStation_Dashboard.ViewModels
 
         public List<string> Images { get; set; } = new List<string>();
         public List<string> Colors { get; set; } = new List<string>();
-        public List<ProductSize> Sizes { get; set; } = new List<ProductSize>();
+        public List<SizesDTO> Sizes { get; set; } = new List<SizesDTO>();
         public List<string> Flavours { get; set; } = new List<string>();
+        public List<string> ForWhoms { get; set; } = new List<string>();
     }
 }

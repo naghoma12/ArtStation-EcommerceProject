@@ -24,7 +24,7 @@ namespace ArtStation_Dashboard.Controllers
 
         }
         // Get All Categories --GET
-        public async Task<IActionResult> Index(int page = 1 , int pageSize = 8)
+        public async Task<IActionResult> Index(int page = 1 , int pageSize = 5)
         {
             try
             {

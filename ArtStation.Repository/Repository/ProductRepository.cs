@@ -409,26 +409,57 @@ namespace ArtStation.Repository.Repository
                 .Include(p => p.User)
                 .AsNoTracking();
         }
-        public async Task<ProductDetailsVM> GetProductDetails(int id , string language)
+        public async Task<ProductDetailsVM> GetProductDetails(int id, string language)
         {
+            var now = DateTime.Now;
+
             return await _context.Products
                 .Where(p => p.Id == id && !p.IsDeleted && p.IsActive)
                 .Select(p => new ProductDetailsVM
                 {
                     Id = p.Id,
                     Name = language == "en" ? p.NameEN : p.NameAR,
-                    Description = language == "en" ?  p.DescriptionEN : p.DescriptionAR,
+                    Description = language == "en" ? p.DescriptionEN : p.DescriptionAR,
                     ShippingDetails = language == "en" ? p.ShippingDetailsEN : p.ShippingDetailsAR,
-                    DeliveredOn = language == "en" ?  p.DeliveredOnEN : p.DeliveredOnAR,
+                    DeliveredOn = language == "en" ? p.DeliveredOnEN : p.DeliveredOnAR,
                     Brand = language == "en" ? p.BrandEN : p.BrandAR,
                     Category = language == "en" ? p.Category.NameEN : p.Category.NameAR,
                     Trader = p.User.FullName,
                     Images = p.ProductPhotos.Select(i => i.Photo).ToList(),
                     Colors = p.ProductColors.Select(c => language == "en" ? c.NameEN : c.NameAR).ToList(),
-                    Sizes = p.ProductSizes.ToList(), 
-                    Flavours = p.ProductFlavours.Select(f => language == "en" ? f.NameEN : f.NameAR).ToList()
+
+                    Sizes = p.ProductSizes.Select(s => new SizesDTO
+                    {
+                        Id = s.Id,
+                        Size = language == "en" ? s.SizeEN : s.SizeAR,
+                        Price = s.Price,
+                        PriceAfterSale = p.Sales
+                            .Where(sale => sale.IsActive && !sale.IsDeleted &&
+                                           sale.StartDate <= now && sale.EndDate >= now)
+                            .Select(sale => s.Price - (s.Price * sale.Discount / 100m))
+                            .FirstOrDefault()  // returns discounted price if exists, or 0
+                    }).ToList(),
+
+                    Flavours = p.ProductFlavours.Select(f => language == "en" ? f.NameEN : f.NameAR).ToList(),
+                    ForWhoms = p.ForWhoms.Select(f => language == "en" ? f.ForWhomEN : f.ForWhomAR).ToList()
                 })
                 .FirstOrDefaultAsync();
         }
+
+
+        public async Task<Product> GetProductAsync(int id)
+        {
+            return await _context.Products
+                .Where(x => x.Id == id && !x.IsDeleted && x.IsActive)
+                .Include(x => x.ProductPhotos)
+                .Include(x => x.ProductSizes)
+                .Include(x => x.ProductColors)
+                .Include(x => x.ProductFlavours)
+                .Include(x => x.Sales)
+                .Include(x => x.ForWhoms)
+                .FirstOrDefaultAsync();
+
+        }
+       
     }
 }

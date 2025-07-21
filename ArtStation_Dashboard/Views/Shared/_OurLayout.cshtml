@@ -77,6 +77,23 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link text-white " asp-action="Index" asp-controller="Category">
+                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa fa-cubes" ></i>
+                            </div>
+                            <span class="nav-link-text ms-1 me-1">@(("التصنيفات", "Categories").Localize(lang))</span>
+                        </a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white " asp-action="Index" asp-controller="Product">
+                            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                                <i class="fa-brands fa-product-hunt"></i>
+                            </div>
+                            <span class="nav-link-text ms-1 me-1">@(("المنتجات", "Products").Localize(lang))</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link text-white " asp-action="Index" asp-controller="User">
                             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                                 <i class="fa-solid fa-users"></i>
@@ -100,7 +117,7 @@
                     <li class="nav-item">
                         <a class="nav-link text-white " asp-action="Index" asp-controller="Category">
                             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="material-icons opacity-10"> </i>
+                                <i class="fa fa-cubes"></i>
                             </div>
                             <span class="nav-link-text ms-1 me-1">@(("التصنيفات", "Categories").Localize(lang))</span>
                         </a>

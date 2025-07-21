@@ -20,3 +20,19 @@ html {
 body {
   margin-bottom: 60px;
 }
+.input-group-static label {
+    top: 1.25rem; /* default position */
+    transition: all 0.2s ease;
+    pointer-events: none;
+    position: absolute;
+    left: 0.75rem;
+    font-size: 1rem;
+    color: #888;
+}
+
+.input-group-static input:focus + label,
+.input-group-static input.not-empty + label {
+    top: -0.5rem;
+    font-size: 0.8rem;
+    color: #000;
+}
