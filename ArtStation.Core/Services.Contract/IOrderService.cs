@@ -1,6 +1,8 @@
 ﻿using ArtStation.Core.Entities.Identity;
 using ArtStation.Core.Entities.Order;
 using ArtStation.Core.Helper;
+using ArtStation.Core.Helper.Order;
+using ArtStation_Dashboard.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +19,8 @@ namespace ArtStation.Core.Services.Contract
 
 
         //Dashboard
-        Task<IEnumerable<Order>> GetOrdersDashboardAsync();
-        Task<Order> GetOrderWithDetailsDashboardAsync();
+        Task<PagedResult<Order>> GetOrdersDashboardAsync(int page, int pageSize);
+        Task<OrderInvoiceDto> GetOrderWithDetailsDashboardAsync(int id);
 
 
     }

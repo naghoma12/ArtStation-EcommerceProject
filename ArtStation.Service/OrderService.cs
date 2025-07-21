@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using ArtStation.Core.Entities.Payment;
 using ArtStation.Core.Entities.PaymobDtos;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using ArtStation_Dashboard.ViewModels;
+using ArtStation.Core.Helper.Order;
 
 namespace ArtStation.Services
 {
@@ -173,14 +176,14 @@ namespace ArtStation.Services
             return order;
         }
 
-        public async Task<IEnumerable<Order>> GetOrdersDashboardAsync()
+        public async Task<PagedResult<Order>> GetOrdersDashboardAsync(int page, int pageSize)
         {
-            return await _orderRepo.GetOrdersAsync();
+            return await _unitOfWork.Repository<Order>().GetAllAsync(page, pageSize);
         }
 
-        public async Task<Order> GetOrderWithDetailsDashboardAsync()
+        public async Task<OrderInvoiceDto> GetOrderWithDetailsDashboardAsync(int id)
         {
-            return await _orderRepo.GetOrderWithDetailsAsync();
+            return await _orderRepo.GetOrderWithDetailsAsync(id);
         }
     }
 }

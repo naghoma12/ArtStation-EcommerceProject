@@ -1,5 +1,6 @@
 ﻿using ArtStation.Core.Entities.Order;
 using ArtStation.Core.Helper;
+using ArtStation.Core.Helper.Order;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +15,8 @@ namespace ArtStation.Core.Repository.Contract
         public Task<OrderWithItemsDto> GetOrderForUserAsync(int OrderId);
 
         //Dashboard
-        public Task<IEnumerable<Order>> GetOrdersAsync();
-        public Task<Order> GetOrderWithDetailsAsync();
+        public Task<IEnumerable<Order>> GetOrdersAsync(int page, int pageSize);
+        public Task<OrderInvoiceDto> GetOrderWithDetailsAsync(int id);
 
     }
 }
