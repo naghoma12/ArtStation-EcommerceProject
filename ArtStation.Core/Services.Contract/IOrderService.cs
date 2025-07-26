@@ -19,7 +19,7 @@ namespace ArtStation.Core.Services.Contract
 
 
         //Dashboard
-        Task<PagedResult<Order>> GetOrdersDashboardAsync(int page, int pageSize);
+        Task<PagedResult<Order>> GetOrdersDashboardAsync(int page, int pageSize, string statusFilter);
         Task<OrderInvoiceDto> GetOrderWithDetailsDashboardAsync(int id);
 
 

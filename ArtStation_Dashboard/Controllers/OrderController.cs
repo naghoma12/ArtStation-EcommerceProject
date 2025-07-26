@@ -22,30 +22,56 @@ namespace ArtStation_Dashboard.Controllers
            _unitOfWork = unitOfWork;
         }
 
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<OrderVM>>> Index(int page = 1, int pageSize = 6)
+        //{
+        //    try
+        //    {
+
+        //        var result = await _orderService.GetOrdersDashboardAsync(page,pageSize);
+
+
+        //        var totalPages = (int)Math.Ceiling(result.TotalItems / (double)pageSize);
+
+
+        //        ViewBag.CurrentPage = page;
+        //        ViewBag.TotalPages = totalPages;
+        //        ViewBag.PageSize = pageSize;
+
+
+        //        var mappedOrders = _mapper.Map<IEnumerable<OrderVM>>(result.Items);
+
+        //        return View(mappedOrders);
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        TempData["ErrorMessage"] = "حدث خطأ أثناء تحميل الطلبات.";
+        //        return View(new List<OrderVM>());
+        //    }
+        //}
+
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderVM>>> Index(int page = 1, int pageSize = 6)
+        public async Task<ActionResult<IEnumerable<OrderVM>>> Index(int page = 1, int pageSize = 6, string statusFilter = null)
         {
             try
             {
+                var result = await _orderService.GetOrdersDashboardAsync(page, pageSize, statusFilter); // مرر الفلتر
 
-                var result = await _orderService.GetOrdersDashboardAsync(page,pageSize);
-
-               
                 var totalPages = (int)Math.Ceiling(result.TotalItems / (double)pageSize);
 
-                
                 ViewBag.CurrentPage = page;
                 ViewBag.TotalPages = totalPages;
                 ViewBag.PageSize = pageSize;
+                ViewBag.StatusFilter = statusFilter; 
 
-           
                 var mappedOrders = _mapper.Map<IEnumerable<OrderVM>>(result.Items);
 
                 return View(mappedOrders);
             }
             catch (Exception ex)
             {
-              
                 TempData["ErrorMessage"] = "حدث خطأ أثناء تحميل الطلبات.";
                 return View(new List<OrderVM>());
             }

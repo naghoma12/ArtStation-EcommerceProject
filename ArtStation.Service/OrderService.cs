@@ -19,6 +19,7 @@ using ArtStation.Core.Entities.PaymobDtos;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ArtStation_Dashboard.ViewModels;
 using ArtStation.Core.Helper.Order;
+using Microsoft.EntityFrameworkCore;
 
 namespace ArtStation.Services
 {
@@ -176,10 +177,32 @@ namespace ArtStation.Services
             return order;
         }
 
-        public async Task<PagedResult<Order>> GetOrdersDashboardAsync(int page, int pageSize)
+        //public async Task<PagedResult<Order>> GetOrdersDashboardAsync(int page, int pageSize)
+        //{
+        //    return await _unitOfWork.Repository<Order>().GetAllAsync(page, pageSize);
+        //}
+
+        public async Task<PagedResult<Order>> GetOrdersDashboardAsync(int page, int pageSize, string statusFilter)
         {
-            return await _unitOfWork.Repository<Order>().GetAllAsync(page, pageSize);
+            var query = await _unitOfWork.Repository<Order>().GetAllAsync();
+
+            if (!string.IsNullOrEmpty(statusFilter))
+                query = query.Where(o => o.Status.ToString() == statusFilter);
+
+            var totalItems = query.Count();
+            var items =  query
+                .OrderByDescending(o => o.OrderDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PagedResult<Order>
+            {
+                TotalItems = totalItems,
+                Items = items
+            };
         }
+
 
         public async Task<OrderInvoiceDto> GetOrderWithDetailsDashboardAsync(int id)
         {

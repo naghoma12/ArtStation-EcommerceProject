@@ -6,6 +6,24 @@
     var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
     var lang = culture.Name;
 }
+<div class="d-flex justify-content-center my-3">
+    <a class="btn btn-outline-primary mx-1 @(ViewBag.StatusFilter == null ? "active" : "")"
+       href="@Url.Action("Index", new { statusFilter = (string)null, page = 1, pageSize = ViewBag.PageSize })">
+        @(("الكل", "All").Localize(lang))
+    </a>
+    <a class="btn btn-outline-info mx-1 @(ViewBag.StatusFilter == "Placed" ? "active" : "")"
+       href="@Url.Action("Index", new { statusFilter = "Placed", page = 1, pageSize = ViewBag.PageSize })">
+        @(("تم الإنشاء", "Placed").Localize(lang))
+    </a>
+    <a class="btn btn-outline-warning mx-1 @(ViewBag.StatusFilter == "Shipped" ? "active" : "")"
+       href="@Url.Action("Index", new { statusFilter = "Shipped", page = 1, pageSize = ViewBag.PageSize })">
+        @(("تم الشحن", "Shipped").Localize(lang))
+    </a>
+    <a class="btn btn-outline-success mx-1 @(ViewBag.StatusFilter == "Delivered" ? "active" : "")"
+       href="@Url.Action("Index", new { statusFilter = "Delivered", page = 1, pageSize = ViewBag.PageSize })">
+        @(("تم التوصيل", "Delivered").Localize(lang))
+    </a>
+</div>
 
 <div class="container-fluid py-4">
     <div class="row">
@@ -93,7 +111,8 @@
         {
             var isActive = (i == ViewBag.CurrentPage) ? "active" : "";
             <li class="page-item @isActive">
-                <a class="page-link" href="@Url.Action("Index", new { page = i, pageSize = ViewBag.PageSize })">@i</a>
+                <a class="page-link" href="@Url.Action("Index", new { page = i, pageSize = ViewBag.PageSize, statusFilter = ViewBag.StatusFilter })">@i</a>
+
             </li>
         }
     </ul>
