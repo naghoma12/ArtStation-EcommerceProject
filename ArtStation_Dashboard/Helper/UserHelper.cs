@@ -29,5 +29,12 @@ namespace ArtStation_Dashboard.Helper
             return mappesuser;
 
         }
+        public async Task<UserViewModel> EditUser(int id)
+        {
+            var user = await GetUserByIdAsync(id);
+            var mappesuser = _mapper.Map<AppUser,UserViewModel>(user);
+            return mappesuser;
+
+        }
     }
 }

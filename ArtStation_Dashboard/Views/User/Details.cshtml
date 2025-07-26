@@ -1,6 +1,5 @@
-﻿@using ArtStation_Dashboard.Helper
-@using ArtStation_Dashboard.ViewModels.User
-@model TraderViewModel
+﻿@using ArtStation_Dashboard.ViewModels.User
+@model UserViewModel
 @{
     var culture = System.Globalization.CultureInfo.CurrentUICulture;
     var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
@@ -10,32 +9,40 @@
     <div class="card shadow-lg rounded-4 overflow-hidden">
         <div class="row g-0">
             <div class="col-md-5">
-                <img src="~/@Model.Photo" class="img-fluid h-100 w-100 object-fit-cover" alt="@Model.DispalyName" style="min-height: 300px;" />
+                <img src="~/@Model.Image" class="img-fluid h-100 w-100 object-fit-cover" alt="@Model.FullName" style="min-height: 300px;" />
             </div>
             <div class="col-md-7">
                 <div class="card-body p-5">
-                    <h2 class="card-title mb-3">@Model.DispalyName</h2>
+                    <h2 class="card-title mb-3">@Model.FullName</h2>
 
                     <ul class="list-group list-group-flush mt-4">
-                        <li class="list-group-item"><strong>@(("اسم المستخدم", "User Name").Localize(lang)) : </strong>@Model.UserName </li>
+                       
                         <li class="list-group-item"><strong>@(("الهاتف المحمول", "Phone Number").Localize(lang)) : </strong>@Model.PhoneNumber</li>
-                        @if (!(@Model.Email ==null))
+                        @if (!(@Model.Email == null))
                         {
                             <li class="list-group-item"><strong>@(("إيميل", "Email").Localize(lang)) : </strong>@Model.Email</li>
                         }
-                        @if (!(@Model.City == null))
+                        @if (!(@Model.Country == null))
                         {
-                            <li class="list-group-item"><strong>@(("المحافظة", "City").Localize(lang)) : </strong>@Model.City</li>
+                            <li class="list-group-item"><strong>@(("المحافظة", "City").Localize(lang)) : </strong>@Model.Country</li>
                         }
                         @if (!(@Model.Nationality == null))
                         {
                             <li class="list-group-item"><strong>@(("الجنسية", "Nationality").Localize(lang)) : </strong>@Model.Nationality</li>
                         }
+                        @if (!(@Model.Gender == null))
+                        {
+                            <li class="list-group-item"><strong>@(("النوع", "Gender").Localize(lang)) : </strong>@Model.Gender</li>
+                        }
+                        @if (!(@Model.BirthDay == null))
+                        {
+                            <li class="list-group-item"><strong>@(("عيد الميلاد", "Birthday").Localize(lang)) : </strong>@Model.BirthDay</li>
+                        }
                     </ul>
 
                     <div class="mt-5">
                         <a asp-action="Index" class="btn btn-outline-primary">
-                            @(( "Back to List","العودة إلى القائمة").Localize(lang))
+                            @(("Back to List", "العودة إلى القائمة").Localize(lang))
                         </a>
                     </div>
                 </div>

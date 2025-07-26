@@ -1,0 +1,117 @@
+﻿@using ArtStation_Dashboard.ViewModels.User
+@model UserViewModel
+@{
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
+    var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
+    var lang = culture.Name;
+}
+<div class="m-auto  bg-white p-5">
+    <h1>@(("تعديل بيانات العميل", "Edit User Data").Localize(lang))</h1>
+
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <input asp-for="Id" hidden />
+        <input asp-for="Image" hidden />
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-group input-group-static mb-4">
+                    <label>@(("اسم العميل", " FullName").Localize(lang))</label>
+                    <input asp-for="FullName" class="form-control" />
+                </div>
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+           
+
+            <div class="col-md-6">
+                <div class="input-group input-group-static mb-4">
+                    <label>@(("البريد الإلكتروني", "Email").Localize(lang))</label>
+                    <input asp-for="Email" class="form-control" />
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="input-group input-group-static mb-4">
+                    <label>@(("رقم الهاتف", "Phone Number").Localize(lang))</label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                </div>
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <div class="input-group input-group-static mb-4">
+                    <label class="form-label d-block">@(("النوع", "Gender").Localize(lang))</label>
+
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="Gender" id="genderMale" value="Male"
+                        @(Model.Gender == "Male" ? "checked" : "") />
+                        <label class="form-check-label" for="genderMale">@(("ذكر", "Male").Localize(lang))</label>
+                    </div>
+
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="Gender" id="genderFemale" value="Female"
+                        @(Model.Gender == "Female" ? "checked" : "") />
+                        <label class="form-check-label" for="genderFemale">@(("أنثى", "Female").Localize(lang))</label>
+                    </div>
+                </div>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <div class="input-group input-group-static mb-4">
+                    <label>@(("تاريخ الميلاد", "Birthdate").Localize(lang))</label>
+                    <input type="date" asp-for="BirthDay" class="form-control" />
+                </div>
+                <span asp-validation-for="BirthDay" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <div class="input-group input-group-static mb-4">
+                    <label>@(("المدينة", "City").Localize(lang))</label>
+                    <select asp-for="Country" class="form-control"
+                            asp-items="@(new SelectList(Model.Cities, "City", "City", Model.Country))">
+                        <option value="">@(("اختر المدينة", "Select a City").Localize(lang))</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="col-md-6">
+                <div class="input-group input-group-static mb-4">
+                    <label>@(("الجنسية", "Nationality").Localize(lang))</label>
+                    <input asp-for="Nationality" class="form-control" />
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="input-group input-group-static mb-4">
+                    <label>@(("صورة المستخدم", "User Photo").Localize(lang))</label>
+                    <div class="w-100">
+                        @if (!string.IsNullOrEmpty(Model.Image)) 
+                        { 
+                            <img src="~/@Model.Image" alt="User Photo" width="100" class="mb-2" />
+                        }else
+                        {
+                            <div>No Image </div>
+                        }
+                        @* <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" /> *@
+                    </div>
+                </div>
+                @* <span asp-validation-for="ImageFile" class="text-danger"></span> *@
+            </div>
+        </div>
+
+        <div class="form-group mt-4">
+            <input type="submit" value="@(("تعديل", "Edit").Localize(lang))" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-light ms-2">
+                @(("العودة إلى القائمة", "Back to List").Localize(lang))
+            </a>
+        </div>
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+}

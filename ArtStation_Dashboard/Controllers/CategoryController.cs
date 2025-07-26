@@ -6,9 +6,11 @@ using ArtStation_Dashboard.ViewModels;
 using ArtStation_Dashboard.Helper;
 using Microsoft.AspNetCore.Localization;
 using ArtStation_Dashboard.Resource;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ArtStation_Dashboard.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

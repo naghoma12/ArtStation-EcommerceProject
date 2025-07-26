@@ -126,6 +126,9 @@
   <data name="Dashboard" xml:space="preserve">
     <value>Dashboard</value>
   </data>
+  <data name="EditUserProfileSucess" xml:space="preserve">
+    <value>Edit User Profile Sucess!</value>
+  </data>
   <data name="LoginInValid" xml:space="preserve">
     <value>UserName Or Password is InCorrect!</value>
   </data>

@@ -61,59 +61,61 @@ namespace ArtStation_Dashboard.Controllers
 
      
 
-        //Get : Get Trader Details
+        //Get : Get User Details
         public async Task<IActionResult> Details(int id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
-            var mappesuser = _mapper.Map<AppUser, TraderViewModel>(user);
+            var mappesuser = _mapper.Map<AppUser,UserViewModel>(user);
             return View(mappesuser);
         }
 
-        //Get : Edit Trader
+        //Get : Edit User
         public async Task<IActionResult> Edit(int id)
         {
 
-            var traderVM = await _userHelper.Edit(id);
+            var userVM = await _userHelper.EditUser(id);
 
-            traderVM.Cities = await unitOfWork.Repository<Shipping>().GetAllAsync();
-            ViewData["ActionOne"] = "EditVendor";
-            return View(traderVM);
+            userVM.Cities = await unitOfWork.Repository<Shipping>().GetAllAsync();
+           
+            return View(userVM);
 
         }
+
+        //Post : Edit User
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(TraderViewModel traderVM)
+        public async Task<IActionResult> Edit(UserViewModel userVM)
         {
             try
             {
-                var trader = await _userManager.FindByIdAsync(traderVM.Id.ToString());
+                var user = await _userManager.FindByIdAsync(userVM.Id.ToString());
 
-                if (trader == null)
+                if (user == null)
                 {
-                    //var result=ModelState.AddModelError("", "المستخدم غير موجود.");
-                    //return result;
+                   ModelState.AddModelError("", "المستخدم غير موجود.");
+                   
                 }
 
 
-                if (traderVM.PhotoFile != null)
-                {
-                    if (!string.IsNullOrEmpty(trader.Image))
-                    {
-                        FileSettings.DeleteFile("Users", trader.Image, _environment.WebRootPath);
-                    }
+                //if (userVM.ImageFile != null)
+                //{
+                //    if (!string.IsNullOrEmpty(user.Image))
+                //    {
+                //        FileSettings.DeleteFile("Users", user.Image, _environment.WebRootPath);
+                //    }
 
-                    trader.Image = await FileSettings.UploadFile(traderVM.PhotoFile, "Users", _environment.WebRootPath);
-                }
+                //    user.Image = await FileSettings.UploadFile(userVM.ImageFile, "Users", _environment.WebRootPath);
+                //}
 
 
-                trader.UserName = traderVM.UserName;
-                trader.Email = traderVM.Email;
-                trader.PhoneNumber = traderVM.PhoneNumber;
-                trader.FullName = traderVM.DispalyName;
-                trader.Country = traderVM.City;
-                trader.Nationality = traderVM.Nationality;
-
-                var result = await _userManager.UpdateAsync(trader);
+                user.FullName = userVM.FullName;
+                user.Email = userVM.Email;
+                user.PhoneNumber = userVM.PhoneNumber;
+                user.Gender = EnumHelper.ParseGender(userVM.Gender);
+                user.Country = userVM.Country;
+                user.Nationality = userVM.Nationality;
+                user.BirthDay = userVM.BirthDay;
+                var result = await _userManager.UpdateAsync(user);
 
                 if (result.Succeeded)
                 {
@@ -133,8 +135,8 @@ namespace ArtStation_Dashboard.Controllers
             }
 
 
-            traderVM.Cities = await unitOfWork.Repository<Shipping>().GetAllAsync();
-            return View(traderVM);
+            userVM.Cities = await unitOfWork.Repository<Shipping>().GetAllAsync();
+            return View(userVM);
         }
 
         [HttpPost]

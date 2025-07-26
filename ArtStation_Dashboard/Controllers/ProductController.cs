@@ -63,6 +63,7 @@ namespace ArtStation_Dashboard.Controllers
             _forwhomRepository = forwhomRepository;
         }
         // Admin
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
             string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
@@ -108,7 +109,7 @@ namespace ArtStation_Dashboard.Controllers
             return View(pageResult);
         }
         // Trader
-        //  [Authorize(Roles = "Trader")]
+        [Authorize(Roles = "Trader")]
         public async Task<IActionResult> TraderProducts(int page = 1, int pageSize =5)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
@@ -155,6 +156,7 @@ namespace ArtStation_Dashboard.Controllers
 
             return View("Index", pageResult);
         }
+        [Authorize]
 
         public async Task<IActionResult> Details(int id)
         {
@@ -324,6 +326,7 @@ namespace ArtStation_Dashboard.Controllers
             return product.ProductPhotos.Select(s => s.Photo
             ).ToList();
         }
+        [Authorize]
         public async Task<IActionResult> Create()
         {
             string language = GetLanguage();
@@ -559,6 +562,7 @@ namespace ArtStation_Dashboard.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = ("Trader,Admin"))]
         public async Task<IActionResult> Create(ProductCreation productCreation)
         {
             var language = GetLanguage();
@@ -613,7 +617,7 @@ namespace ArtStation_Dashboard.Controllers
         }
 
 
-        //[Authorize(AuthenticationSchemes = "Cookies", Roles = ("بائع,Admin"))]
+        [Authorize(Roles = ("بائع,Admin"))]
         public async Task<IActionResult> Edit(int id)
         {
             var language = GetLanguage();

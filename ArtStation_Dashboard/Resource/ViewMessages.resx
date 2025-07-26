@@ -126,6 +126,9 @@
   <data name="Dashboard" xml:space="preserve">
     <value />
   </data>
+  <data name="EditUserProfileSucess" xml:space="preserve">
+    <value />
+  </data>
   <data name="LoginInValid" xml:space="preserve">
     <value />
   </data>

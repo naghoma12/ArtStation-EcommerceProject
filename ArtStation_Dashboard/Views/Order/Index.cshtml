@@ -1,0 +1,100 @@
+﻿@using ArtStation_Dashboard.ViewModels.Order
+@model IEnumerable<OrderVM>
+
+@{
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
+    var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
+    var lang = culture.Name;
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                        <h6 class="text-white text-capitalize ps-3 pe-3">@(("الطلبات","Orders").Localize(lang))</h6>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-center  text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("رقم الطلب", "Order Number").Localize(lang))</th>
+                                    <th class=" text-center  text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">@(("رقم العميل", "Customer Phone").Localize(lang))</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("تاريخ الطلب", "Order Date").Localize(lang))</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("حاله الطلب", "Order Status").Localize(lang))</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("حاله الدفع", "Payment Status").Localize(lang))</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("طريقه الدفع", "Payment Method").Localize(lang))</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("الحساب الجزئى", "Sub Total").Localize(lang))</th>
+                                    <th class="text-secondary opacity-7"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model!=null)
+                                {
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+
+                                            <td class="align-middle text-center text-sm">
+                                                <p class="text-xs font-weight-bold mb-0">@(@item.OrderNum + 1000)</p>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <p class="text-xs font-weight-bold mb-0">@item.CustomerPhone</p>
+                                            </td>
+                                            
+                                            <td class="align-middle text-center">
+                                                <span class="text-secondary text-xs font-weight-bold">@item.OrderDate</span>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="badge badge-sm bg-gradient-success">@item.Status</span>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="badge badge-sm  bg-gradient-info">@item.PaymentStatus</span>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="badge badge-sm bg-gradient-danger">@item.PaymentMethod</span>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="badge badge-sm bg-gradient-warning">@item.SubTotal</span>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="dropdown">
+                                                    <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        @(("العمليات", "Actions").Localize(lang))
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        <li><a class="dropdown-item" asp-action="Details" asp-controller="Order" asp-route-id="@item.OrderNum">@(("تفاصيل", "Details").Localize(lang))</a></li>
+                                                        @* <li><a class="dropdown-item" asp-action="Edit" asp-controller="Trader" asp-route-id="@item.OrderNum">@(("تعديل", "Edit").Localize(lang))</a></li> *@
+                                                        @* <li><a class="dropdown-item" asp-action="ChangePassword" asp-controller="Trader" asp-route-id="@item.OrderNum">@(("تغيير كلمه السر", "Change Password").Localize(lang))</a></li> *@
+                                                 
+                                                    
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                
+                               
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+<nav aria-label="Page navigation">
+    <ul class="pagination pagination-primary pagination-sm justify-content-center">
+        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            var isActive = (i == ViewBag.CurrentPage) ? "active" : "";
+            <li class="page-item @isActive">
+                <a class="page-link" href="@Url.Action("Index", new { page = i, pageSize = ViewBag.PageSize })">@i</a>
+            </li>
+        }
+    </ul>
+</nav>

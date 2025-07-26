@@ -1,6 +1,8 @@
 ﻿using ArtStation.Core.Entities.Identity;
 using ArtStation.Core.Entities.Order;
 using ArtStation.Core.Helper;
+using ArtStation.Core.Helper.Order;
+using ArtStation_Dashboard.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +17,11 @@ namespace ArtStation.Core.Services.Contract
         Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string PhoneNumber);
         Task<OrderWithItemsDto> GetOrderForUserAsync(int orderid);
 
-        //Task<OrderItem> GetOrderItemForOrder(int orderItemId);
-        //Task<Order> DeleteOrderForUserAsync(int orderid);
+
+        //Dashboard
+        Task<PagedResult<Order>> GetOrdersDashboardAsync(int page, int pageSize);
+        Task<OrderInvoiceDto> GetOrderWithDetailsDashboardAsync(int id);
+
+
     }
 }
