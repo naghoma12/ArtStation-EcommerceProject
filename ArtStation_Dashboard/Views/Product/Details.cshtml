@@ -7,8 +7,15 @@
     var backToList = language == "en" ? "Back to List" : "العودة إلى القائمة";
 
 }
-
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <div class="alert alert-primary mt-3 mb-2 text-white">
+        @TempData["message"]
+    </div>
+}
 <partial name="PartialView/_DetailsDeleteView" />
-<div class="mt-5">
+<div class="mt-1 ms-3">
     <a asp-action="Index" class="btn btn-outline-primary">@backToList</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
+        @(("تعديل المنتج", "Edit Product").Localize(language)) </a>
 </div>

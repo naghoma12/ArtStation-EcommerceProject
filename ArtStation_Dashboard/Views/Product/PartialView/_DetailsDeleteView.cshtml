@@ -22,7 +22,7 @@
                                 <div class="carousel-item @(i == 0 ? "active" : "") w-100 h-100">
                                     <img src="~/Uploads/Products/@Model.Images[i]"
                                          class="d-block w-100 h-100"
-                                         style="object-fit:  fill;"
+                                         style="object-fit: cover; border-radius: 10px;"
                                          alt="Product Image @(i + 1)" />
                                 </div>
                             }
@@ -68,6 +68,16 @@
                                 }
                             </li>
                         }
+                        @if (Model.Flavours.Any())
+                        {
+                            <li class="list-group-item">
+                                <strong>@(language == "en" ? "Flavours" : "النكهات"):</strong>
+                                @foreach (var flavour in Model.Flavours)
+                                {
+                                    <span class="badge bg-warning text-light me-1">@flavour</span>
+                                }
+                            </li>
+                        }
                         @if (Model.Sizes?.Any() == true)
                         {
                             <li class="list-group-item">
@@ -96,16 +106,7 @@
                             </li>
                         }
 
-                        @if (Model.Flavours.Any())
-                        {
-                            <li class="list-group-item">
-                                <strong>@(language == "en" ? "Flavours" : "النكهات"):</strong>
-                                @foreach (var flavour in Model.Flavours)
-                                {
-                                    <span class="badge bg-warning text-light me-1">@flavour</span>
-                                }
-                            </li>
-                        }
+                      
                     </ul>
 
                     

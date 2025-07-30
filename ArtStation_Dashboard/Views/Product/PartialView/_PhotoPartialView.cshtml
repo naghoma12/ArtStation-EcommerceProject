@@ -9,6 +9,7 @@
 
 <div class="form-group">
     <label class="form-label">@(("ادخل صور المنتج", "Enter Product Photos").Localize(language))</label>
+    <input asp-for="Images" type="hidden"/>
     <input multiple asp-for="Files" class="form-control form-control-lg" type="file" id="imageUpload" accept=".png, .jpg, .jpeg" />
     <p id="error-message" style="color: red; display: none;">Only PNG, JPG, JPEG images are allowed.</p>
 

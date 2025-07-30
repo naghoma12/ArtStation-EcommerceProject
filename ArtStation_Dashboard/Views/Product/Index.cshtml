@@ -1,127 +1,79 @@
-﻿@model PagedResult<SimpleProductVM>
-
+﻿@model List<SimpleCategoryDTO>
 @{
     var language = ViewData["Language"] as string ?? "en";
-    ViewData["Title"] = ("مجموعة المنتجات", "Product List").Localize(language);
 }
-@if (!string.IsNullOrEmpty(TempData["Message"] as string))
-{
-    <div class="alert alert-success mt-3 mb-2">
-        @TempData["message"]
-    </div>
-}
-<div class="container-fluid py-4">
-    <a asp-action="Create" asp-controller="Product" class="btn btn-icon btn-3 btn-primary">
-        <i class="fa-solid fa-plus"></i>
-    @(("أضف منتج", "Add Product").Localize(language))</a>
-
-<div class="row">
-    <div class="col-12">
-        <div class="card my-4">
-            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 pe-3">
-                    <h6 class="text-white text-capitalize ps-3">@(("جدول المنتجات", "Product Table").Localize(language))</h6>
-                </div>
-            </div>
-            <div class="card-body px-0 pb-2">
-                <div class="table-responsive p-0">
-                    <table class="table align-items-center mb-0">
-                        <thead>
-                            <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center ">
-                                    @(("المعرف", "Id").Localize(language))
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                    @(("اسم المنتج", "Product Name").Localize(language))
-                                </th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                    @(("الصورة", "Image").Localize(language))
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center ">
-                                    @(("الماركة", "Brand").Localize(language))
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                    @(("السعر الأصلي", "Original Price").Localize(language))
-                                </th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                    @(("السعر بعد الخصم", "SalePrice").Localize(language))
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center ">
-                                    @(("التصنيف", "Category").Localize(language))
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                    @(("التاجر", "Trader").Localize(language))
-                                </th>
-                                <th class="text-secondary opacity-7"></th>
-                                <th class="text-secondary opacity-7"></th>
-                                <th class="text-secondary opacity-7"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var product in Model.Items)
-                            {
-                                <tr>
-                                    <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold">@product.Id</span>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold">@product.Name</span>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <img src="~/Uploads/Products/@product.Image" class="avatar avatar-sm border-radius-lg" alt="user2">
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold">@product.Brand</span>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold">@product.Price</span>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold">@product.PriceAfterSale</span>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold">@product.CategoryName</span>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold">@product.UserName</span>
-                                    </td>
-
-                                    <td class="align-middle text-center">
-                                        <a asp-action="Details" asp-route-id="@product.Id" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                                            @(("تفاصيل", "Details").Localize(language))
-                                        </a>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <a asp-action="Edit" asp-route-id="@product.Id" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                                            @(("تعديل", "Edit").Localize(language))
-
-                                        </a>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <a asp-action="Delete" asp-route-id="@product.Id" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                                            @(("حذف", "Delete").Localize(language))
-                                        </a>
-                                    </td>
-                                </tr>
-                            }
-
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="mt-4">
-    <nav>
-        <ul class="pagination pagination-primary justify-content-center">
-            @for (int i = 1; i <= Model.TotalPages; i++)
+<div class="d-flex justify-content-center">
+    <div class="col-md-2">
+        <select id="categoryFilter" class="form-select   text-center fw-bolder bg-white text-primary">
+            <option value="">@(("تصفية حسب الفئة", "Filter by category").Localize(language))</option>
+            @foreach (var cat in Model)
             {
-                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
-                </li>
+                <option value="@cat.Id">@cat.Name</option>
             }
-        </ul>
-    </nav>
+        </select>
+    </div>
 </div>
+
+
+<div id="productContainer">
+
+    @{
+        var emptyResult = new PagedResult<SimpleProductVM>
+            {
+                Items = new List<SimpleProductVM>(),
+                PageNumber = 1,
+                PageSize = 5,
+                TotalItems = 0
+            };
+        await Html.RenderPartialAsync("PartialView/_Product",emptyResult);
+    }
 </div>
+
+@section Scripts {
+    <script>
+         function confirmDisable(productId) {
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: "سيتم إلغاء تفعيل المنتج!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'نعم، قم بإلغاء التفعيل',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/Product/DisableProduct/' + productId;
+                }
+            });
+
+            return false; // prevent default <a> action
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            loadProducts();
+        });
+        function loadProducts(categoryId = '', page = 1) {
+            fetch(`/Product/FilterProducts?categoryId=${categoryId}&page=${page}`)
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById("productContainer").innerHTML = html;
+                });
+        }
+        
+        document.getElementById("categoryFilter").addEventListener("change", function () {
+            let categoryId = this.value;
+            loadProducts(categoryId);
+        });
+
+        // لو عايزة تدعمي التنقل بين الصفحات عبر AJAX
+        document.addEventListener("click", function (e) {
+            if (e.target.matches(".ajax-page")) {
+                e.preventDefault();
+                let page = e.target.dataset.page;
+                let categoryId = document.getElementById("categoryFilter").value;
+                loadProducts(categoryId, page);
+            }
+        });
+    </script>
+}

@@ -7,6 +7,7 @@ using ArtStation_Dashboard.Helper;
 using Microsoft.AspNetCore.Localization;
 using ArtStation_Dashboard.Resource;
 using Microsoft.AspNetCore.Authorization;
+using ArtStation.Core.Repository.Contract;
 
 namespace ArtStation_Dashboard.Controllers
 {
@@ -16,14 +17,16 @@ namespace ArtStation_Dashboard.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _environment;
+        private readonly ICategoryRepository _categoryRepository;
 
         public CategoryController(IUnitOfWork unitOfWork, IMapper mapper
-            , IWebHostEnvironment webHostEnvironment)
+            , IWebHostEnvironment webHostEnvironment
+            , ICategoryRepository categoryRepository)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _environment = webHostEnvironment;
-
+           _categoryRepository = categoryRepository;
         }
         // Get All Categories --GET
         public async Task<IActionResult> Index(int page = 1 , int pageSize = 5)
@@ -46,11 +49,9 @@ namespace ArtStation_Dashboard.Controllers
         {
             string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName;
             ViewData["Language"] = language;
-            var item = await _unitOfWork.Repository<Category>().GetByIdAsync(id);
+            var item = await _categoryRepository.GetCategoryById(language,id,null);
             if (item == null) return NotFound();
-            var itemMapped = _mapper.Map<Category, CategoryVM>(item);
-            
-            return View(itemMapped);
+            return View(item);
         }
 
         //Open the form --Get

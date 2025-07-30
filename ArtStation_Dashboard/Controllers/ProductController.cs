@@ -17,6 +17,7 @@ using System.Drawing;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Build.Framework;
 
 namespace ArtStation_Dashboard.Controllers
 {
@@ -64,12 +65,16 @@ namespace ArtStation_Dashboard.Controllers
         }
         // Admin
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
+        public async Task<IActionResult> FilterProducts(int? categoryId, int page = 1, int pageSize = 5 )
         {
             string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
             ViewData["Language"] = language;
 
             var productsList = await _productRepository.GetProducts();
+            if (categoryId.HasValue && categoryId.Value > 0)
+            {
+                productsList = productsList.Where(p => p.CategoryId == categoryId.Value).ToList();
+            }
 
             var pagedProducts = productsList
                 .Skip((page - 1) * pageSize)
@@ -106,7 +111,13 @@ namespace ArtStation_Dashboard.Controllers
                 TotalItems = productsList.Count()
             };
 
-            return View(pageResult);
+            return PartialView("PartialView/_Product" , pageResult);
+        }
+        public async Task<IActionResult> Index()
+        {
+            ViewData["Language"] = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
+            var categories = await _categoryRepository.GetSimpleCategory(GetLanguage());
+            return View(categories);
         }
         // Trader
         [Authorize(Roles = "Trader")]
@@ -169,6 +180,26 @@ namespace ArtStation_Dashboard.Controllers
             return View(product);
         }
 
+        public async Task<IActionResult> DisableProduct(int id)
+        {
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            product.IsActive = false;
+            _unitOfWork.Repository<Product>().Update(product);
+            var count = await _unitOfWork.Complet();
+            if (count > 0)
+            {
+                TempData["Message"] = ("تم تعطيل المنتج بنجاح", "Product disabled successfully").Localize(GetLanguage());
+            }
+            else
+            {
+                TempData["Message"] = ("حدث خطأ أثناء تعطيل المنتج", "An error occurred while disabling the product").Localize(GetLanguage());
+            }
+            return RedirectToAction(nameof(Index), new { page = 1, pageSize = 5 });
+        }
         private string GetLanguage()
         {
             return HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
@@ -235,7 +266,7 @@ namespace ArtStation_Dashboard.Controllers
                     {
                         SizeAR = size.SizeAR,
                         SizeEN = size.SizeEN,
-                        Price = size.Price,
+                        Price = (decimal)size.Price,
                         ProductId = product.Id
                     };
                     _unitOfWork.Repository<ProductSize>().Add(productSize);
@@ -343,26 +374,30 @@ namespace ArtStation_Dashboard.Controllers
                 var existingSizes = await _sizeRepository.GetProductTypes(product.Id);
                 foreach (var submittedSize in sizes)
                 {
-                    if (submittedSize.Id != 0)
+                    if (submittedSize.Id != 0 && submittedSize.SizeEN != null && submittedSize.SizeAR != null)
                     {
                         // Update existing
                         var existing = existingSizes.FirstOrDefault(s => s.Id == submittedSize.Id);
                         if (existing != null)
                         {
-                            existing.SizeAR = submittedSize.SizeAR;
-                            existing.SizeEN = submittedSize.SizeEN;
-                            existing.Price = submittedSize.Price;
-                            _unitOfWork.Repository<ProductSize>().Update(existing);
+                            if(existing.SizeAR != submittedSize.SizeAR || existing.SizeEN != submittedSize.SizeEN || existing.Price != (decimal)submittedSize.Price)
+                            {
+                                existing.SizeAR = submittedSize.SizeAR;
+                                existing.SizeEN = submittedSize.SizeEN;
+                                existing.Price = (decimal)submittedSize.Price;
+                                _unitOfWork.Repository<ProductSize>().Update(existing);
+                            }
                         }
+                       
                     }
-                    else
+                    else if (submittedSize.Id == 0 && submittedSize.SizeEN != null && submittedSize.SizeAR != null)
                     {
                         // New size -> add to DB
                         var newSize = new ProductSize
                         {
                             SizeAR = submittedSize.SizeAR,
                             SizeEN = submittedSize.SizeEN,
-                            Price = submittedSize.Price,
+                            Price = (decimal)submittedSize.Price,
                             ProductId = product.Id
                         };
                         _unitOfWork.Repository<ProductSize>().Add(newSize);
@@ -370,12 +405,12 @@ namespace ArtStation_Dashboard.Controllers
                 }
 
                 var submittedIds = sizes
-                    .Where(s => s.Id != 0)
+                    .Where(s => s.Id != 0 && s.SizeEN == null && s.SizeAR == null)
                     .Select(s => s.Id)
                     .ToList();
 
                 var toDelete = existingSizes
-                .Where(e => !submittedIds.Contains(e.Id))
+                .Where(e => submittedIds.Contains(e.Id))
                     .ToList();
                 if (toDelete.Count > 0)
                 {
@@ -391,21 +426,10 @@ namespace ArtStation_Dashboard.Controllers
                 var existingColors = await _colorRepository.GetProductTypes(product.Id);
                 foreach (var submittedColor in colors)
                 {
-                    if (submittedColor.Id != 0)
+                    var existing = existingColors.FirstOrDefault(s => s.NameEN == submittedColor.NameEN
+                        && s.NameAR == submittedColor.NameAR && s.HexCode == submittedColor.Hex);
+                    if(existing == null)
                     {
-                        // Update existing
-                        var existing = existingColors.FirstOrDefault(s => s.Id == submittedColor.Id);
-                        if (existing != null)
-                        {
-                            existing.NameAR = submittedColor.NameAR;
-                            existing.NameEN = submittedColor.NameEN;
-                            existing.HexCode = submittedColor.Hex;
-                            _unitOfWork.Repository<ProductColor>().Update(existing);
-                        }
-                    }
-                    else
-                    {
-                        // New color -> add to DB
                         var newColor = new ProductColor
                         {
                             NameAR = submittedColor.NameAR,
@@ -415,16 +439,15 @@ namespace ArtStation_Dashboard.Controllers
                         };
                         _unitOfWork.Repository<ProductColor>().Add(newColor);
                     }
+                    
                 }
-
-                var submittedIds = colors
-                    .Where(s => s.Id != 0)
-                    .Select(s => s.Id)
-                    .ToList();
-
                 var toDelete = existingColors
-                .Where(e => !submittedIds.Contains(e.Id))
+                    .Where(s => !colors.Any(
+                        sub => sub.NameAR == s.NameAR
+                        && sub.NameEN == s.NameEN
+                        && sub.Hex == s.HexCode))
                     .ToList();
+
                 if (toDelete.Count > 0)
                 {
                     _colorRepository.DeleteRange(toDelete);
@@ -439,18 +462,22 @@ namespace ArtStation_Dashboard.Controllers
                 var existingFlavours = await _flavourRepository.GetProductTypes(product.Id);
                 foreach (var submittedFlavour in flavours)
                 {
-                    if (submittedFlavour.Id != 0)
+                    if (submittedFlavour.Id != 0 && submittedFlavour.FlavourAR != null && submittedFlavour.FlavourEN != null)
                     {
                         // Update existing
                         var existing = existingFlavours.FirstOrDefault(s => s.Id == submittedFlavour.Id);
-                        if (existing != null)
+                        if (existing != null )
                         {
-                            existing.NameAR = submittedFlavour.FlavourAR;
-                            existing.NameEN = submittedFlavour.FlavourEN;
-                            _unitOfWork.Repository<ProductFlavour>().Update(existing);
+                            if(existing.NameAR != submittedFlavour.FlavourAR || existing.NameEN != submittedFlavour.FlavourEN)
+                            {
+                                existing.NameAR = submittedFlavour.FlavourAR;
+                                existing.NameEN = submittedFlavour.FlavourEN;
+                                _unitOfWork.Repository<ProductFlavour>().Update(existing);
+
+                            }
                         }
                     }
-                    else
+                    else if (submittedFlavour.Id == 0 && submittedFlavour.FlavourAR != null && submittedFlavour.FlavourEN != null)
                     {
                         // New flavpur -> add to DB
                         var newFlavour = new ProductFlavour
@@ -463,13 +490,13 @@ namespace ArtStation_Dashboard.Controllers
                     }
                 }
 
-                var submittedIds = flavours
-                    .Where(s => s.Id != 0)
+                var deletedIds = flavours
+                    .Where(s => s.Id != 0 && s.FlavourEN == null && s.FlavourAR == null)
                     .Select(s => s.Id)
                     .ToList();
 
                 var toDelete = existingFlavours
-                .Where(e => !submittedIds.Contains(e.Id))
+                .Where(e => deletedIds.Contains(e.Id))
                     .ToList();
                 if (toDelete.Count > 0)
                 {
@@ -696,7 +723,6 @@ namespace ArtStation_Dashboard.Controllers
                 }
                 var ProMapped = _mapper.Map<ProductCreation, Product>(productCreation);
                 _unitOfWork.Repository<Product>().Update(ProMapped);
-                var count = await _unitOfWork.Complet();
 
                 //For Size 
                 await HandleSizes(productCreation.Sizes, ProMapped);
@@ -715,7 +741,7 @@ namespace ArtStation_Dashboard.Controllers
                 //For ForWhoms
                 await HandleForWhom(productCreation.SelectedForWhoms, ProMapped);
 
-                await _unitOfWork.Complet();
+               var count = await _unitOfWork.Complet();
                 if (count > 0)
                 {
                     TempData["Message"] = ("تم تعديل تفاصيل المنتج بنجاح", "Product details updated successfully").Localize(GetLanguage());
@@ -786,6 +812,13 @@ namespace ArtStation_Dashboard.Controllers
                         photo.IsDeleted = true;
                     }
                     _photoRepository.UpdateRange(product.ProductPhotos);
+                }
+                if (product.Sales.Any())
+                {
+                    foreach (var sales in product.Sales)
+                    {
+                        sales.IsDeleted = true;
+                    }
                 }
                 var count = await _unitOfWork.Complet();
                 if (count > 0)
