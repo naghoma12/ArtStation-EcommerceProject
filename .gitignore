@@ -361,3 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/ArtStation/artstation-4523a-firebase-adminsdk-fbsvc-0ed89a6a93.json
