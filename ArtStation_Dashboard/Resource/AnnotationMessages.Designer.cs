@@ -63,6 +63,24 @@ namespace ArtStation_Dashboard.Resource {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string AddBannerSucessfully {
+            get {
+                return ResourceManager.GetString("AddBannerSucessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string ConfirmPasswordMismatch {
+            get {
+                return ResourceManager.GetString("ConfirmPasswordMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string MaxLength1000 {
             get {
                 return ResourceManager.GetString("MaxLength1000", resourceCulture);
@@ -95,20 +113,11 @@ namespace ArtStation_Dashboard.Resource {
                 return ResourceManager.GetString("MaxLength50", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-         public static string ConfirmPasswordMismatch {
-        get {
-                return ResourceManager.GetString("ConfirmPasswordMismatch", resourceCulture);
-            }
-}
-
-/// <summary>
-///   Looks up a localized string similar to .
-/// </summary>
-public static string MaxName {
+        public static string MaxName {
             get {
                 return ResourceManager.GetString("MaxName", resourceCulture);
             }

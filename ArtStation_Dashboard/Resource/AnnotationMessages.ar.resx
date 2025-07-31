@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ConfirmPasswordMismatch" xml:space="preserve">
-    <value>كلمة المرور الجديدة وتأكيد كلمة المرور غير متطابقتين.</value>
-  </data>
   <data name="MaxName" xml:space="preserve">
     <value>اكبر عدد حروف هوا 20 حرف </value>
   </data>

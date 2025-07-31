@@ -30,7 +30,8 @@ namespace ArtStation_Dashboard.Helper
               //.ForMember(dest => dest.Image, src => src.MapFrom(opt => opt.Image))
               .ReverseMap();
             CreateMap<ProductCreation, Product>().ReverseMap();
-           
+            CreateMap<Banner, BannerVM>().ReverseMap();
+
             CreateMap<Order,OrderVM>()
                 .ForMember(dest => dest.OrderNum, src => src.MapFrom(opt => opt.Id))
                 .ForMember(dest => dest.CustomerPhone, src => src.MapFrom(opt => opt.CustomerPhone))

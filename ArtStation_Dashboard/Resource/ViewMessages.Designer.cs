@@ -63,6 +63,15 @@ namespace ArtStation_Dashboard.Resource {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string AddBannerSuccessfully {
+            get {
+                return ResourceManager.GetString("AddBannerSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string AddTraderSucessfully {
             get {
                 return ResourceManager.GetString("AddTraderSucessfully", resourceCulture);
@@ -102,6 +111,15 @@ namespace ArtStation_Dashboard.Resource {
         public static string LoginInValid {
             get {
                 return ResourceManager.GetString("LoginInValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string OrderReady {
+            get {
+                return ResourceManager.GetString("OrderReady", resourceCulture);
             }
         }
         
