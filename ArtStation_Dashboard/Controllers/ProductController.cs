@@ -63,6 +63,146 @@ namespace ArtStation_Dashboard.Controllers
             _photoRepository = photoRepository;
             _forwhomRepository = forwhomRepository;
         }
+        [Authorize(Roles = "Admin")]
+        public IActionResult ProductSections()
+        {
+            return View();
+        }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> InActiveProducts(int page = 1, int pageSize = 5)
+        {
+            string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
+            ViewData["Language"] = language;
+
+            var productsList = await _productRepository.GetInActiveProducts();
+
+
+            var pagedProducts = productsList
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var mappedProducts = pagedProducts.Select(p =>
+            {
+                var price = p.ProductSizes.Select(s => s.Price).DefaultIfEmpty(0).Min();
+                var discountPercent = p.Sales
+                    .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
+                    .Select(s => (decimal?)s.Discount)
+                    .FirstOrDefault() ?? 0;
+
+                var discountAmount = price * (discountPercent / 100m);
+                return new SimpleProductVM
+                {
+                    Id = p.Id,
+                    Name = (p.NameAR, p.NameEN).Localize(language),
+                    Brand = (p.BrandAR, p.BrandEN).Localize(language),
+                    CategoryName = (p.Category.NameAR, p.Category.NameEN).Localize(language),
+                    Price = price,
+                    PriceAfterSale = price - discountAmount,
+                    Image = p.ProductPhotos.FirstOrDefault()?.Photo,
+                    UserName = p.User?.FullName ?? "Unknown User"
+                };
+            }).ToList();
+
+            var pageResult = new PagedResult<SimpleProductVM>
+            {
+                Items = mappedProducts,
+                PageNumber = page,
+                PageSize = pageSize,
+                TotalItems = productsList.Count()
+            };
+
+            return View(pageResult);
+        }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ActivateProduct(int id)
+        {
+            var product = await _productRepository.GetInActiveProduct(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            product.IsActive = true;
+            _unitOfWork.Repository<Product>().Update(product);
+            var count = await _unitOfWork.Complet();
+            if (count > 0)
+            {
+                TempData["Message"] = ("تم تفعيل المنتج بنجاح", "Product activated successfully").Localize(GetLanguage());
+            }
+            else
+            {
+                TempData["Message"] = ("حدث خطأ أثناء تفعيل المنتج", "An error occurred while activating the product").Localize(GetLanguage());
+            }
+            return RedirectToAction(nameof(InActiveProducts), new { page = 1, pageSize = 5 });
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeletedProducts(int page = 1, int pageSize = 5)
+        {
+            string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
+            ViewData["Language"] = language;
+
+            var productsList = await _productRepository.GetDeletedProducts();
+
+
+            var pagedProducts = productsList
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var mappedProducts = pagedProducts.Select(p =>
+            {
+                var price = p.ProductSizes.Select(s => s.Price).DefaultIfEmpty(0).Min();
+                var discountPercent = p.Sales
+                    .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
+                    .Select(s => (decimal?)s.Discount)
+                    .FirstOrDefault() ?? 0;
+
+                var discountAmount = price * (discountPercent / 100m);
+                return new SimpleProductVM
+                {
+                    Id = p.Id,
+                    Name = (p.NameAR, p.NameEN).Localize(language),
+                    Brand = (p.BrandAR, p.BrandEN).Localize(language),
+                    CategoryName = (p.Category.NameAR, p.Category.NameEN).Localize(language),
+                    Price = price,
+                    PriceAfterSale = price - discountAmount,
+                    Image = p.ProductPhotos.FirstOrDefault()?.Photo,
+                    UserName = p.User?.FullName ?? "Unknown User"
+                };
+            }).ToList();
+
+            var pageResult = new PagedResult<SimpleProductVM>
+            {
+                Items = mappedProducts,
+                PageNumber = page,
+                PageSize = pageSize,
+                TotalItems = productsList.Count()
+            };
+
+            return View(pageResult);
+        }
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RestoreProduct(int id)
+        {
+            var product = await _productRepository.GetDeletedProduct(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            product.IsDeleted = false;
+            _unitOfWork.Repository<Product>().Update(product);
+            var count = await _unitOfWork.Complet();
+            if (count > 0)
+            {
+                TempData["Message"] = ("تم إسترجاع المنتج بنجاح", "Product Restored successfully").Localize(GetLanguage());
+            }
+            else
+            {
+                TempData["Message"] = ("حدث خطأ أثناء تفعيل المنتج", "An error occurred while activating the product").Localize(GetLanguage());
+            }
+            return RedirectToAction(nameof(DeletedProducts), new { page = 1, pageSize = 5 });
+        }
         // Admin
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> FilterProducts(int? categoryId, int page = 1, int pageSize = 5 )
@@ -168,7 +308,6 @@ namespace ArtStation_Dashboard.Controllers
             return View("Index", pageResult);
         }
         [Authorize]
-
         public async Task<IActionResult> Details(int id)
         {
             string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";

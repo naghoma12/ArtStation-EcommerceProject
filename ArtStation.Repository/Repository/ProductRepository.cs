@@ -28,7 +28,7 @@ namespace ArtStation.Repository.Repository
             _mapper = mapper;
         }
 
-      
+
         public async Task<IEnumerable<SimpleProduct>> GetAllProducts(string language, int? userId = null)
         {
             var rawProducts = await _context.Products
@@ -41,7 +41,7 @@ namespace ArtStation.Repository.Repository
                 .Include(p => p.ForWhoms)
                 .ToListAsync();
 
-            var products = rawProducts.Select(p => Utility.MapToSimpleProduct(p, userId , language));
+            var products = rawProducts.Select(p => Utility.MapToSimpleProduct(p, userId, language));
 
             return products;
         }
@@ -59,7 +59,7 @@ namespace ArtStation.Repository.Repository
                 .OrderByDescending(p => p.SellersCount)
                 .ToListAsync();
 
-            var products = rawProducts.Select(p => Utility.MapToSimpleProduct(p, userId , language));
+            var products = rawProducts.Select(p => Utility.MapToSimpleProduct(p, userId, language));
 
             return products;
         }
@@ -77,7 +77,7 @@ namespace ArtStation.Repository.Repository
                 .OrderByDescending(p => p.CreatedDate)
                 .ToListAsync();
 
-            var products = rawProducts.Select(p => Utility.MapToSimpleProduct(p, userId , language));
+            var products = rawProducts.Select(p => Utility.MapToSimpleProduct(p, userId, language));
 
             return products;
         }
@@ -104,7 +104,7 @@ namespace ArtStation.Repository.Repository
                     Image = s.Product.ProductPhotos.Select(ph => string.IsNullOrEmpty(ph.Photo) ? null :
                 $"http://artstationdashboard.runasp.net//Uploads//Products/{ph.Photo}").FirstOrDefault() ?? "",
                     PriceAfterSale = priceAfterSale,
-                    
+
                 };
             });
 
@@ -159,19 +159,19 @@ namespace ArtStation.Repository.Repository
                 }).ToList(),
                 Flavours = product.ProductFlavours.Select(f => new FlavourDTO
                 {
-                   Id = f.Id,
+                    Id = f.Id,
                     Name = language == "en" ? f.NameEN : f.NameAR
                 }).ToList(),
-                ShippingDetails = language == "en" ?  product.ShippingDetailsEN : product.ShippingDetailsAR,
-                 DeliveredOn = language == "en" ? product.DeliveredOnEN : product.DeliveredOnAR,
-                Reviews = product.Reviews.Select( r=> 
+                ShippingDetails = language == "en" ? product.ShippingDetailsEN : product.ShippingDetailsAR,
+                DeliveredOn = language == "en" ? product.DeliveredOnEN : product.DeliveredOnAR,
+                Reviews = product.Reviews.Select(r =>
                     new ReviewDTO
                     {
                         Id = r.Id,
                         Comment = r.Comment,
                         Rating = r.Rating,
                         UserName = r.AppUser?.FullName ?? "Unknown",
-                        UserImage =string.IsNullOrEmpty(r.AppUser.Image) ? null:
+                        UserImage = string.IsNullOrEmpty(r.AppUser.Image) ? null :
                         $"http://artstation.runasp.net//Uploads//Users/{r.AppUser?.Image}",
                         LikesCount = r.LikesCount
                     }).ToList(),
@@ -201,13 +201,13 @@ namespace ArtStation.Repository.Repository
                     Fuzz.Ratio(p.NameAR ?? "", proName) > similarityThreshold ||
                     (p.NameEN.Trim().ToLower().Contains(lowerProName)) ||
                     (p.NameAR.Trim().ToLower().Contains(lowerProName)))
-                .Select(p => Utility.MapToSimpleProduct(p, userId,language))
+                .Select(p => Utility.MapToSimpleProduct(p, userId, language))
                 .ToList();
 
             return matchedProducts;
         }
 
-        public async Task<ProductWithPriceDto> GetProductWithPrice(int productId,int sizeId )
+        public async Task<ProductWithPriceDto> GetProductWithPrice(int productId, int sizeId)
         {
             var product = await _context.Products
                .Where(p => p.IsActive && !p.IsDeleted && p.Id == productId)
@@ -225,20 +225,20 @@ namespace ArtStation.Repository.Repository
 
             var discount = activeSale?.Discount ?? 0;
             var size = product.ProductSizes.Where(s => s.Id == sizeId).FirstOrDefault();
-            var priceAfterSale=size.Price -(size.Price * discount / 100m);
+            var priceAfterSale = size.Price - (size.Price * discount / 100m);
             return new ProductWithPriceDto()
             {
-                Product=product,
-                Price=size.Price,
+                Product = product,
+                Price = size.Price,
                 PriceAfterSale = priceAfterSale,
                 UserId = product.UserId
 
 
             };
-            
+
         }
 
-        public async Task<ProductsOFSpecificOrder> GetProductsOfSpecificOrder( int productId,int sizeId, int? flavourId,int? ColorId, string lang = "en")
+        public async Task<ProductsOFSpecificOrder> GetProductsOfSpecificOrder(int productId, int sizeId, int? flavourId, int? ColorId, string lang = "en")
         {
             var product = await _context.Products
                .Where(p => p.IsActive && !p.IsDeleted && p.Id == productId)
@@ -269,7 +269,7 @@ namespace ArtStation.Repository.Repository
                 ProductName = lang == "en" ? product.NameEN : product.NameAR,
                 //OriginalPrice = size.Price,
                 PhotoUrl = $"http://artstationdashboard.runasp.net//Uploads//Products/{product.ProductPhotos.FirstOrDefault()?.Photo}",
-                Size= lang == "en" ? size.SizeEN :size.SizeAR,
+                Size = lang == "en" ? size.SizeEN : size.SizeAR,
                 Color = color == null ? null : (lang == "en" ? color.NameEN : color.NameAR),
                 Flavour = flavour == null ? null : (lang == "en" ? flavour.NameEN : flavour.NameAR),
                 //PriceAfterSale = priceAfterSale,
@@ -294,9 +294,9 @@ namespace ArtStation.Repository.Repository
 
 
 
-            var relatedProducts =  _context.Products
-                .Where(p => p.IsActive && !p.IsDeleted 
-                && (p.Category.NameAR == product.Category.NameAR || p.Category.NameEN == product.Category.NameEN) 
+            var relatedProducts = _context.Products
+                .Where(p => p.IsActive && !p.IsDeleted
+                && (p.Category.NameAR == product.Category.NameAR || p.Category.NameEN == product.Category.NameEN)
                 || (p.BrandAR == product.BrandAR || p.BrandEN == product.BrandEN))
                 .Include(p => p.ProductPhotos)
                 .Include(p => p.Reviews)
@@ -329,22 +329,22 @@ namespace ArtStation.Repository.Repository
         public async Task<IEnumerable<BrandDTO>> GetBrands(string language)
         {
 
-           var brands = await _context.Products
-                .Where(p => p.IsActive && !p.IsDeleted)
-                .Select(p => new BrandDTO
-                {
-                    Name = language == "en" ? p.BrandEN : p.BrandAR
-                })
-                .Distinct()
-                .ToListAsync();
+            var brands = await _context.Products
+                 .Where(p => p.IsActive && !p.IsDeleted)
+                 .Select(p => new BrandDTO
+                 {
+                     Name = language == "en" ? p.BrandEN : p.BrandAR
+                 })
+                 .Distinct()
+                 .ToListAsync();
 
             return brands;
         }
-    
 
-        public async Task<IEnumerable<SimpleProduct>> FilterProducts(List<SimpleProduct> products,int? minPriceRange, int? maxPriceRange , string? brand , bool men , bool women , bool kids , bool offer )
+
+        public async Task<IEnumerable<SimpleProduct>> FilterProducts(List<SimpleProduct> products, int? minPriceRange, int? maxPriceRange, string? brand, bool men, bool women, bool kids, bool offer)
         {
-            if(minPriceRange.HasValue && maxPriceRange.HasValue)
+            if (minPriceRange.HasValue && maxPriceRange.HasValue)
             {
                 products = products
                     .Where(p => p.TotalPrice >= (decimal)minPriceRange && p.TotalPrice <= (decimal)maxPriceRange)
@@ -359,7 +359,7 @@ namespace ArtStation.Repository.Repository
             if (men)
             {
                 products = products
-                     .Where(p => p.ForWhom.Any(f => f.ForWhom == ForWhom.Men.ToString() 
+                     .Where(p => p.ForWhom.Any(f => f.ForWhom == ForWhom.Men.ToString()
                      || f.ForWhom == "رجال"))
                      .ToList();
             }
@@ -388,7 +388,7 @@ namespace ArtStation.Repository.Repository
 
         public async Task<IEnumerable<Product>> GetProducts()
         {
-            return  _context.Products
+            return _context.Products
                 .Where(p => p.IsActive && !p.IsDeleted)
                 .Include(p => p.ProductPhotos)
                 .Include(p => p.ProductSizes)
@@ -414,7 +414,7 @@ namespace ArtStation.Repository.Repository
             var now = DateTime.Now;
 
             return await _context.Products
-                .Where(p => p.Id == id && !p.IsDeleted && p.IsActive)
+                .Where(p => p.Id == id )
                 .Select(p => new ProductDetailsVM
                 {
                     Id = p.Id,
@@ -460,6 +460,39 @@ namespace ArtStation.Repository.Repository
                 .FirstOrDefaultAsync();
 
         }
-       
+        public async Task<IEnumerable<Product>> GetInActiveProducts()
+        {
+            return _context.Products
+                .Where(p => !p.IsActive && !p.IsDeleted)
+                .Include(p => p.ProductPhotos)
+                .Include(p => p.ProductSizes)
+                .Include(p => p.Sales)
+                .Include(p => p.Category)
+                .Include(p => p.User)
+                .AsNoTracking();
+        }
+        public async Task<IEnumerable<Product>> GetDeletedProducts()
+        {
+            return _context.Products
+                .Where(p => p.IsActive && p.IsDeleted)
+                .Include(p => p.ProductPhotos)
+                .Include(p => p.ProductSizes)
+                .Include(p => p.Sales)
+                .Include(p => p.Category)
+                .Include(p => p.User)
+                .AsNoTracking();
+        }
+        public async Task<Product> GetInActiveProduct(int productId)
+        {
+            return await _context.Products
+                .Where(x => !x.IsActive && x.Id == productId)
+                .FirstOrDefaultAsync();
+        }
+        public async Task<Product> GetDeletedProduct(int productId)
+        {
+            return await _context.Products
+                .Where(x => x.IsDeleted && x.Id == productId)
+                .FirstOrDefaultAsync();
+        }
     }
 }
