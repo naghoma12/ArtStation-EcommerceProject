@@ -30,7 +30,9 @@ namespace ArtStation_Dashboard.Helper
               //.ForMember(dest => dest.Image, src => src.MapFrom(opt => opt.Image))
               .ReverseMap();
             CreateMap<ProductCreation, Product>().ReverseMap();
-            CreateMap<Banner, BannerVM>().ReverseMap();
+            CreateMap<Banner, BannerVM>()
+                  .ForMember(dest => dest.ImageUrl, src => src.MapFrom(opt => opt.ImageUrl))
+                  .ReverseMap();
 
             CreateMap<Order,OrderVM>()
                 .ForMember(dest => dest.OrderNum, src => src.MapFrom(opt => opt.Id))
@@ -87,6 +89,8 @@ namespace ArtStation_Dashboard.Helper
                .ForMember(dest => dest.FullName, src => src.MapFrom(opt => opt.Address.FullName))
                .ForMember(dest => dest.AddressDetails, src => src.MapFrom(opt => opt.Address.AddressDetails))
              .ReverseMap();
+
+
         }
     }
 }

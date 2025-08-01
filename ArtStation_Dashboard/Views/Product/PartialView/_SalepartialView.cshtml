@@ -1,14 +1,17 @@
 ﻿@model ProductCreation
 @{
     var language = ViewData["Language"] as string ?? "en";
+    var isSale = Model.Sale != null && Model.Sale.Id > 0;
 }
 
 <div class="form-check form-switch mb-3">
-    <input class="form-check-input" type="checkbox" id="enableSaleSwitch">
+    <input class="form-check-input" type="checkbox" id="enableSaleSwitch" @(isSale ? "checked" : "")>
     <label class="form-check-label fw-bold" for="enableSaleSwitch">
         <span>@(("هل تريد إضافة خصم؟", "Do you want to add a sale?").Localize(language))</span>
     </label>
 </div>
+
+<input type="hidden" asp-for="Sale.Id" />
 
 <div id="saleSection" style="display:none;" class="row gy-2 gx-3 align-items-end">
     <div class="col-md-4">
@@ -25,10 +28,14 @@
     </div>
 </div>
 
-    <script>
+<script>
     const startDateInput = document.getElementById("SaleStartDate");
     const endDateInput = document.getElementById("SaleEndDate");
+    const saleSwitch = document.getElementById("enableSaleSwitch");
+    const saleSection = document.getElementById("saleSection");
+    const salePriceInput = document.getElementById("SalePrice");
 
+    // Prevent end date before start date
     startDateInput.addEventListener("change", function () {
         endDateInput.min = this.value;
         if (endDateInput.value && endDateInput.value < this.value) {
@@ -43,16 +50,31 @@
         }
     });
 
-        document.getElementById("enableSaleSwitch").addEventListener("change", function () {
-            const saleSection = document.getElementById("saleSection");
-            if (this.checked) {
-                saleSection.style.display = "flex";
-            } else {
-                saleSection.style.display = "none";
-                document.getElementById("SalePrice").value = "";
-                document.getElementById("SaleStartDate").value = "";
-                document.getElementById("SaleEndDate").value = "";
-            }
-        });
-    </script>
+    // Toggle sale section visibility
+    saleSwitch.addEventListener("change", function () {
+        if (this.checked) {
+            saleSection.style.display = "flex";
+        } else {
+            saleSection.style.display = "none";
+            salePriceInput.value = "";
+            startDateInput.value = "";
+            endDateInput.value = "";
+        }
+    });
 
+    // Initial state when page loads
+    window.addEventListener("DOMContentLoaded", function () {
+        if (saleSwitch.checked) {
+            saleSection.style.display = "flex";
+        } else {
+            saleSection.style.display = "none";
+        }
+    });
+
+    // Prevent negative values
+    salePriceInput.addEventListener("input", function () {
+        if (parseFloat(this.value) < 0) {
+            this.value = 0;
+        }
+    });
+</script>

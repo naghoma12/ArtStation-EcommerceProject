@@ -65,6 +65,7 @@ namespace ArtStation.Repository.Repository
             {
                 Id = categoryData.Id,
                 Name = language == "en" ? categoryData.NameEN : categoryData.NameAR,
+                Image = categoryData.Image,
                 Products = categoryData.Products.Select(p => Utility.MapToSimpleProduct(p,userId , language)).ToList()
             };
 

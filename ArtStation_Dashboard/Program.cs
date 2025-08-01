@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using ArtStation.Core.Services.Contract;
 using ArtStation.Services;
 using StackExchange.Redis;
+using ArtStation.Core.Entities;
 
 namespace ArtStation_Dashboard
 {
@@ -58,6 +59,11 @@ namespace ArtStation_Dashboard
             builder.Services.AddScoped(typeof(IAddressRepository), typeof(AddressRepository));
             builder.Services.AddScoped(typeof(IPaymentService), typeof(PaymentService));
 
+            builder.Services.AddScoped(typeof(IProductTypeRepository<ProductSize>), typeof(SizeRepository));
+            builder.Services.AddScoped(typeof(IProductTypeRepository<ProductColor>), typeof(ColorRepository));
+            builder.Services.AddScoped(typeof(IProductTypeRepository<ProductFlavour>), typeof(FlavourRepository));
+            builder.Services.AddScoped(typeof(IProductTypeRepository<ProductForWhom>), typeof(ForWhomRepository));
+            builder.Services.AddScoped(typeof(IProductTypeRepository<ProductPhotos>), typeof(PhotoRepository));
             builder.Services.AddScoped(typeof(IForWhomRepository), typeof(ForWhomRepository));
             builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             builder.Services.AddScoped(typeof(UserHelper), typeof(UserHelper));

@@ -1,0 +1,32 @@
+﻿@model ProductCreation
+
+@{
+    var language = ViewData["Language"] as string ?? "en";
+    ViewData["Title"] = ("تعديل بيانات المنتج", "Edit Product Details").Localize(language);
+}
+
+
+<div class="m-auto  bg-white p-5">
+    <h1>@(("تعديل بيانات المنتج", "Edit Product Details").Localize(language))</h1>
+   
+    <hr />
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <partial name="PartialView/_CreateEditView" />
+
+
+        <div class="form-group mt-4">
+            <input type="submit" value="@(("تعديل","Edit").Localize(language))" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-light ms-2">
+                @(language == "en" ? "Back to List" : "العودة إلى القائمة")
+            </a>
+        </div>
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/ProductJS.js"></script>
+}
+
+

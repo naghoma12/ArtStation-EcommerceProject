@@ -138,6 +138,9 @@
   <data name="OrderReady" xml:space="preserve">
     <value>الطلب جاهز للشحن</value>
   </data>
+  <data name="UpdatedTraderSucessfully" xml:space="preserve">
+    <value>تم تعديل حساب الشركة بنجاح!</value>
+  </data>
   <data name="WelcomeWhenLogin" xml:space="preserve">
     <value>مرحبا بك فى Art Station !</value>
   </data>

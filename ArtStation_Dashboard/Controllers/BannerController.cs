@@ -75,9 +75,17 @@ namespace ArtStation_Dashboard.Controllers
 
             try
             {
-              
-                
-                var banner=_mapper.Map<Banner>(bannerVM);
+
+
+               
+                if (bannerVM.Photo != null)
+                {
+                    bannerVM.ImageUrl = await FileSettings.UploadFile(bannerVM.Photo, "Banners", _environment.WebRootPath);
+                }
+
+                var banner =_mapper.Map<Banner>(bannerVM);
+                _unitOfWork.Repository<Banner>().Add(banner);
+                await _unitOfWork.Complet();
 
                 TempData["SuccessMessage"] = ViewMessages.AddBannerSuccessfully;
                 return RedirectToAction("Index", "Banner");
@@ -91,73 +99,48 @@ namespace ArtStation_Dashboard.Controllers
 
 
 
-        //Get : Edit Trader
-        //public async Task<IActionResult> Edit(int id)
-        //{
+        //Get : Edit Banner
+        public async Task<IActionResult> Edit(int id)
+        {
+            var banner = await _unitOfWork.Repository<Banner>().GetByIdAsync(id);
+            var mappedbanner = _mapper.Map<BannerVM>(banner);
+            return View(mappedbanner);
 
-        //    var traderVM = await _userHelper.Edit(id);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(BannerVM bannerVM)
+        {
+            try
+            {
+                var banner = await _unitOfWork.Repository<Banner>().GetByIdAsync(bannerVM.Id.Value);
 
-        //    traderVM.Cities = await unitOfWork.Repository<Shipping>().GetAllAsync();
-        //    ViewData["ActionOne"] = "EditVendor";
-        //    return View(traderVM);
+                if (bannerVM.Photo != null)
+                {
+                    if (!string.IsNullOrEmpty(banner.ImageUrl))
+                    {
+                        FileSettings.DeleteFile("Banners", banner.ImageUrl, _environment.WebRootPath);
+                    }
 
-        //}
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(TraderViewModel traderVM)
-        //{
-        //    try
-        //    {
-        //        var trader = await _userManager.FindByIdAsync(traderVM.Id.ToString());
+                    bannerVM.ImageUrl = await FileSettings.UploadFile(bannerVM.Photo, "Banners", _environment.WebRootPath);
+                }
+                bannerVM.ImageUrl = banner.ImageUrl;
+                _mapper.Map(bannerVM, banner);
 
-        //        if (trader == null)
-        //        {
-        //            //var result=ModelState.AddModelError("", "المستخدم غير موجود.");
-        //            //return result;
-        //        }
-
-
-        //        if (traderVM.PhotoFile != null)
-        //        {
-        //            if (!string.IsNullOrEmpty(trader.Image))
-        //            {
-        //                FileSettings.DeleteFile("Users", trader.Image, _environment.WebRootPath);
-        //            }
-
-        //            trader.Image = await FileSettings.UploadFile(traderVM.PhotoFile, "Users", _environment.WebRootPath);
-        //        }
-
-
-        //        trader.UserName = traderVM.UserName;
-        //        trader.Email = traderVM.Email;
-        //        trader.PhoneNumber = traderVM.PhoneNumber;
-        //        trader.FullName = traderVM.DispalyName;
-        //        trader.Country = traderVM.City;
-        //        trader.Nationality = traderVM.Nationality;
-
-        //        var result = await _userManager.UpdateAsync(trader);
-
-        //        if (result.Succeeded)
-        //        {
-        //            TempData["SuccessMessage"] = ViewMessages.AddTraderSucessfully;
-        //            return RedirectToAction("Index");
-        //        }
+                _unitOfWork.Repository<Banner>().Update(banner);
+                await _unitOfWork.Complet();
+                return RedirectToAction("Index");
+            
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.InnerException?.Message ?? ex.Message);
+            }
 
 
-        //        foreach (var error in result.Errors)
-        //        {
-        //            ModelState.AddModelError("", error.Description);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ModelState.AddModelError(string.Empty, ex.InnerException?.Message ?? ex.Message);
-        //    }
-
-
-        //    traderVM.Cities = await _unitOfWork.Repository<Shipping>().GetAllAsync();
-        //    return View(traderVM);
-        //}
+           
+            return View(bannerVM);
+        }
 
 
 
@@ -171,14 +154,11 @@ namespace ArtStation_Dashboard.Controllers
             if (banner == null) return NotFound();
 
             banner.IsActive = isActive;
-            _unitOfWork.Repository<Banner>().Update(banner); 
+            await _unitOfWork.Complet(); 
 
-            var count = await _unitOfWork.Complet(); 
-            if (count > 0)
-            {
-                return Ok();
-            }
-            return BadRequest("Failed to update the banner status.");
+            return Ok();
         }
+
+
     }
 }

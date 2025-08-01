@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Products Dashboard";
+}
+
+<div class="container py-5 mt-3">
+    <h2 class="text-center mb-5 fw-bold text-primary">Product Management</h2>
+
+    <div class="row g-4 justify-content-center">
+        <!-- Active Products -->
+        <div class="col-md-4">
+            <a asp-action="Index" asp-controller="Product" class="text-decoration-none">
+                <div class="card border-0 shadow-lg h-100 rounded-4 modern-card hover-up bg-gradient-success">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-box-seam-fill fs-1 mb-3 text-white"></i>
+                        <h5 class="fw-bold text-white mb-2">Active Products</h5>
+                        <p class="text-white-50 small">View and manage all currently active products.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Inactive Products -->
+        <div class="col-md-4">
+            <a asp-action="InActiveProducts" asp-controller="Product" class="text-decoration-none">
+                <div class="card border-0 shadow-lg h-100 rounded-4 modern-card hover-up bg-gradient-warning">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-hourglass-split fs-1 mb-3 text-dark"></i>
+                        <h5 class="fw-bold text-dark mb-2">Inactive Products</h5>
+                        <p class="text-dark-50 small">Products not currently visible to users.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Deleted Products -->
+        <div class="col-md-4">
+            <a asp-action="DeletedProducts" asp-controller="Product" class="text-decoration-none">
+                <div class="card border-0 shadow-lg h-100 rounded-4 modern-card hover-up bg-gradient-danger">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-trash3-fill fs-1 mb-3 text-white"></i>
+                        <h5 class="fw-bold text-white mb-2">Deleted Products</h5>
+                        <p class="text-white-50 small">Review or restore deleted products.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .text-gradient {
+        background: linear-gradient(to right, #0d6efd, #6610f2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hover-up {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .hover-up:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+    .bg-gradient-success {
+        background: linear-gradient(135deg, #28a745, #218838);
+    }
+
+    .bg-gradient-warning {
+        background: linear-gradient(135deg, #ffc107, #e0a800);
+    }
+
+    .bg-gradient-danger {
+        background: linear-gradient(135deg, #dc3545, #bd2130);
+    }
+
+    .modern-card {
+        border-radius: 1rem;
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+
+    .text-dark-50 {
+        color: rgba(0, 0, 0, 0.5);
+    }
+
+    .text-white-50 {
+        color: rgba(255, 255, 255, 0.6);
+    }
+</style>

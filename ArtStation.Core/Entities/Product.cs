@@ -35,15 +35,15 @@ namespace ArtStation.Core.Entities
         public Category Category { get; set; }
         public int CategoryId { get; set; }
 
-        public ICollection<ProductPhotos> ProductPhotos { get; set; } = new List<ProductPhotos>();
-        public ICollection<Sale> Sales { get; set; } = new List<Sale>();
-        public ICollection<ProductColor> ProductColors { get; set; } = new List<ProductColor>();
-        public ICollection<ProductFlavour> ProductFlavours { get; set; } = new List<ProductFlavour>();
-        public ICollection<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
+        public List<ProductPhotos> ProductPhotos { get; set; } = new List<ProductPhotos>();
+        public List<Sale> Sales { get; set; } = new List<Sale>();
+        public List<ProductColor> ProductColors { get; set; } = new List<ProductColor>();
+        public List<ProductFlavour> ProductFlavours { get; set; } = new List<ProductFlavour>();
+        public List<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
         public  ICollection<Favourite> Favourites { get; set; } = new List<Favourite>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
-        public ICollection<ProductForWhom> ForWhoms { get; set; } = new List<ProductForWhom>();
-        public int UserId { get; set; }= 9;
+        public List<ProductForWhom> ForWhoms { get; set; } = new List<ProductForWhom>();
+        public int UserId { get; set; }
 
         [ForeignKey("UserId")]
         public AppUser User { get; set; }

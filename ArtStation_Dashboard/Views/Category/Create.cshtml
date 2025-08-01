@@ -6,12 +6,7 @@
 
 <div class="m-auto  bg-white p-5">
     <h1>@(("إضافة قسم جديد","Create New Category").Localize(language))</h1>
-    @if (!string.IsNullOrEmpty(TempData["Message"] as string))
-    {
-        <div class="alert alert-primary mt-3 mb-2">
-            @TempData["message"]
-        </div>
-    }
+   
     <hr />
     <form asp-action="Create" method="post" enctype="multipart/form-data">
 

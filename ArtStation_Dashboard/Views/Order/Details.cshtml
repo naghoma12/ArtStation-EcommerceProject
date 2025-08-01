@@ -5,6 +5,9 @@
     var culture = System.Globalization.CultureInfo.CurrentUICulture;
     var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
     var lang = culture.Name;
+   
+    bool isReady = Model.Order.Status=="Shipped"; // Replace with actual condition if needed
+
 }
 
 <!-- Token for AJAX -->
@@ -123,10 +126,24 @@
 </div>
 
 <div class="text-center mt-4 ">
-    <button class="btn btn-outline-success px-4 me-3" id="readyButton" data-orderid="@Model.Order.OrderNum">
-        @(("تجهيز الطلب", "Ready Order").Localize(lang))
+    @* <button class="btn btn-outline-success px-4 me-3" id="readyButton" data-orderid="@Model.Order.OrderNum"> *@
+    @*     @(("تجهيز الطلب", "Ready Order").Localize(lang)) *@
+    @* </button> *@
+    @* <button id="printButton" class="btn btn-outline-danger px-4" onclick="printDiv('invoice')" disabled> *@
+    @*     @(("طباعة", "Print").Localize(lang)) <i class="fa-solid fa-print ms-2"></i> *@
+    @* </button> *@
+
+    <button class="btn @(isReady ? "btn-success" : "btn-outline-success") px-4 me-3"
+            id="readyButton"
+            data-orderid="@Model.Order.OrderNum"
+    @(isReady ? "disabled" : "")>
+        @(isReady ? "✅ تم التجهيز" : ("تجهيز الطلب", "Ready Order").Localize(lang))
     </button>
-    <button id="printButton" class="btn btn-outline-danger px-4" onclick="printDiv('invoice')" disabled>
+
+    <button id="printButton"
+            class="btn @(isReady ? "btn-danger" : "btn-outline-danger") px-4"
+            onclick="printDiv('invoice')"
+    @(isReady ? "" : "disabled")>
         @(("طباعة", "Print").Localize(lang)) <i class="fa-solid fa-print ms-2"></i>
     </button>
 </div>
@@ -134,8 +151,27 @@
 
 
 <script>
+
     const readyButton = document.getElementById('readyButton');
     const printButton = document.getElementById('printButton');
+
+  
+    window.addEventListener('DOMContentLoaded', () => {
+        const isReady = @Model.Order.Status==="Shipped"; 
+
+        if (isReady === "true") {
+            readyButton.innerHTML = "✅ تم التجهيز";
+            readyButton.disabled = true;
+            readyButton.classList.remove("btn-outline-success");
+            readyButton.classList.add("btn-success");
+
+            printButton.disabled = false;
+            printButton.classList.remove("btn-outline-danger");
+            printButton.classList.add("btn-danger");
+            printButton.style.cursor = "pointer";
+        }
+    });
+
 
     readyButton.addEventListener('click', function () {
         const orderId = this.getAttribute('data-orderid');

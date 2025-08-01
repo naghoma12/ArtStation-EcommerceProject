@@ -1,0 +1,136 @@
+﻿@model PagedResult<SimpleProductVM>
+
+@{
+    var language = ViewData["Language"] as string ?? "en";
+    ViewData["Title"] = ("مجموعة المنتجات", "Product List").Localize(language);
+}
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <div class="alert alert-success mt-3 mb-2">
+        @TempData["message"]
+    </div>
+}
+<div class="container-fluid py-4">
+    <a asp-action="Create" asp-controller="Product" class="btn btn-icon btn-3 btn-primary">
+        <i class="fa-solid fa-plus"></i>
+        @(("أضف منتج", "Add Product").Localize(language))
+    </a>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 pe-3">
+                        <h6 class="text-white text-capitalize ps-3">@(("جدول المنتجات", "Product Table").Localize(language))</h6>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center ">
+                                        @(("المعرف", "Id").Localize(language))
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                                        @(("اسم المنتج", "Product Name").Localize(language))
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                                        @(("الصورة", "Image").Localize(language))
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center ">
+                                        @(("الماركة", "Brand").Localize(language))
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                                        @(("السعر الأصلي", "Original Price").Localize(language))
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                                        @(("السعر بعد الخصم", "SalePrice").Localize(language))
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center ">
+                                        @(("التصنيف", "Category").Localize(language))
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                                        @(("التاجر", "Trader").Localize(language))
+                                    </th>
+                                    <th class="text-secondary opacity-7"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @if(Model.Items != null && Model.Items.Any()){
+                                @foreach (var product in Model.Items)
+                                {
+                                    <tr>
+                                        <td class="align-middle text-center">
+                                            <span class="text-secondary text-xs font-weight-bold">@product.Id</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <span class="text-secondary text-xs font-weight-bold">@product.Name</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <img src="~/Uploads/Products/@product.Image" class="avatar avatar-sm border-radius-lg" alt="user2">
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <span class="text-secondary text-xs font-weight-bold">@product.Brand</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <span class="text-secondary text-xs font-weight-bold">@product.Price</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <span class="text-secondary text-xs font-weight-bold">@product.PriceAfterSale</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <span class="text-secondary text-xs font-weight-bold">@product.CategoryName</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <span class="text-secondary text-xs font-weight-bold">@product.UserName</span>
+                                        </td>
+                                            <td class="align-middle">
+                                                <div class="dropdown">
+                                                    <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        @(("العمليات", "Actions").Localize(language))
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                        <li><a class="dropdown-item" asp-action="Details" asp-controller="Product" asp-route-id="@product.Id">@(("تفاصيل", "Details").Localize(language))</a></li>
+                                                        <li><a class="dropdown-item" asp-action="Edit" asp-controller="Product" asp-route-id="@product.Id">@(("تعديل", "Edit").Localize(language))</a></li>
+                                                        <li><a class="dropdown-item" asp-action="Delete" asp-controller="Product" asp-route-id="@product.Id">@(("حذف", "Delete").Localize(language))</a></li>
+                                                        <li>
+                                                            <a class="dropdown-item"
+                                                               href="#"
+                                                               onclick="confirmDisable('@product.Id')">
+                                                                @(("إلغاء التفعيل", "Deactivate").Localize(language))
+                                                            </a>
+                                                        </li>
+
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                    </tr>
+                                    }}
+                                else
+                                {
+                                <tr>
+                                    <td colspan="5" class="text-center">@(("لا توجد منتجات لعرضها " , "No products exist").Localize(language))</td>
+                                </tr>
+                                }
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <nav>
+            <ul class="pagination pagination-primary justify-content-center">
+                @for (int i = 1; i <= Math.Ceiling((double)Model.TotalItems / Model.PageSize); i++)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a href="#" class="page-link ajax-page" data-page="@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>

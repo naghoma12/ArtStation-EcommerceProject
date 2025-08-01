@@ -138,6 +138,9 @@
   <data name="OrderReady" xml:space="preserve">
     <value>Order Ready To Shipped!</value>
   </data>
+  <data name="UpdatedTraderSucessfully" xml:space="preserve">
+    <value>Company Account Updated Successfully!</value>
+  </data>
   <data name="WelcomeWhenLogin" xml:space="preserve">
     <value>Welcome To Art Station !</value>
   </data>

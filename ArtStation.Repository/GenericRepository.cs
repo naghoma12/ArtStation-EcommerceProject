@@ -80,5 +80,7 @@ namespace ArtStation.Repository
         {
             return await _context.Set<T>().FirstOrDefaultAsync(predicate);
         }
+
+        
     }
 }

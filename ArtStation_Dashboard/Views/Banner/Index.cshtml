@@ -22,23 +22,26 @@
 }
 
 <div class="container-fluid py-4">
-    <button class="btn btn-icon btn-3 btn-primary" type="button">
-        <span class="btn-inner--icon"><i class="fa-solid fa-plus"></i></span>
-        <span class=""><a asp-action="AddBanner" asp-controller="Banner">@(("أضف لوحة", "Add Banner").Localize(lang))</a></span>
-    </button>
-
+    
+       <a asp-action="AddBanner" asp-controller="Banner" class="btn btn-icon btn-3 btn-primary" type="button">
+            <i class="fa-solid fa-plus"></i>
+        @(("أضف لوحة", "Add Banner").Localize(lang))
+        </a>
+    
     <div class="row">
         <div class="col-12">
             <div class="card my-4">
+                <form id="antiForgeryForm" method="post" style="display:none;">
+                    @Html.AntiForgeryToken()
+                </form>
+
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
                         <h6 class="text-white text-capitalize ps-3 pe-3">@(("اللوحات", "Banners").Localize(lang))</h6>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <form id="antiForgeryForm" style="display:none;">
-                        @Html.AntiForgeryToken()
-                    </form>
+                
 
                     <div class="table-responsive p-0">
                         <table class="table align-items-center mb-0">
@@ -99,7 +102,7 @@
                                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                         <li><a class="dropdown-item" asp-action="Details" asp-controller="Banner"  asp-route-id="@item.Id">@(("تفاصيل", "Details").Localize(lang))</a></li>
                                                         <li><a class="dropdown-item" asp-action="Edit" asp-controller="Banner" asp-route-id="@item.Id">@(("تعديل", "Edit").Localize(lang))</a></li>
-                                                        <li><a class="dropdown-item" asp-action="Delete" asp-controller="Banner" asp-route-id="@item.Id">@(("خذف", "Delete").Localize(lang))</a></li>
+                                                        @* <li><a class="dropdown-item" asp-action="Delete" asp-controller="Banner" asp-route-id="@item.Id">@(("خذف", "Delete").Localize(lang))</a></li> *@
                                                     </ul>
                                                 </div>
                                             </td>
@@ -127,34 +130,35 @@
     </ul>
 </nav>
 @section Scripts {
-    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      
+
+            $(document).ready(function () {
             $(document).on("change", ".toggle-active", function () {
-           
+                var checkbox = $(this);
+                var id = checkbox.data("id");
+                var isActive = checkbox.is(":checked");
+                var token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
 
-            var checkbox = $(this);
-            var id = checkbox.data("id");
-            var isActive = checkbox.is(":checked");
-
-            $.ajax({
-                url: '/Banner/ToggleActive',
-                type: 'POST',
-                headers: {
-                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-                },
-                data: {
-                    id: id,
-                    isActive: isActive
-                },
-                success: function () {
-                    var label = checkbox.closest('.form-check').find('label');
-                    label.text(isActive ? "مفعل" : "غير مفعل");
-                },
-                error: function () {
-                    alert("حدث خطأ أثناء تحديث حالة التفعيل.");
-                    checkbox.prop("checked", !isActive);
-                }
+                $.ajax({
+                    url: '/Banner/ToggleActive',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        isActive: isActive
+                    },
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    success: function (response) {
+                        console.log('Status updated successfully');
+                        // Optional: Show a success alert or toast here
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        // Optional: Revert checkbox to previous state if needed
+                    }
+                });
             });
         });
     </script>

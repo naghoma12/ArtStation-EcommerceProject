@@ -197,7 +197,7 @@ namespace ArtStation_Dashboard.Controllers
 
                 if (result.Succeeded)
                 {
-                    TempData["SuccessMessage"] = ViewMessages.AddTraderSucessfully;
+                    TempData["SuccessMessage"] = ViewMessages.UpdatedTraderSucessfully;
                     return RedirectToAction("Index");
                 }
 
@@ -277,13 +277,21 @@ namespace ArtStation_Dashboard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleActive(int id, bool isActive)
         {
-            var trader = await _userManager.FindByIdAsync(id.ToString());
-            if (trader == null) return NotFound();
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null)
+            {
+                return Json(new { success = false, message = "User not found." });
+            }
 
-            trader.IsActive = isActive;
-            var result = await _userManager.UpdateAsync(trader);
+            user.IsActive = isActive;
+            var result = await _userManager.UpdateAsync(user);
 
-            return result.Succeeded ? Ok() : BadRequest(result.Errors);
+            if (result.Succeeded)
+            {
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false, message = "Failed to update user." });
         }
 
 

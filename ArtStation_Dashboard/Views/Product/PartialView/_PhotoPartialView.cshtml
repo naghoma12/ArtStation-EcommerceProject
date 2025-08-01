@@ -9,44 +9,45 @@
 
 <div class="form-group">
     <label class="form-label">@(("ادخل صور المنتج", "Enter Product Photos").Localize(language))</label>
-    <input multiple asp-for="Files" class="form-control form-control-lg" type="file" id="imageUpload" accept=".png,image/png" />
-    <p id="error-message" style="color: red; display: none;">Only PNG images are allowed.</p>
+    <input asp-for="Images" type="hidden"/>
+    <input multiple asp-for="Files" class="form-control form-control-lg" type="file" id="imageUpload" accept=".png, .jpg, .jpeg" />
+    <p id="error-message" style="color: red; display: none;">Only PNG, JPG, JPEG images are allowed.</p>
 
-    <!-- Existing images -->
-    <div class="row mt-3">
+    <input type="hidden" id="deletedPhotosContainer" name="DeletedPhotos" />
+
+    <!-- Combined preview container -->
+    <div id="imagePreview" class="row mt-3">
+        <!-- Existing images -->
         @if (Model.Images != null && Model.Images.Any())
         {
             foreach (var img in Model.Images)
             {
-                <div class="col-3 mb-3">
+                <div class="col-3 mb-3 existing-image" data-name="@img">
                     <div class="image-container position-relative">
-                        <img src="@img" class="img-fluid rounded" alt="Product Image" />
+                        <img src="~/Uploads/Products/@img" class="img-fluid rounded" alt="Product Image" />
                         <span class="delete-icon position-absolute top-0 end-0 bg-danger text-white px-2 cursor-pointer" style="cursor:pointer;">&#10006;</span>
+                        <input type="hidden" name="ExistingImages" value="@img" />
                     </div>
                 </div>
             }
         }
     </div>
-
-    <!-- Preview new uploads -->
-    <div id="imagePreview" class="row mt-3"></div>
 </div>
-
 
 <script>
     const imageUpload = document.getElementById("imageUpload");
     const errorMessage = document.getElementById("error-message");
     const previewContainer = document.getElementById("imagePreview");
+    const deletedPhotosContainer = document.getElementById("deletedPhotosContainer");
 
     imageUpload.addEventListener("change", function () {
-        previewContainer.innerHTML = ""; // Clear previous previews
         errorMessage.style.display = "none";
-
         const files = Array.from(imageUpload.files);
         let isValid = true;
 
         files.forEach(file => {
-            if (file.type !== "image/png") {
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (!["png", "jpg", "jpeg"].includes(ext)) {
                 isValid = false;
                 return;
             }
@@ -63,10 +64,9 @@
                         </div>
                     `;
 
-                // Delete icon removes preview only
                 col.querySelector(".delete-icon").addEventListener("click", () => {
                     col.remove();
-                    // You can optionally remove the file from the input too, but requires more logic
+                    // Optional: to also remove from FileList (more complex, not handled here)
                 });
 
                 previewContainer.appendChild(col);
@@ -76,8 +76,24 @@
 
         if (!isValid) {
             errorMessage.style.display = "block";
-            imageUpload.value = ""; // clear invalid input
-            previewContainer.innerHTML = ""; // clear preview
+            imageUpload.value = "";
         }
+    });
+
+    // Handle deletion of existing images
+    document.querySelectorAll(".existing-image .delete-icon").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const imageDiv = this.closest(".existing-image");
+            const name = imageDiv.dataset.name;
+
+            // Append to hidden input to track deletion
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "DeletedPhotos";
+            input.value = name;
+            deletedPhotosContainer.appendChild(input);
+
+            imageDiv.remove();
+        });
     });
 </script>

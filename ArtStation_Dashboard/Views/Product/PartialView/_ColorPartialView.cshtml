@@ -1,132 +1,92 @@
 ﻿@model ProductCreation
 @{
     var language = ViewData["Language"] as string ?? "en";
+
+    // You can fetch this from DB or service too
+    var colorOptions = new[]
+    {
+      new { NameEN = "Red", NameAR = "أحمر", Hex = "#FF0000" },
+new { NameEN = "Blue", NameAR = "أزرق", Hex = "#0000FF" },
+new { NameEN = "Green", NameAR = "أخضر", Hex = "#008000" },
+new { NameEN = "Black", NameAR = "أسود", Hex = "#000000" },
+new { NameEN = "White", NameAR = "أبيض", Hex = "#FFFFFF" },
+new { NameEN = "Yellow", NameAR = "أصفر", Hex = "#FFFF00" },
+new { NameEN = "Orange", NameAR = "برتقالي", Hex = "#FFA500" },
+new { NameEN = "Purple", NameAR = "أرجواني", Hex = "#800080" },
+new { NameEN = "Pink", NameAR = "وردي", Hex = "#FFC0CB" },
+new { NameEN = "Brown", NameAR = "بني", Hex = "#A52A2A" },
+new { NameEN = "Gray", NameAR = "رمادي", Hex = "#808080" },
+new { NameEN = "Sky Blue", NameAR = "أزرق سماوي", Hex = "#87CEEB" },
+new { NameEN = "Navy", NameAR = "كحلي", Hex = "#000080" },
+new { NameEN = "Beige", NameAR = "بيج", Hex = "#F5F5DC" },
+new { NameEN = "Turquoise", NameAR = "فيروزي", Hex = "#40E0D0" },
+new { NameEN = "Maroon", NameAR = "نبيتي", Hex = "#800000" },
+new { NameEN = "Olive", NameAR = "زيتي", Hex = "#808000" },
+new { NameEN = "Teal", NameAR = "أزرق مخضر", Hex = "#008080" },
+new { NameEN = "Gold", NameAR = "ذهبي", Hex = "#FFD700" },
+new { NameEN = "Silver", NameAR = "فضي", Hex = "#C0C0C0" }
+
+    };
     var colorCount = Model.Colors?.Count ?? 0;
 }
 <p class="text-muted fw-bold nav-heading mb-2 bol">
     <span>@(("الألوان", "Colors").Localize(language))</span>
 </p>
 
-<div id="Inputcolor">
-    <div class="row g-2 align-items-end">
-        <div class="col-md-3 d-flex gap-2">
-            <input type="color" id="colorPicker" class="form-control form-control-color" title="Choose color" />
-            <button type="button" id="addColorBtn" class="btn btn-outline-secondary">
-                @(("إضافة اللون", "Add Color").Localize(language)) &#8594;
-            </button>
-        </div>
-        <div class="col-md-5 mb-2">
-            <label class="form-label">@(("اسم اللون", "Color Name").Localize(language))</label>
-            <input type="text" id="colorName" class="form-control ps-2" readonly />
+<div class="row" id="colorList">
+    @for (int i = 0; i < colorOptions.Length; i++)
+    {
+        <input asp-for="Id" type="hidden"/>
+        var color = colorOptions[i];
+        string nameEN = color.NameEN;
+        string nameAR = color.NameAR;
+        string hex = color.Hex;
+        string displayName = language == "ar" ? nameAR : nameEN;
+        string checkboxId = $"color_{i}";
+
+        bool isChecked = Model.Colors.Any(c => c.Hex == hex);
+    <div class="col-md-3 mb-2">
+        <div class="form-check">
+            <input class="form-check-input color-check" type="checkbox"
+                   data-name-en="@nameEN" data-name-ar="@nameAR" data-hex="@hex"
+                   id="@checkboxId" @(isChecked ? "checked" : "")>
+            <label class="form-check-label" for="@checkboxId">
+                <span style="display:inline-block;width:15px;height:15px;background:@hex;border:1px solid #ccc;margin-right:5px;"></span>
+                @displayName
+            </label>
         </div>
     </div>
-</div>
-
-<!-- الألوان الحالية -->
-<div id="dynamicColorInputs" class="mt-4">
-    @for (int i = 0; i < colorCount; i++)
-    {
-        <div class="row g-2 align-items-end mb-2 border p-3 rounded bg-light">
-            <div class="col-md-5">
-                <label class="form-label">@(("الاسم", "Name").Localize(language))</label>
-                <input type="text" name="Colors[@i].ColorName" class="form-control" value="@Model.Colors[i].Name" />
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">@(("اللون", "Color").Localize(language))</label>
-                <input type="color" name="Colors[@i].Hex" class="form-control form-control-color" value="@Model.Colors[i].Hex" />
-            </div>
-            <div class="col-md-2 d-flex align-items-end">
-                <button type="button" class="btn btn-danger w-100 deleteColorBtn">
-                    @(("حذف", "Delete").Localize(language))
-                </button>
-            </div>
-        </div>
     }
 </div>
 
-<input type="hidden" id="colorIndex" value="@colorCount" />
+<div id="selectedColorsContainer"></div>
 
 <script>
-    let colorIndex = parseInt(document.getElementById('colorIndex')?.value || '0');
-    const colorPicker = document.getElementById('colorPicker');
-    const colorNameInput = document.getElementById('colorName');
-    const addColorBtn = document.getElementById('addColorBtn');
-    const dynamicColorInputs = document.getElementById('dynamicColorInputs');
+    const language = "@language";
+    const updateSelectedColors = () => {
+        const selectedColorsContainer = document.getElementById("selectedColorsContainer");
+        selectedColorsContainer.innerHTML = "";
 
-    const labelColor = "@(("اللون", "Color").Localize(language))";
-    const labelName = "@(("اسم اللون", "Color Name").Localize(language))";
-    const deleteText = "@(("حذف", "Delete").Localize(language))";
+        const selected = document.querySelectorAll(".color-check:checked");
+        selected.forEach((checkbox, i) => {
+            const nameEN = checkbox.dataset.nameEn;
+            const nameAR = checkbox.dataset.nameAr;
+            const hex = checkbox.dataset.hex;
 
-    // استدعاء اسم اللون تلقائي من API
-    colorPicker.addEventListener('input', () => {
-        const hex = colorPicker.value.replace('#', '');
-        fetch(`https://www.thecolorapi.com/id?hex=${hex}`)
-            .then(res => res.json())
-            .then(data => {
-                colorNameInput.value = data.name.value;
-            })
-            .catch(() => {
-                colorNameInput.value = "";
-            });
-    });
+            selectedColorsContainer.innerHTML += `
+                  <input type="hidden" asp-for="Colors[${i}].Id" />
 
-    addColorBtn.addEventListener('click', () => {
-        const hexCode = colorPicker.value;
-        const name = colorNameInput.value.trim();
-
-        if (!hexCode || !name) {
-            alert("يرجى اختيار اللون واسم صالح.");
-            return;
-        }
-
-        const wrapper = document.createElement("div");
-        wrapper.className = "row g-2 align-items-end mb-2 border p-3 rounded bg-light";
-
-        wrapper.innerHTML = `
-                <div class="col-md-5">
-                    <label class="form-label">${labelName}</label>
-                    <input type="text" name="Colors[${colorIndex}].Name" class="form-control" value="${name}" />
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">${labelColor}</label>
-                    <input type="color" name="Colors[${colorIndex}].Hex" class="form-control form-control-color" value="${hexCode}" />
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="button" class="btn btn-danger w-100 deleteColorBtn">${deleteText}</button>
-                </div>
-            `;
-
-        // حذف العنصر مع إعادة ترتيب الفهارس
-        wrapper.querySelector(".deleteColorBtn").addEventListener("click", () => {
-            wrapper.remove();
-            resetColorIndexes();
+                    <input type="hidden" name="Colors[${i}].NameEN" value="${nameEN}" />
+                    <input type="hidden" name="Colors[${i}].NameAR" value="${nameAR}" />
+                    <input type="hidden" name="Colors[${i}].Hex" value="${hex}" />
+                `;
         });
+    };
 
-        dynamicColorInputs.appendChild(wrapper);
+    // Run on load to add existing values
+    window.addEventListener("DOMContentLoaded", updateSelectedColors);
 
-        // إعادة ضبط الحقول
-        colorNameInput.value = "";
-        colorIndex++;
-    });
-
-    // تحديث أسماء الحقول بعد حذف عنصر
-    function resetColorIndexes() {
-        const wrappers = document.querySelectorAll('#dynamicColorInputs .row');
-        wrappers.forEach((wrapper, index) => {
-            const nameInput = wrapper.querySelector('input[type="text"]');
-            const colorInput = wrapper.querySelector('input[type="color"]');
-
-            nameInput.name = `Colors[${index}].Name`;
-            colorInput.name = `Colors[${index}].Hex`;
-        });
-        colorIndex = wrappers.length;
-    }
-
-    // تفعيل الحذف لعناصر Razor الموجودة
-    document.querySelectorAll(".deleteColorBtn").forEach(btn => {
-        btn.addEventListener("click", function () {
-            this.closest(".row").remove();
-            resetColorIndexes();
-        });
-    });
+    // Run on checkbox change
+    document.getElementById("colorList").addEventListener("change", updateSelectedColors);
 </script>
+

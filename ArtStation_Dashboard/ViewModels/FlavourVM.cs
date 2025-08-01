@@ -2,7 +2,8 @@
 {
     public class FlavourVM
     {
-        public string FlavourAR { get; set; }
-        public string FlavourEN { get; set; }
+        public int Id { get; set; }
+        public string? FlavourAR { get; set; }
+        public string? FlavourEN { get; set; }
     }
 }
