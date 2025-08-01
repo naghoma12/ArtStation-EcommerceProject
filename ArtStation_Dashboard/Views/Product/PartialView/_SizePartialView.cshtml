@@ -66,7 +66,7 @@
 <input type="hidden" id="sizeIndex" value="@sizesCount" />
 
     <script>
-    let sizeIndex = parseInt(document.getElementById("sizeIndex").value);
+    var sizeIndex = parseInt(document.getElementById("sizeIndex").value);
     const addSizeBtn = document.getElementById("addSizeBtn");
 
     function reindexSizeInputs() {
@@ -123,7 +123,7 @@
             wrapper.remove();
             reindexSizeInputs();
         });
-
+        sizeIndex++;
         reindexSizeInputs();
     });
 

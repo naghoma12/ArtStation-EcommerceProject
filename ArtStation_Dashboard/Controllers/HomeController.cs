@@ -24,7 +24,7 @@ namespace ArtStation_Dashboard.Controllers
 
             return Redirect(Request.Headers["Referer"].ToString());
         }
-        [Authorize(AuthenticationSchemes = "Cookies")]
+        [Authorize]
         public IActionResult Index()
         {
             return View();

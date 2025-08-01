@@ -14,6 +14,7 @@ using ArtStation.Core.Services.Contract;
 using ArtStation.Services;
 using StackExchange.Redis;
 using ArtStation.Core.Entities;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace ArtStation_Dashboard
 {
@@ -67,7 +68,12 @@ namespace ArtStation_Dashboard
             builder.Services.AddScoped(typeof(IForWhomRepository), typeof(ForWhomRepository));
             builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             builder.Services.AddScoped(typeof(UserHelper), typeof(UserHelper));
-
+            builder.Services.Configure<FormOptions>(x =>
+            {
+                x.ValueCountLimit = int.MaxValue;
+                x.MultipartBodyLengthLimit = long.MaxValue; // If using file uploads
+                x.ValueLengthLimit = int.MaxValue;
+            });
             #region Localization
 
 
