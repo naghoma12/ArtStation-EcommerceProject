@@ -2,8 +2,10 @@
 using ArtStation.Core.Entities;
 using ArtStation.Core.Entities.Identity;
 using ArtStation.Core.Roles;
+using ArtStation.Repository;
 using ArtStation_Dashboard.Helper;
 using ArtStation_Dashboard.Resource;
+using ArtStation_Dashboard.ViewModels;
 using ArtStation_Dashboard.ViewModels.User;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
@@ -36,32 +38,65 @@ namespace ArtStation_Dashboard.Controllers
             _environment = environment;
             _userHelper = userHelper;
         }
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
+        public async Task<IActionResult> Index(string search, bool? statusFilter, int page = 1, int pageSize = 5)
         {
-            var traderUsers = await _userManager.GetUsersInRoleAsync(Roles.Trader);
+            try
+            {
+                var traderUsers = await _userManager.GetUsersInRoleAsync(Roles.Trader);
 
-            var totalUsers = traderUsers.Count;
-            var totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
+                if (statusFilter != null)
+                    traderUsers = traderUsers.Where(i => i.IsActive == statusFilter).ToList();
 
-            var users = traderUsers
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .Select(u => new TraderViewModel
+                if (!string.IsNullOrWhiteSpace(search))
                 {
-                    Id = u.Id,
-                    Photo = u.Image,
-                    UserName = u.UserName,
-                    DispalyName = u.FullName,
-                    Email = u.Email,
-                    IsActive=u.IsActive,
-                    PhoneNumber = u.PhoneNumber
-                }).ToList();
+                    search = search.Trim().ToLower();
+                    traderUsers = traderUsers.Where(i =>
+                        (!string.IsNullOrEmpty(i.FullName) && i.FullName.ToLower().Contains(search)) ||
+                        (!string.IsNullOrEmpty(i.UserName) && i.UserName.ToLower().Contains(search)) ||
+                        (!string.IsNullOrEmpty(i.Email) && i.Email.ToLower().Contains(search))
+                    ).ToList();
+                }
 
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = totalPages;
+                traderUsers = traderUsers.Where(i => !i.IsDeleted).ToList();
 
-            return View(users);
+                var totalUsers = traderUsers.Count;
+
+                var users = traderUsers
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(u => new TraderViewModel
+                    {
+                        Id = u.Id,
+                        Photo = u.Image,
+                        UserName = u.UserName,
+                        DispalyName = u.FullName,
+                        Email = u.Email,
+                        IsActive = u.IsActive,
+                        PhoneNumber = u.PhoneNumber
+                    }).ToList();
+
+                var model = new PagedResult<TraderViewModel>
+                {
+                    Items = users,
+                    TotalItems = totalUsers,
+                    PageNumber = page,
+                    PageSize = pageSize
+                };
+
+                ViewBag.StatusFilter = statusFilter;
+                ViewBag.Search = search;
+
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return PartialView("_TraderTablePartial", model);
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex.Message);
+            }
         }
+
 
         //Get : Add Trader
         public async Task<IActionResult> AddTrader()
@@ -72,6 +107,8 @@ namespace ArtStation_Dashboard.Controllers
             user.Cities = await unitOfWork.Repository<Shipping>().GetAllAsync();
             return View(user);
         }
+
+        
 
         //Post : Add Trader
         [HttpPost]
@@ -85,12 +122,7 @@ namespace ArtStation_Dashboard.Controllers
 
             try
             {
-                // Upload photo if exists
-                if (addUser.PhotoFile != null)
-                {
-                    addUser.Photo = await FileSettings.UploadFile(addUser.PhotoFile, "Users", _environment.WebRootPath);
-                }
-
+               
                 // Create AppUser object
                 var user = new AppUser
                 {
@@ -100,19 +132,32 @@ namespace ArtStation_Dashboard.Controllers
                     PhoneNumber = addUser.PhoneNumber,
                     Nationality = addUser.Nationality,
                     Country = addUser.City,
-                    Image = string.IsNullOrEmpty(addUser.Photo) ? null : $"Uploads/Users/{addUser.Photo}"
+                    IsActive=addUser.IsActive
+                    //Image = string.IsNullOrEmpty(addUser.Photo) ? null : $"Uploads/Users/{addUser.Photo}"
                 };
 
                 // Create the user
                 var createUserResult = await _userManager.CreateAsync(user, addUser.Password);
+                if (createUserResult.Succeeded)
+                {
+                    // Upload photo if exists
+                    if (addUser.PhotoFile != null)
+                    {
+                        addUser.Photo = await FileSettings.UploadFile(addUser.PhotoFile, "Traders", _environment.WebRootPath);
+                    }
+                
+                    user.Image = string.IsNullOrEmpty(addUser.Photo) ? null : $"{addUser.Photo}";
+                  
 
+                    var result = await _userManager.UpdateAsync(user);
+                }
                 if (!createUserResult.Succeeded)
                 {
                     foreach (var error in createUserResult.Errors)
                     {
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
-
+                    addUser.Cities = await unitOfWork.Repository<Shipping>().GetAllAsync();
                     return View(addUser);
                 }
 
@@ -127,6 +172,7 @@ namespace ArtStation_Dashboard.Controllers
                     }
 
 
+                    addUser.Cities = await unitOfWork.Repository<Shipping>().GetAllAsync();
 
                     return View(addUser);
                 }
@@ -136,6 +182,8 @@ namespace ArtStation_Dashboard.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, ex.InnerException?.Message ?? ex.Message);
+                    addUser.Cities = await unitOfWork.Repository<Shipping>().GetAllAsync();
+
                 return View(addUser);
             }
         }
@@ -179,10 +227,10 @@ namespace ArtStation_Dashboard.Controllers
                 {
                     if (!string.IsNullOrEmpty(trader.Image))
                     {
-                        FileSettings.DeleteFile("Users", trader.Image, _environment.WebRootPath);
+                        FileSettings.DeleteFile("Traders", trader.Image, _environment.WebRootPath);
                     }
 
-                    trader.Image = await FileSettings.UploadFile(traderVM.PhotoFile, "Users", _environment.WebRootPath);
+                    trader.Image = await FileSettings.UploadFile(traderVM.PhotoFile, "Traders", _environment.WebRootPath);
                 }
 
 
@@ -275,23 +323,61 @@ namespace ArtStation_Dashboard.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ToggleActive(int id, bool isActive)
+        public async Task<IActionResult> ToggleActive(int id, bool isActive, string reason)
         {
-            var user = await _userManager.FindByIdAsync(id.ToString());
-            if (user == null)
+            try
             {
-                return Json(new { success = false, message = "User not found." });
+                var trader = await _userManager.FindByIdAsync(id.ToString());
+                if (trader == null)
+                {
+                    return NotFound("المستخدم غير موجود");
+                }
+
+                trader.IsActive = isActive;
+
+                if (!isActive && !string.IsNullOrWhiteSpace(reason))
+                {
+                    trader.InActiveMessage = reason;
+                    trader.DeactivatedAt = DateTime.UtcNow;
+                }
+                else if (isActive)
+                {
+                    // Reset message and time if re-activated
+                    trader.InActiveMessage = null;
+                    trader.DeactivatedAt = null;
+                }
+
+                var result = await _userManager.UpdateAsync(trader);
+
+                if (result.Succeeded)
+                {
+                    return Ok(new { success = true });
+                }
+                else
+                {
+                    var errors = string.Join("; ", result.Errors.Select(e => e.Description));
+                    return BadRequest($"فشل في التحديث: {errors}");
+                }
             }
-
-            user.IsActive = isActive;
-            var result = await _userManager.UpdateAsync(user);
-
-            if (result.Succeeded)
+            catch (Exception ex)
             {
-                return Json(new { success = true });
+                
+                return StatusCode(500, $"حدث خطأ غير متوقع: {ex.Message}");
             }
+        }
 
-            return Json(new { success = false, message = "Failed to update user." });
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var trader = await _userManager.FindByIdAsync(id.ToString());
+            if (trader == null)
+                return NotFound();
+            trader.IsDeleted = true;
+
+            var result =await _userManager.UpdateAsync(trader);
+
+            return Ok();
         }
 
 

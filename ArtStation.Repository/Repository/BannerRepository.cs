@@ -1,6 +1,8 @@
-﻿using ArtStation.Core.Entities;
+﻿using ArtStation.Core;
+using ArtStation.Core.Entities;
 using ArtStation.Core.Repository.Contract;
 using ArtStation.Repository.Data;
+using ArtStation_Dashboard.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,5 +25,44 @@ namespace ArtStation.Repository.Repository
                  .ToListAsync();
             return banners;
         }
+
+        public async Task<PagedResult<Banner>> GetBannerswithStatusAsync(int page, int pageSize, bool? statusFilter)
+        {
+            var query = _context.Banners.AsQueryable();
+
+            if (statusFilter != null)
+            {
+          query = query.Where(o => o.IsActive == statusFilter
+                && o.IsDeleted == false);
+            }
+                
+            else if(statusFilter == null)
+                    {
+                  query = query.Where(o=> o.IsDeleted == false);
+            }
+            
+
+            int totalItems = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            if (page < 1) page = 1;
+            if (page > totalPages) page = totalPages == 0 ? 1 : totalPages;
+
+            var items = await query
+               
+                .OrderByDescending(o => o.CreatedDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            
+            return new PagedResult<Banner>
+            {
+                TotalItems = totalItems,
+                PageNumber = page,
+                PageSize = pageSize,
+                Items = items
+            };
+        }
+
     }
 }

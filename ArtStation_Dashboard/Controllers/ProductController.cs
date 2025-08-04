@@ -253,6 +253,8 @@ namespace ArtStation_Dashboard.Controllers
 
             return PartialView("PartialView/_Product" , pageResult);
         }
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Index()
         {
             ViewData["Language"] = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
@@ -849,6 +851,8 @@ namespace ArtStation_Dashboard.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [RequestFormLimits(ValueCountLimit = int.MaxValue)]
+        [DisableRequestSizeLimit]
         public async Task<IActionResult> Edit(ProductCreation productCreation)
         {
                 var language = GetLanguage();

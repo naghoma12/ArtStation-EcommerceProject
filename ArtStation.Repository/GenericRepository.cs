@@ -30,7 +30,7 @@ namespace ArtStation.Repository
 
             var items = await query
                 .Where(z => z.IsDeleted == false 
-                && z.IsActive == true)
+                )
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .AsNoTracking()
@@ -50,7 +50,7 @@ namespace ArtStation.Repository
         {
             return await _context.Set<T>()
             .Where(z => z.IsDeleted == false 
-            && z.IsActive == true 
+          
             && z.Id == id).FirstOrDefaultAsync();
         }
 
@@ -72,7 +72,7 @@ namespace ArtStation.Repository
         {
             return await _context.Set<T>()
            .Where(z => z.IsDeleted == false
-           && z.IsActive == true
+        
             ).ToListAsync();
         }
 

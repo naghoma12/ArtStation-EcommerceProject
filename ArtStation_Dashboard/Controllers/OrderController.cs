@@ -88,10 +88,10 @@ namespace ArtStation_Dashboard.Controllers
                 order.Status = OrderStatus.Shipped;
                 _unitOfWork.Repository<Order>().Update(order);
                 await _unitOfWork.Complet();
-                TempData["SuccessMessage"] = ViewMessages.OrderReady;
+                //TempData["SuccessMessage"] = ViewMessages.OrderReady;
 
                 
-                return Ok(new { success = true, message = ViewMessages.OrderReady });
+                return Ok();
 
             }
             catch (Exception ex)

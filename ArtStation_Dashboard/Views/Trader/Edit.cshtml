@@ -68,7 +68,7 @@
                     <div class="w-100">
                         @if (!string.IsNullOrEmpty(Model.Photo))
                         {
-                            <img src="~/@Model.Photo" alt="User Photo" width="100" class="mb-2" />
+                            <img src="~/Uploads/Traders/@Model.Photo" alt="User Photo" width="100" class="mb-2" />
                         }
                         <input asp-for="PhotoFile" type="file" class="form-control" accept="image/*" />
                     </div>

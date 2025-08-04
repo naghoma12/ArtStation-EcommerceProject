@@ -11,6 +11,7 @@ using ArtStation.Core.Roles;
 using ArtStation.Repository;
 using ArtStation_Dashboard.Resource;
 using ArtStation_Dashboard.ViewModels.User;
+using ArtStation.Core.Repository.Contract;
 
 namespace ArtStation_Dashboard.Controllers
 {
@@ -19,36 +20,39 @@ namespace ArtStation_Dashboard.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _environment;
+        private readonly IBannerRepository _bannerRepository;
 
         public BannerController(IUnitOfWork unitOfWork, IMapper mapper
-            , IWebHostEnvironment webHostEnvironment)
+            , IWebHostEnvironment webHostEnvironment,IBannerRepository bannerRepository)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _environment = webHostEnvironment;
-
+           _bannerRepository = bannerRepository;
         }
 
         //Get : Get All Banners
-
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
+        public async Task<IActionResult> Index(bool? statusFilter, int page = 1, int pageSize = 5)
         {
             try
             {
-              
-                var banners = await _unitOfWork.Repository<Banner>().GetAllAsync(page, pageSize);
+                var banners = await _bannerRepository.GetBannerswithStatusAsync(page, pageSize, statusFilter);
+                ViewBag.StatusFilter = statusFilter;
 
-                ViewBag.CurrentPage = page;
-                ViewBag.TotalPages = banners.TotalPages;
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return PartialView("_BannerTablePartial", banners);
+                }
+
                 return View(banners);
             }
             catch (Exception ex)
             {
-                return View(ex.Message.ToString());
+                return View("Error", ex.Message);
             }
         }
 
-        //Get : Get Banner Details
+     
         public async Task<IActionResult> Details(int id)
         {
             var banner = await _unitOfWork.Repository<Banner>().GetByIdAsync(id);
@@ -155,6 +159,20 @@ namespace ArtStation_Dashboard.Controllers
 
             banner.IsActive = isActive;
             await _unitOfWork.Complet(); 
+
+            return Ok();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var banner = await _unitOfWork.Repository<Banner>().GetByIdAsync(id);
+            if (banner == null)
+                return NotFound();
+            banner.IsDeleted = true;
+
+            _unitOfWork.Repository<Banner>().Update(banner);
+            await _unitOfWork.Complet();
 
             return Ok();
         }

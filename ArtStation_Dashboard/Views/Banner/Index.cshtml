@@ -1,33 +1,47 @@
-﻿
+﻿@using NuGet.Protocol
 @model PagedResult<ArtStation.Core.Entities.Banner>
+
 @{
     var culture = System.Globalization.CultureInfo.CurrentUICulture;
     var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
     var lang = culture.Name;
 }
+
+<div class="d-flex justify-content-center my-3">
+    <a href="#" class="btn btn-outline-primary mx-1 ajax-filter @(ViewBag.StatusFilter == null ? "active" : "")"
+       data-status="">
+        @(("الكل", "All").Localize(lang))
+    </a>
+
+    <a href="#" class="btn btn-outline-info mx-1 ajax-filter @(ViewBag.StatusFilter?.ToString() == "True" ? "active" : "")"
+       data-status="true">
+        @(("مفعل", "Active").Localize(lang))
+    </a>
+
+    <a href="#" class="btn btn-outline-danger mx-1 ajax-filter @(ViewBag.StatusFilter?.ToString() == "False" ? "active" : "")"
+       data-status="false">
+        @(("غير مفعل", "Inactive").Localize(lang))
+    </a>
+
+</div>
+
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-primary alert-dismissible text-white fade show" role="alert">
-        <span class="alert-icon align-middle">
-            <span class="material-symbols-rounded text-md">
-               
-            </span>
-        </span>
-        <span class="alert-text"><strong>@TempData["SuccessMessage"]!</strong>  </span>
+        <span class="alert-icon align-middle"></span>
+        <span class="alert-text"><strong>@TempData["SuccessMessage"]!</strong></span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-
 }
 
 <div class="container-fluid py-4">
-    
-       <a asp-action="AddBanner" asp-controller="Banner" class="btn btn-icon btn-3 btn-primary" type="button">
-            <i class="fa-solid fa-plus"></i>
+    <a asp-action="AddBanner" asp-controller="Banner" class="btn btn-icon btn-3 btn-primary" type="button">
+        <i class="fa-solid fa-plus"></i>
         @(("أضف لوحة", "Add Banner").Localize(lang))
-        </a>
-    
+    </a>
+
     <div class="row">
         <div class="col-12">
             <div class="card my-4">
@@ -41,127 +55,158 @@
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                
-
-                    <div class="table-responsive p-0">
-                        <table class="table align-items-center mb-0">
-                            <thead>
-                                <tr>
-                                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">@(("صوره اللوحة", "Banner Image").Localize(lang))</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("عنوان اللوحة", "Banner Title").Localize(lang))</th>
-                                  
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("ترتيب اللوحة", "Banner Order").Localize(lang))</th>
-                 
-                                   
-                                    <th class="text-secondary opacity-7"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model.Items.Count()>0)
-                                {
-                                    @foreach (var item in Model.Items)
-                                    {
-                                        <tr>
-                                            <td>
-                                              
-                                                    <div>
-                                                        <img src="~/Uploads/Banners/@item.ImageUrl" class="avatar avatar-sm me-3 ms-3 border-radius-lg" alt="user1">
-                                                    </div>
-                                                   
-                                               
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">@item.Title</p>
-                                                @* <p class="text-xs text-secondary mb-0">Organization</p> *@
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="badge badge-sm bg-gradient-success">@item.OrderBanner</span>
-                                            </td>
-                                            <td>
-                                                <div class="form-check form-switch">
-                                                    <input type="checkbox"
-                                                           class="form-check-input toggle-active"
-                                                           data-id="@item.Id"
-                                                           id="toggle_@item.Id"
-                                                    @(item.IsActive ? "checked=\"checked\"" : "") />
-
-
-                                                    <label class="form-check-label" for="toggle_@item.Id">
-                                                        @(item.IsActive ? ("مفعل", "Active").Localize(lang) : ("غير مفعل", "Inactive").Localize(lang))
-                                                    </label>
-                                                </div>
-                                            </td>
-
-
-
-                                            <td class="align-middle">
-                                                <div class="dropdown">
-                                                    <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        @(("العمليات", "Actions").Localize(lang))
-                                                    </button>
-                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                        <li><a class="dropdown-item" asp-action="Details" asp-controller="Banner"  asp-route-id="@item.Id">@(("تفاصيل", "Details").Localize(lang))</a></li>
-                                                        <li><a class="dropdown-item" asp-action="Edit" asp-controller="Banner" asp-route-id="@item.Id">@(("تعديل", "Edit").Localize(lang))</a></li>
-                                                        @* <li><a class="dropdown-item" asp-action="Delete" asp-controller="Banner" asp-route-id="@item.Id">@(("خذف", "Delete").Localize(lang))</a></li> *@
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                    }
-                                }
-                            </tbody>
-                        </table>
+                    <div id="banner-table-container">
+                        @Html.Partial("_BannerTablePartial", Model)
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    </div>
-<nav aria-label="Page navigation">
-    <ul class="pagination pagination-primary pagination-sm justify-content-center">
-        @for (int i = 1; i <= @Model.TotalPages; i++)
-        {
-            var isActive = (i == @Model.PageNumber) ? "active" : "";
-            <li class="page-item @isActive">
-                <a class="page-link" href="?page=@i">@i</a>
-            </li>
-        }
-    </ul>
-</nav>
+</div>
+
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-            $(document).ready(function () {
-            $(document).on("change", ".toggle-active", function () {
-                var checkbox = $(this);
-                var id = checkbox.data("id");
-                var isActive = checkbox.is(":checked");
-                var token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
+    <script>
+        let currentPage = 1;
+        let currentStatus = "";
+      
+
+        const localized = {
+            deleteSuccessTitle: @Html.Raw(("تم الحذف!", "Deleted!").Localize(lang).ToJson()),
+            deleteSuccessText: @Html.Raw(("تم حذف اللوحة بنجاح.", "Company deleted successfully.").Localize(lang).ToJson()),
+            deleteErrorTitle: @Html.Raw(("خطأ في الحذف", "Delete Error").Localize(lang).ToJson()),
+            deleteErrorText: @Html.Raw(("حدث خطأ أثناء الحذف.", "An error occurred while deleting.").Localize(lang).ToJson()),
+            confirmDeleteTitle: @Html.Raw(("هل أنت متأكد؟", "Are you sure?").Localize(lang).ToJson()),
+            confirmDeleteText: @Html.Raw(("لا يمكنك التراجع عن هذه العملية!", "This action cannot be undone!").Localize(lang).ToJson()),
+            confirmButtonText: @Html.Raw(("نعم، احذفها!", "Yes, delete it!").Localize(lang).ToJson()),
+            cancelButtonText: @Html.Raw(("إلغاء", "Cancel").Localize(lang).ToJson()),
+            updateError: @Html.Raw(("حدث خطأ أثناء التحديث.", "An error occurred while updating.").Localize(lang).ToJson()),
+            deactivationTitle: @Html.Raw(("سبب التعطيل", "Deactivation Reason").Localize(lang).ToJson()),
+            active: @Html.Raw(("مفعل", "Active").Localize(lang).ToJson()),
+            inactive: @Html.Raw(("غير مفعل", "Inactive").Localize(lang).ToJson())
+        };
+
+        function loadBanners(page, status) {
+            $.ajax({
+                url: '/Banner/Index',
+                type: 'GET',
+                data: {
+                    page: page,
+                    pageSize: @Model.PageSize,
+                    statusFilter: status || null
+                },
+                success: function (data) {
+                    $("#banner-table-container").html(data);
+                    currentPage =page;
+                    currentStatus = status;
+                    initBannerEvents(); // Rebind events
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: localized.updateError,
+                        text: xhr.responseJSON?.message || xhr.responseText || ''
+                    });
+                }
+            });
+        }
+
+        function initBannerEvents() {
+            // Pagination
+            $(document).off("click", ".ajax-page").on("click", ".ajax-page", function (e) {
+                e.preventDefault();
+                const page = $(this).data("page");
+                loadBanners(page, currentStatus);
+            });
+
+            // Filters
+            $(document).off("click", ".ajax-filter").on("click", ".ajax-filter", function (e) {
+                e.preventDefault();
+                $(".ajax-filter").removeClass("active");
+                $(this).addClass("active");
+                let statusStr = $(this).attr("data-status");
+                loadBanners(1, statusStr);
+            });
+
+            // Delete
+            $(document).off("click", ".btn-delete").on("click", ".btn-delete", function (e) {
+                e.preventDefault();
+                const id = $(this).data('id');
+
+                Swal.fire({
+                    title: localized.confirmDeleteTitle,
+                    text: localized.confirmDeleteText,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: localized.confirmButtonText,
+                    cancelButtonText: localized.cancelButtonText
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/Banner/DeleteConfirmed/' + id,
+                            type: 'POST',
+                            headers: {
+                                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                            },
+                            success: function () {
+                                Swal.fire(localized.deleteSuccessTitle, localized.deleteSuccessText, 'success')
+                                    .then(() => {
+                                        loadBanners(currentPage, currentStatus);
+                                    });
+                            },
+                            error: function (xhr) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: localized.deleteErrorTitle,
+                                    text: xhr.responseJSON?.message || xhr.responseText || localized.deleteErrorText
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Toggle Active
+            $(document).off("change", ".toggle-active").on("change", ".toggle-active", function () {
+                const checkbox = $(this);
+                const id = checkbox.data("id");
+                const isActive = checkbox.is(":checked");
+                const token = $('input[name="__RequestVerificationToken"]').val();
 
                 $.ajax({
                     url: '/Banner/ToggleActive',
                     type: 'POST',
                     data: {
+                        __RequestVerificationToken: token,
                         id: id,
                         isActive: isActive
                     },
-                    headers: {
-                        'RequestVerificationToken': token
+                    success: function () {
+                        const statusLabel = $("#label-status-" + id);
+                        statusLabel
+                            .text(isActive ? localized.active : localized.inactive)
+                            .removeClass("text-danger text-success")
+                            .addClass(isActive ? "text-success" : "text-danger");
                     },
-                    success: function (response) {
-                        console.log('Status updated successfully');
-                        // Optional: Show a success alert or toast here
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error:', error);
-                        // Optional: Revert checkbox to previous state if needed
+                    error: function (xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: localized.updateError,
+                            text: xhr.responseJSON?.message || xhr.responseText || ''
+                        });
+                        checkbox.prop('checked', !isActive); // rollback
                     }
                 });
             });
+        }
+
+        $(document).ready(function () {
+            loadBanners(1, currentStatus);
         });
     </script>
+
 }
-
-

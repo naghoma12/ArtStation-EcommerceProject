@@ -1,5 +1,6 @@
 ﻿@using ArtStation_Dashboard.ViewModels.User
-@model IEnumerable<TraderViewModel>
+@using NuGet.Protocol
+@model PagedResult<TraderViewModel>
 @{
     var culture = System.Globalization.CultureInfo.CurrentUICulture;
     var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
@@ -19,6 +20,32 @@
     </div>
 }
 
+
+<div class=" w-50 m-auto">
+    <label class="form-label">  @(("بحث", "Search").Localize(lang))</label>
+    <div class="input-group input-group-outline my-3 w-50">
+
+        <input type="text" id="searchInput" value="@ViewBag.Search" placeholder="@(("او الايميل ابحث بالاسم أو اليوزر...", "Search With Name , UserName ,Email").Localize(lang)) " class="form-control w-auto mx-1" />
+    </div>
+</div>
+<div class="d-flex justify-content-center my-3">
+    <a href="#" class="btn btn-outline-primary mx-1 ajax-filter @(ViewBag.StatusFilter == null ? "active" : "")"
+       data-status="">
+        @(("الكل", "All").Localize(lang))
+    </a>
+
+    <a href="#" class="btn btn-outline-info mx-1 ajax-filter @(ViewBag.StatusFilter?.ToString() == "True" ? "active" : "")"
+       data-status="true">
+        @(("مفعل", "Active").Localize(lang))
+    </a>
+
+    <a href="#" class="btn btn-outline-danger mx-1 ajax-filter @(ViewBag.StatusFilter?.ToString() == "False" ? "active" : "")"
+       data-status="false">
+        @(("غير مفعل", "Inactive").Localize(lang))
+    </a>
+
+</div>
+
 <div class="container-fluid py-4">
 
    
@@ -29,11 +56,7 @@
         <i class="fa-solid fa-plus"></i>
         @(("أضف شركه", "Add Company").Localize(lang))
     </a>
-    <button class="btn btn-icon btn-3 btn-primary" type="button">
-        <span class="btn-inner--icon"><i class="fa-solid fa-plus"></i></span>
-        <span class=""><a asp-action="AddTrader" asp-controller="Trader">@(("أضف حساب", "Add Account").Localize(lang))</a></span>
-    </button>
-
+   
     <div class="row">
         <div class="col-12">
             <div class="card my-4">
@@ -44,68 +67,10 @@
                 </div>
                 <div class="card-body px-0 pb-2">
                     <div class="table-responsive p-0">
-                        <table class="table align-items-center mb-0">
-                            <thead>
-                                <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("اسم الشركات", "Company Name").Localize(lang))</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">@(("اسم المستخدم", "User Name").Localize(lang))</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("رقم الشركه", "Company Phone").Localize(lang))</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("نشطه", "Is Active").Localize(lang))</th>
-                                    <th class="text-secondary opacity-7"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model.Count() > 0)
-                                {
-                                    @foreach (var item in Model)
-                                    {
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex px-2 py-2">
-                                                    <div>
-                                                        <img src="~/Uploads/Users/@item.Photo" class="avatar avatar-sm me-3 ms-3 border-radius-lg" alt="user1">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">@item.DispalyName</h6>
-                                                        <p class="text-xs text-secondary mb-0">@(string.IsNullOrEmpty(item.Email) ? "" : item.Email)</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">@item.UserName</p>
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="badge badge-sm bg-gradient-success">@item.PhoneNumber</span>
-                                            </td>
-                                            <td>
-                                                <div class="form-check form-switch">
-                                                    <input type="checkbox"
-                                                           class="form-check-input toggle-active"
-                                                           data-id="@item.Id"
-                                                           id="toggle_@item.Id"
-                                                    @(item.IsActive ? "checked=\"checked\"" : "") />
-                                                    <label class="form-check-label" for="toggle_@item.Id">
-                                                        @(item.IsActive ? ("مفعل", "Active").Localize(lang) : ("غير مفعل", "Inactive").Localize(lang))
-                                                    </label>
-                                                </div>
-                                            </td>
-                                            <td class="align-middle">
-                                                <div class="dropdown">
-                                                    <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        @(("العمليات", "Actions").Localize(lang))
-                                                    </button>
-                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                        <li><a class="dropdown-item" asp-action="Details" asp-controller="Trader" asp-route-id="@item.Id">@(("تفاصيل", "Details").Localize(lang))</a></li>
-                                                        <li><a class="dropdown-item" asp-action="Edit" asp-controller="Trader" asp-route-id="@item.Id">@(("تعديل", "Edit").Localize(lang))</a></li>
-                                                        <li><a class="dropdown-item" asp-action="ChangePassword" asp-controller="Trader" asp-route-id="@item.Id">@(("تغيير كلمه السر", "Change Password").Localize(lang))</a></li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                        </table>
+                        <div id="trader-table-container">
+                            @Html.Partial("_TraderTablePartial", Model)
+                        </div>
+                      
                     </div>
                 </div>
             </div>
@@ -113,26 +78,181 @@
     </div>
 </div>
 
-<nav aria-label="Page navigation">
-    <ul class="pagination pagination-primary pagination-sm justify-content-center">
-        @for (int i = 1; i <= ViewBag.TotalPages; i++)
-        {
-            var isActive = (i == ViewBag.CurrentPage) ? "active" : "";
-            <li class="page-item @isActive">
-                <a class="page-link" href="?page=@i">@i</a>
-            </li>
-        }
-    </ul>
-</nav>
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @{
+        var lang = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    }
+
     <script>
+          let currentPage = 1;
+        let currentStatus = "";
+                let currentSearch = "";
+        let searchTimeout = null; // المؤقت
+          var lang = $('#currentLang').val(); // "ar" or "en"
+         var localized = {
+             deleteSuccessTitle: @Html.Raw(("تم الحذف!", "Deleted!").Localize(lang).ToJson()),
+            deleteSuccessText: @Html.Raw(("تم حذف اللوحة بنجاح.", "Banner deleted successfully.").Localize(lang).ToJson()),
+            deleteErrorTitle: @Html.Raw(("خطأ في الحذف", "Delete Error").Localize(lang).ToJson()),
+            deleteErrorText: @Html.Raw(("حدث خطأ أثناء الحذف.", "An error occurred while deleting.").Localize(lang).ToJson()),
+            confirmDeleteTitle: @Html.Raw(("هل أنت متأكد؟", "Are you sure?").Localize(lang).ToJson()),
+            confirmDeleteText: @Html.Raw(("لا يمكنك التراجع عن هذه العملية!", "This action cannot be undone!").Localize(lang).ToJson()),
+            confirmButtonText: @Html.Raw(("نعم، احذفها!", "Yes, delete it!").Localize(lang).ToJson()),
+            cancelButtonText: @Html.Raw(("إلغاء", "Cancel").Localize(lang).ToJson()),
+            deactivationTitle: @(Html.Raw(("سبب التعطيل", "Deactivation Reason").Localize(lang).ToJson())),
+            deactivationInputLabel: @(Html.Raw(("يرجى إدخال سبب التعطيل", "Please enter a reason").Localize(lang).ToJson())),
+            deactivationInputPlaceholder: @(Html.Raw(("اكتب السبب هنا...", "Write the reason here...").Localize(lang).ToJson())),
+            confirmBtn: @(Html.Raw(("تأكيد", "Confirm").Localize(lang).ToJson())),
+            cancelBtn: @(Html.Raw(("إلغاء", "Cancel").Localize(lang).ToJson())),
+            reasonRequired: @(Html.Raw(("السبب مطلوب!", "Reason is required!").Localize(lang).ToJson())),
+            updatedSuccess: @(Html.Raw(("تم التحديث بنجاح", "Updated successfully").Localize(lang).ToJson())),
+            updateError: @(Html.Raw(("حدث خطأ أثناء التحديث", "Error occurred while updating").Localize(lang).ToJson())),
+            activeStatus: @(Html.Raw(("مفعل", "Active").Localize(lang).ToJson())),
+            inactiveStatus: @(Html.Raw(("غير مفعل", "Inactive").Localize(lang).ToJson()))
+        };
+                         function loadTraders(page, status, search) {
+            $.ajax({
+                url: '/Trader/Index',
+                type: 'GET',
+                data: {
+                    page: page,
+                    pageSize: @Model.PageSize,
+                    statusFilter: status,
+                             search: search
+                },
+                           headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                success: function (data) {
+                    $("#trader-table-container").html(data);
+                    currentPage = page;
+                    currentStatus = status;
+                   currentSearch = search;
+                    // initEvents();
+                    initTraderEvents(); 
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: localized.updateError,
+                        text: xhr.responseJSON?.message || xhr.responseText || ''
+                    });
+                }
+            });
+        }
+
+
+
+
+                function initTraderEvents() {
+                    // Filters
+            $(document).off("click", ".ajax-filter").on("click", ".ajax-filter", function (e) {
+                e.preventDefault();
+                $(".ajax-filter").removeClass("active");
+                $(this).addClass("active");
+
+                let statusStr = $(this).attr("data-status");
+                currentStatus = statusStr === "" ? null : (statusStr === "true");
+
+                loadTraders(1, currentStatus, currentSearch);
+            });
+            // Pagination
+            $(document).off("click", ".ajax-page").on("click", ".ajax-page", function (e) {
+                e.preventDefault();
+                const page = $(this).data("page");
+                loadTraders(page, currentStatus, currentSearch);
+            });
+               // Live Search (delay 1 ثانية)
+            $("#searchInput").off("input").on("input", function () {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function () {
+                    currentSearch = $("#searchInput").val();
+                    loadTraders(1, currentStatus, currentSearch);
+                }, 1000);
+            });
+
+              $(document).off("click", ".btn-delete").on("click", ".btn-delete", function (e) {
+                e.preventDefault();
+                const id = $(this).data('id');
+
+                Swal.fire({
+                    title: localized.confirmDeleteTitle,
+                    text: localized.confirmDeleteText,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: localized.confirmButtonText,
+                    cancelButtonText: localized.cancelButtonText
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/Trader/DeleteConfirmed/' + id,
+                            type: 'POST',
+                            headers: {
+                                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                            },
+                            success: function () {
+                                Swal.fire(localized.deleteSuccessTitle, localized.deleteSuccessText, 'success')
+                                    .then(() => {
+                                        loadTraders(currentPage, currentStatus, currentSearch);
+                                    });
+                            },
+                            error: function (xhr) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: localized.deleteErrorTitle,
+                                    text: xhr.responseJSON?.message || xhr.responseText || localized.deleteErrorText
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+
+
+
+
+
         $(document).ready(function () {
+           
+
             $(document).on("change", ".toggle-active", function () {
                 var checkbox = $(this);
                 var id = checkbox.data("id");
                 var isActive = checkbox.is(":checked");
+
+                if (!isActive) {
+                    Swal.fire({
+                        title: localized.deactivationTitle,
+                        input: 'text',
+                        inputLabel: localized.deactivationInputLabel,
+                        inputPlaceholder: localized.deactivationInputPlaceholder,
+                        showCancelButton: true,
+                        confirmButtonText: localized.confirmBtn,
+                        cancelButtonText: localized.cancelBtn,
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return localized.reasonRequired;
+                            }
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            var reason = result.value;
+                            sendToggleRequest(id, isActive, reason, checkbox);
+                        } else {
+                            checkbox.prop('checked', true);
+                        }
+                    });
+                } else {
+                    sendToggleRequest(id, isActive, '', checkbox);
+                }
+            });
+
+            function sendToggleRequest(id, isActive, reason, checkbox) {
                 var token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
 
                 $.ajax({
@@ -140,22 +260,63 @@
                     type: 'POST',
                     data: {
                         id: id,
-                        isActive: isActive
+                        isActive: isActive,
+                        reason: reason
                     },
                     headers: {
                         'RequestVerificationToken': token
                     },
-                    success: function (response) {
-                        console.log('Status updated successfully');
-                        // Optional: Show a success alert or toast here
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error:', error);
-                        // Optional: Revert checkbox to previous state if needed
+                          success: function () {
+            Swal.fire({
+                icon: 'success',
+                title: localized.updatedSuccess,
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            let statusText = isActive ? localized.activeStatus : localized.inactiveStatus;
+
+            // تحديث النص واللون في label بجانب السويتش
+            let labelEl = $('#label-status-' + id);
+            if (labelEl.length > 0) {
+                labelEl
+                    .text(statusText)
+                    .removeClass('text-success text-danger')
+                    .addClass(isActive ? 'text-success' : 'text-danger');
+            }
+
+            // (اختياري) تحديث العنصر الآخر إن وجد
+            let statusEl = $('#status-' + id);
+            if (statusEl.length > 0) {
+                statusEl
+                    .text(statusText)
+                    .removeClass('text-success text-danger')
+                    .addClass(isActive ? 'text-success' : 'text-danger');
+            }
+        },
+
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: localized.updateError,
+                        });
+                        checkbox.prop('checked', !isActive);
                     }
                 });
-            });
+            }
+
+
+
         });
+
+
+
+        $(document).ready(function () {
+            loadTraders(1, currentStatus);
+        });
+
     </script>
 
+
 }
+

@@ -8,6 +8,7 @@ using ArtStation_Dashboard.ViewModels.User;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using ArtStation_Dashboard.ViewModels;
 
 namespace ArtStation_Dashboard.Controllers
 {
@@ -33,33 +34,102 @@ namespace ArtStation_Dashboard.Controllers
             _environment = environment;
             _userHelper = userHelper;
         }
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
+        public async Task<IActionResult> Index(bool? statusFilter, int page = 1, int pageSize = 5)
         {
-            var traderUsers = await _userManager.GetUsersInRoleAsync(Roles.Customer);
+            try
+            {
+                var Users = await _userManager.GetUsersInRoleAsync(Roles.Customer);
 
-            var totalUsers = traderUsers.Count;
-            var totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
-
-            var users = traderUsers
+                var totalUsers = Users.Count;
+                var totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
+                ViewBag.StatusFilter = statusFilter;
+                var users = new List<UserViewModel>();
+                if (statusFilter == null)
+                {
+                    users = Users.Where(i=>i.IsDeleted==false)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Select(u => new UserViewModel
                 {
                     Id = u.Id,
                     Image = u.Image,
-                   IsActive=u.IsActive,
+                    IsActive = u.IsActive,
                     FullName = u.FullName,
                     Email = u.Email,
                     PhoneNumber = u.PhoneNumber
                 }).ToList();
 
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = totalPages;
+                }
+                else
+                {
+                    users = Users
+                        .Where(i => i.IsActive == statusFilter)
+                     .Where(i => i.IsDeleted == false)
+               .Skip((page - 1) * pageSize)
+               .Take(pageSize)
+               .Select(u => new UserViewModel
+               {
+                   Id = u.Id,
+                   Image = u.Image,
+                   IsActive = u.IsActive,
+                   FullName = u.FullName,
+                   Email = u.Email,
+                   PhoneNumber = u.PhoneNumber
+               }).ToList();
 
-            return View(users);
+               
+                }
+
+                var customers = new PagedResult<UserViewModel>
+                {
+                    Items = users,
+                    TotalItems = totalUsers,
+                    PageNumber = page,
+                    PageSize = pageSize,
+
+                };
+
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return PartialView("_TraderTablePartial", customers);
+                }
+
+                return View(customers);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex.Message);
+            }
+
         }
 
-     
+        //public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
+        //{
+        //    var traderUsers = await _userManager.GetUsersInRoleAsync(Roles.Customer);
+
+        //    var totalUsers = traderUsers.Count;
+        //    var totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
+
+        //    var users = traderUsers
+        //        .Skip((page - 1) * pageSize)
+        //        .Take(pageSize)
+        //        .Select(u => new UserViewModel
+        //        {
+        //            Id = u.Id,
+        //            Image = u.Image,
+        //           IsActive=u.IsActive,
+        //            FullName = u.FullName,
+        //            Email = u.Email,
+        //            PhoneNumber = u.PhoneNumber
+        //        }).ToList();
+
+        //    ViewBag.CurrentPage = page;
+        //    ViewBag.TotalPages = totalPages;
+
+        //    return View(users);
+        //}
+
+
 
         //Get : Get User Details
         public async Task<IActionResult> Details(int id)

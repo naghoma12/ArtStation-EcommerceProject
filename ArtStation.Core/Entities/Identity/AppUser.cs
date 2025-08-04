@@ -21,15 +21,17 @@ namespace ArtStation.Core.Entities.Identity
     public class AppUser : IdentityUser<int>
     {
         public string FullName { get; set; }
+        public string? InActiveMessage { get; set; }
+        public DateTime? DeactivatedAt { get; set; }
 
-     
         public string? Country { get; set; }
         public Gender? Gender { get; set; }
         public DateOnly? BirthDay { get; set; }
         public string? Nationality { get; set; }
         public string? Image { get; set; }
         public string FCMToken { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
+        public bool IsDeleted { get; set; } = false;
         public IList<Address>? Address { get; set; } =new List<Address>();
 
         public ICollection<Favourite> Favourites { get; set; } = new List<Favourite>();

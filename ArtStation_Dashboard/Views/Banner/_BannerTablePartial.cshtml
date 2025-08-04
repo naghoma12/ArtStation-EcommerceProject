@@ -1,0 +1,123 @@
+﻿@model PagedResult<ArtStation.Core.Entities.Banner>
+@{
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
+    var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
+    var lang = culture.Name;
+}
+<style>
+    table td, table th {
+        white-space: normal !important;
+        word-break: break-word;
+        vertical-align: middle;
+    }
+
+    .table {
+        table-layout: auto !important;
+    }
+
+    .dropdown-menu {
+        min-width: 8rem;
+        max-width: 100%;
+        word-wrap: break-word;
+    }
+
+    .table img {
+        max-width: 60px;
+        height: auto;
+    }
+</style>
+<div class="table-responsive ">
+    <table class="table align-items-center mb-0 w-100">
+        <thead>
+            <tr>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">@(("صوره اللوحة", "Banner Image").Localize(lang))</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("عنوان اللوحة", "Banner Title").Localize(lang))</th>
+
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("ترتيب اللوحة", "Banner Order").Localize(lang))</th>
+                <th style="padding: 0.75rem; white-space: normal !important;" class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("هل مفعل", "IsActive").Localize(lang))</th>
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("تاريخ الإنشاء", "Created Date").Localize(lang))</th>
+
+
+                <th class="text-secondary opacity-7"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Items.Count() > 0)
+            {
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>
+
+                            <div>
+                                <img src="~/Uploads/Banners/@item.ImageUrl" class="avatar avatar-sm me-3 ms-3 border-radius-lg" alt="user1">
+                            </div>
+
+
+                        </td>
+                        <td>
+                            <p class="text-xs font-weight-bold mb-0">@item.Title</p>
+                            @* <p class="text-xs text-secondary mb-0">Organization</p> *@
+                        </td>
+                        <td class="align-middle text-center text-sm">
+                            <span class="badge badge-sm bg-gradient-success">@item.OrderBanner</span>
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <input type="checkbox"
+                                       class="form-check-input toggle-active"
+                                       data-id="@item.Id"
+                                       id="toggle_@item.Id"
+                                @(item.IsActive ? "checked=\"checked\"" : "") />
+
+                                <label class="form-check-label" for="toggle_@item.Id">
+                                    <span id="label-status-@item.Id"
+                                          class="@(item.IsActive ? "text-success" : "text-danger")">
+                                        @(item.IsActive ? ("مفعل", "Active").Localize(lang) : ("غير مفعل", "Inactive").Localize(lang))
+                                    </span>
+                                </label>
+                            </div>
+                        </td>
+                        <td class="align-middle text-center text-sm">
+                            <span class="">@item.CreatedDate</span>
+                        </td>
+
+
+
+                        <td class="align-middle">
+                            <div class="dropdown">
+                                <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @(("العمليات", "Actions").Localize(lang))
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" asp-action="Details" asp-controller="Banner" asp-route-id="@item.Id">@(("تفاصيل", "Details").Localize(lang))</a></li>
+                                    <li><a class="dropdown-item" asp-action="Edit" asp-controller="Banner" asp-route-id="@item.Id">@(("تعديل", "Edit").Localize(lang))</a></li>
+                                    @* <li><a class="dropdown-item" asp-action="Delete" asp-controller="Banner" asp-route-id="@item.Id">@(("خذف", "Delete").Localize(lang))</a></li>  *@
+                                    <li>
+                                        <button class="dropdown-item btn-delete" data-id="@item.Id">
+                                            @(("خذف", "Delete").Localize(lang))
+                                        </button>
+                                    </li>
+
+
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+    <nav>
+        <ul class="pagination justify-content-center">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link ajax-page" href="#" data-page="@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>

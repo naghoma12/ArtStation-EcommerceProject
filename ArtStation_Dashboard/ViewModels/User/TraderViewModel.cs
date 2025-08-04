@@ -30,6 +30,7 @@ namespace ArtStation_Dashboard.ViewModels.User
         ErrorMessageResourceName = "RequiredField")]
         public string Password { get; set; }
         public bool IsActive { get; set; }
+        public string? InActiveMessage { get; set; }
         public IEnumerable<Shipping>   Cities { get; set; } = new List<Shipping>();
     }
 }
