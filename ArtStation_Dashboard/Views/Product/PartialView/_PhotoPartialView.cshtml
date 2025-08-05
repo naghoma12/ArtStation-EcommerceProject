@@ -14,7 +14,8 @@
     <p id="error-message" style="color: red; display: none;">Only PNG, JPG, JPEG images are allowed.</p>
 
     <input type="hidden" id="deletedPhotosContainer" name="DeletedPhotos" />
-
+    <!-- Hidden input to store accumulated files -->
+    <input type="file" id="virtualFilesInput" name="Files" multiple style="display:none;" />
     <!-- Combined preview container -->
     <div id="imagePreview" class="row mt-3">
         <!-- Existing images -->
@@ -36,27 +37,43 @@
 
 <script>
     const imageUpload = document.getElementById("imageUpload");
-    const errorMessage = document.getElementById("error-message");
     const previewContainer = document.getElementById("imagePreview");
+    const errorMessage = document.getElementById("error-message");
     const deletedPhotosContainer = document.getElementById("deletedPhotosContainer");
+
+    let fileList = [];
 
     imageUpload.addEventListener("change", function () {
         errorMessage.style.display = "none";
-        const files = Array.from(imageUpload.files);
+
+        const newFiles = Array.from(imageUpload.files);
         let isValid = true;
 
-        files.forEach(file => {
+        // Count how many images already exist or are added
+        const existingImagesCount = document.querySelectorAll(".existing-image").length;
+        const currentPreviewsCount = previewContainer.querySelectorAll(".col-3:not(.existing-image)").length;
+        const totalCount = existingImagesCount + currentPreviewsCount + newFiles.length;
+
+        if (totalCount > 5) {
+            errorMessage.textContent = "You can upload up to 5 images only.";
+            errorMessage.style.display = "block";
+            imageUpload.value = "";
+            return;
+        }
+
+        newFiles.forEach(file => {
             const ext = file.name.split('.').pop().toLowerCase();
             if (!["png", "jpg", "jpeg"].includes(ext)) {
                 isValid = false;
                 return;
             }
 
+            fileList.push(file);
+
             const reader = new FileReader();
             reader.onload = function (e) {
                 const col = document.createElement("div");
                 col.className = "col-3 mb-3";
-
                 col.innerHTML = `
                         <div class="image-container position-relative">
                             <img src="${e.target.result}" class="img-fluid rounded" alt="Preview Image" />
@@ -66,7 +83,8 @@
 
                 col.querySelector(".delete-icon").addEventListener("click", () => {
                     col.remove();
-                    // Optional: to also remove from FileList (more complex, not handled here)
+                    fileList = fileList.filter(f => f.name !== file.name);
+                    updateInputFiles();
                 });
 
                 previewContainer.appendChild(col);
@@ -75,25 +93,34 @@
         });
 
         if (!isValid) {
+            errorMessage.textContent = "Only PNG, JPG, JPEG images are allowed.";
             errorMessage.style.display = "block";
             imageUpload.value = "";
+            return;
         }
+
+        imageUpload.value = "";
+        updateInputFiles();
     });
 
-    // Handle deletion of existing images
+    function updateInputFiles() {
+        const dataTransfer = new DataTransfer();
+        fileList.forEach(file => dataTransfer.items.add(file));
+        imageUpload.files = dataTransfer.files;
+    }
+
+    // Existing image deletion
     document.querySelectorAll(".existing-image .delete-icon").forEach(btn => {
         btn.addEventListener("click", function () {
             const imageDiv = this.closest(".existing-image");
             const name = imageDiv.dataset.name;
-
-            // Append to hidden input to track deletion
             const input = document.createElement("input");
             input.type = "hidden";
             input.name = "DeletedPhotos";
             input.value = name;
             deletedPhotosContainer.appendChild(input);
-
             imageDiv.remove();
         });
     });
 </script>
+

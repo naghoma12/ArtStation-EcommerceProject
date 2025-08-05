@@ -2,10 +2,12 @@
 using ArtStation.Core.Helper;
 using ArtStation.Core.Repository.Contract;
 using ArtStation.Repository.Data;
+using ArtStation_Dashboard.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -83,6 +85,31 @@ namespace ArtStation.Repository.Repository
                 })
                 .ToListAsync();
                 
+        }
+        public async Task<PagedResult<Category>> GetFilteredAsync(
+    Expression<Func<Category, bool>> filter = null,
+    int page = 1,
+    int pageSize = 5)
+        {
+            IQueryable<Category> query = _context.Set<Category>();
+
+            if (filter != null)
+                query = query.Where(filter);
+
+            var totalItems = await query.CountAsync();
+
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<Category>
+            {
+                Items = items,
+                PageNumber = page,
+                PageSize = pageSize,
+                TotalItems = totalItems
+            };
         }
     }
 }

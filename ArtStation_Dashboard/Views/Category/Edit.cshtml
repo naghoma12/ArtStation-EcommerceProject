@@ -17,20 +17,22 @@
             <br />
 
             <div class="col-md-6">
-                <div class="input-group input-group-outline my-3">
-                    <label class="form-label">@(("اسم التصنيف باللغه العربية", "Category Name In Arabic").Localize(language))</label>
+                <div class="input-group input-group-static mb-4">
+                    <label>@(("اسم التصنيف باللغه العربية", "Category Name In Arabic").Localize(language))</label>
                     <input asp-for="NameAR" type="text" class="form-control">
-                    <span asp-validation-for="NameAR" class="text-danger"></span>
                 </div>
+                    <span asp-validation-for="NameAR" class="text-danger"></span>
             </div>
             <div class="col-md-6">
-                <div class="input-group input-group-outline my-3">
-                    <label class="form-label">@(("اسم التصنيف باللغه الإنجليزية", "Category Name In English").Localize(language))</label>
+                <div class="input-group input-group-static mb-4">
+                    <label >@(("اسم التصنيف باللغه الإنجليزية", "Category Name In English").Localize(language))</label>
                     <input asp-for="NameEN" type="text" class="form-control">
-                    <span asp-validation-for="NameEN" class="text-danger"></span>
                 </div>
+                    <span asp-validation-for="NameEN" class="text-danger"></span>
             </div>
-
+            <div class="col-md-6">
+            <img src="~/Uploads/Categories/@Model.Image" width="400" height="400"/>
+            </div>
             <div class="col">
                 <div class="input-group input-group-outline my-3">
                     <label class="control-label fs-7">
@@ -38,9 +40,6 @@
                     </label>
 
                     <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="fas fa-image"></i>
-                        </span>
                         <input asp-for="PhotoFile"
                                type="file"
                                class="form-control form-control-lg"
@@ -51,6 +50,7 @@
                 </div>
             </div>
             <input asp-for="Image" hidden/>
+
 
         </div>
 

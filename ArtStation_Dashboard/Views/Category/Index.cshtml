@@ -10,88 +10,67 @@
         @TempData["message"]
     </div>
 }
-<div class="container-fluid py-4">
-    <a asp-action="Create" asp-controller="Category" class="btn btn-icon btn-3 btn-primary">
-                <i class="fa-solid fa-plus"></i>
-                @(("أضف تصنيف", "Add Category").Localize(language))
-            </a>
-     
-<div class="row">
-    <div class="col-12">
-        <div class="card my-4">
-            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 pe-3">
-                    <h6 class="text-white text-capitalize ps-3">@(("جدول التصنيفات" ,"Category Table").Localize(language))</h6>
-                </div>
-            </div>
-            <div class="card-body px-0 pb-2">
-                <div class="table-responsive p-0">
-                    <table class="table align-items-center mb-0">
-                        <thead>
-                            <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center ">
-                                    @(("المعرف", "Id").Localize(language))
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                    @(("اسم التصنيف","Category Name").Localize(language))</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
-                                    @(("الصورة", "Image").Localize(language))
-                                </th>
-                                <th class="text-secondary opacity-7"></th>
-                                <th class="text-secondary opacity-7"></th>
-                                <th class="text-secondary opacity-7"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach(var category in Model.Items)
-                            {
-                                <tr>
-                                    <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold">@category.Id</span>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold">@((category.NameAR, category.NameEN).Localize(language))</span>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                       <img src="~/Uploads/Categories/@category.Image" class="avatar avatar-sm border-radius-lg" alt="user2">
-                                    </td>
 
-                                    <td class="align-middle text-center">
-                                        <a asp-action="Details" asp-route-id="@category.Id" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                                            @(("تفاصيل","Details").Localize(language))
-                                        </a>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <a asp-action="Edit" asp-route-id="@category.Id" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                                            @(("تعديل" , "Edit").Localize(language))
-
-                                        </a>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <a asp-action="Delete" asp-route-id="@category.Id" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                                            @(("حذف", "Delete").Localize(language))
-                                        </a>
-                                    </td>
-                                </tr>
-                            }
-                                   
-                    </table>
-                </div>
-            </div>
+<div class="d-flex justify-content-center my-3">
+    <div class="col-md-5">
+        <div class="input-group">
+            <input type="text" id="categorySearch"
+                   class="form-control text-center fw-bolder bg-white text-primary"
+                   placeholder="@(("ابحث باسم التصنيف", "Search by Category name").Localize(language))" />
         </div>
     </div>
 </div>
 
-<div class="mt-4">
-    <nav>
-        <ul class="pagination pagination-primary justify-content-center">
-            @for (int i = 1; i <= Model.TotalPages; i++)
+<div id="categoryContainer">
+    @{
+        var empty = new PagedResult<Category>
             {
-                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
-                </li>
+                Items = new List<Category>(),
+                PageNumber = 1,
+                PageSize = 5,
+                TotalItems = 0
+            };
+        await Html.RenderPartialAsync("_Category", empty);
+    }
+</div>
+@section Scripts {
+    <script>
+        function loadCategories(page = 1, searchText = '') {
+            fetch(`/Category/FilterCategories?page=${page}&searchText=${encodeURIComponent(searchText)}`)
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById("categoryContainer").innerHTML = html;
+                });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadCategories();
+        });
+
+        document.getElementById("categorySearch").addEventListener("input", function () {
+            clearTimeout(window.debounceTimeout);
+            const search = this.value;
+            window.debounceTimeout = setTimeout(() => {
+                loadCategories(1, search);
+            }, 300);
+        });
+
+        document.addEventListener("click", function (e) {
+            if (e.target.matches(".ajax-page")) {
+                e.preventDefault();
+                const page = e.target.dataset.page;
+                const searchText = document.getElementById("categorySearch").value;
+                loadCategories(page, searchText);
             }
-        </ul>
-    </nav>
-</div>
-</div>
+        });
+        document.addEventListener("click", function (e) {
+            if (e.target.matches(".ajax-page")) {
+                e.preventDefault();
+                const page = e.target.dataset.page;
+                const searchText = document.getElementById("categorySearch").value;
+                loadCategories(page, searchText);
+            }
+        });
+
+    </script>
+}

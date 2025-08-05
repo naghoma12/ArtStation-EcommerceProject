@@ -23,10 +23,10 @@
 
 
 <div class="container-fluid py-4">
-    <button class="btn btn-icon btn-3 btn-primary" type="button">
+    <a class="btn btn-icon btn-3 btn-primary" a asp-action="AddTrader" asp-controller="Trader" type="button">
         <span class="btn-inner--icon"><i class="fa-solid fa-plus"></i></span>
-        <span class=""><a asp-action="AddTrader" asp-controller="Trader">@(("أضف حساب", "Add Account").Localize(lang))</a></span>
-    </button>
+        <span class="">@(("أضف حساب", "Add Account").Localize(lang))</span>
+    </a>
 
     <div class="row">
         <div class="col-12">

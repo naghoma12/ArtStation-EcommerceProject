@@ -43,13 +43,13 @@
                 PageSize = 5,
                 TotalItems = 0
             };
-        await Html.RenderPartialAsync("PartialView/_Product",emptyResult);
+        await Html.RenderPartialAsync("PartialView/_Product", emptyResult);
     }
 </div>
 
 @section Scripts {
     <script>
-         function confirmDisable(productId) {
+        function confirmDisable(productId) {
             Swal.fire({
                 title: 'هل أنت متأكد؟',
                 text: "سيتم إلغاء تفعيل المنتج!",
@@ -72,13 +72,13 @@
             loadProducts();
         });
         function loadProducts(categoryId = '', page = 1, searchText = '') {
-            fetch(`/Product/FilterProducts?categoryId=${categoryId}&page=${page}&searchText=${encodeURIComponent(searchText)}`)
+            fetch(`/Product/FilterTraderProducts?categoryId=${categoryId}&page=${page}&searchText=${encodeURIComponent(searchText)}`)
                 .then(res => res.text())
                 .then(html => {
                     document.getElementById("productContainer").innerHTML = html;
                 });
         }
-        
+
         document.getElementById("categoryFilter").addEventListener("change", function () {
             let categoryId = this.value;
             loadProducts(categoryId);

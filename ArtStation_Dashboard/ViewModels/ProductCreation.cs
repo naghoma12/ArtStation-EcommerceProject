@@ -41,6 +41,7 @@ namespace ArtStation_Dashboard.ViewModels
         [MaxLength(150, ErrorMessageResourceType = typeof(AnnotationMessages), ErrorMessageResourceName = "MaxLength150")]
         public string DeliveredOnEN { get; set; }
         [Required(ErrorMessageResourceType = typeof(AnnotationMessages), ErrorMessageResourceName = "RequiredField")]
+        [Range(1, int.MaxValue, ErrorMessageResourceType = typeof(AnnotationMessages), ErrorMessageResourceName = "CategoryRequired")]
         public int CategoryId { get; set; }
         public int? UserId { get; set; }
         public string? TraderName { get; set; }

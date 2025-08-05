@@ -10,14 +10,14 @@
 <div id="FlavourInput">
     <div class="row g-3 align-items-end">
         <div class="col-md-5">
-            <div class="input-group input-group-static">
-                <label class="form-label">@(("النكهه بالعربية", "Flavour in Arabic").Localize(language))</label>
+            <div class="input-group input-group-static mb-4">
+                <label >@(("النكهه بالعربية", "Flavour in Arabic").Localize(language))</label>
                 <input type="text" id="flavourAR" class="form-control" />
             </div>
         </div>
         <div class="col-md-5">
-            <div class="input-group input-group-static">
-                <label class="form-label">@(("النكهه بالإنجليزية", "Flavour in English").Localize(language))</label>
+            <div class="input-group input-group-static mb-4">
+                <label >@(("النكهه بالإنجليزية", "Flavour in English").Localize(language))</label>
                 <input type="text" id="flavourEN" class="form-control" />
             </div>
         </div>
@@ -36,12 +36,16 @@
     <input type="hidden" asp-for="Flavours[i].Id"  />
         <div class="row g-3 align-items-end mb-2 border p-3 rounded bg-light flavour-row">
             <div class="col-md-5">
-                <label class="form-label">@(("النكهه بالعربية", "Flavour (AR)").Localize(language))</label>
+                <div class="input-group input-group-static mb-4">
+                <label >@(("النكهه بالعربية", "Flavour (AR)").Localize(language))</label>
                 <input type="text" name="Flavours[@i].FlavourAR" class="form-control" value="@Model.Flavours[i].FlavourAR" />
+                </div>
             </div>
             <div class="col-md-5">
-                <label class="form-label">@(("النكهه بالإنجليزية", "Flavour (EN)").Localize(language))</label>
+                <div class="input-group input-group-static mb-4">
+                <label >@(("النكهه بالإنجليزية", "Flavour (EN)").Localize(language))</label>
                 <input type="text" name="Flavours[@i].FlavourEN" class="form-control" value="@Model.Flavours[i].FlavourEN" />
+                </div>
             </div>
             <div class="col-md-2 d-flex align-items-end">
                 <button type="button" class="btn btn-danger w-100 deleteFlavourBtn">

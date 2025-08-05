@@ -205,7 +205,7 @@ namespace ArtStation_Dashboard.Controllers
         }
         // Admin
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> FilterProducts(int? categoryId, int page = 1, int pageSize = 5 )
+        public async Task<IActionResult> FilterProducts(int? categoryId, string searchText, int page = 1, int pageSize = 5 )
         {
             string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
             ViewData["Language"] = language;
@@ -215,6 +215,8 @@ namespace ArtStation_Dashboard.Controllers
             {
                 productsList = productsList.Where(p => p.CategoryId == categoryId.Value).ToList();
             }
+            if (!string.IsNullOrEmpty(searchText))
+                productsList = productsList.Where(p => p.NameAR.Contains(searchText) || p.NameEN.ToLower().Contains(searchText.ToLower()));
 
             var pagedProducts = productsList
                 .Skip((page - 1) * pageSize)
@@ -261,9 +263,16 @@ namespace ArtStation_Dashboard.Controllers
             var categories = await _categoryRepository.GetSimpleCategory(GetLanguage());
             return View(categories);
         }
+        [Authorize(Roles = "Trader")]
+        public async Task<IActionResult> GetTraderCategory()
+        {
+            ViewData["Language"] = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
+            var categories = await _categoryRepository.GetSimpleCategory(GetLanguage());
+            return View(categories);
+        }
         // Trader
         [Authorize(Roles = "Trader")]
-        public async Task<IActionResult> TraderProducts(int page = 1, int pageSize =5)
+        public async Task<IActionResult> FilterTraderProducts(int? categoryId, string searchText,int page = 1, int pageSize =5)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
@@ -271,6 +280,12 @@ namespace ArtStation_Dashboard.Controllers
 
             var productsList = await _productRepository.GetTraderProducts(userId);
 
+            if (categoryId.HasValue && categoryId.Value > 0)
+            {
+                productsList = productsList.Where(p => p.CategoryId == categoryId.Value).ToList();
+            }
+            if (!string.IsNullOrEmpty(searchText))
+                productsList = productsList.Where(p => p.NameAR.Contains(searchText) || p.NameEN.ToLower().Contains(searchText.ToLower()));
 
             var pagedProducts = productsList
                 .Skip((page - 1) * pageSize)
@@ -307,7 +322,7 @@ namespace ArtStation_Dashboard.Controllers
                 TotalItems = productsList.Count()
             };
 
-            return View("Index", pageResult);
+            return PartialView("PartialView/_Product", pageResult);
         }
         [Authorize]
         public async Task<IActionResult> Details(int id)
@@ -320,7 +335,7 @@ namespace ArtStation_Dashboard.Controllers
             }
             return View(product);
         }
-
+        [Authorize]
         public async Task<IActionResult> DisableProduct(int id)
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
@@ -341,6 +356,9 @@ namespace ArtStation_Dashboard.Controllers
             }
             return RedirectToAction(nameof(Index), new { page = 1, pageSize = 5 });
         }
+
+        #region Methods
+
         private string GetLanguage()
         {
             return HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
@@ -498,16 +516,6 @@ namespace ArtStation_Dashboard.Controllers
             return product.ProductPhotos.Select(s => s.Photo
             ).ToList();
         }
-        [Authorize]
-        public async Task<IActionResult> Create()
-        {
-            string language = GetLanguage();
-            ViewData["Language"] = language;
-            var productCreation = new ProductCreation();
-            productCreation = await FillForm(language, productCreation);
-            return View(productCreation);
-        }
-
         private async Task HandleSizes(List<SizeVM> sizes, Product product)
         {
             if (sizes.Any())
@@ -521,7 +529,7 @@ namespace ArtStation_Dashboard.Controllers
                         var existing = existingSizes.FirstOrDefault(s => s.Id == submittedSize.Id);
                         if (existing != null)
                         {
-                            if(existing.SizeAR != submittedSize.SizeAR || existing.SizeEN != submittedSize.SizeEN || existing.Price != (decimal)submittedSize.Price)
+                            if (existing.SizeAR != submittedSize.SizeAR || existing.SizeEN != submittedSize.SizeEN || existing.Price != (decimal)submittedSize.Price)
                             {
                                 existing.SizeAR = submittedSize.SizeAR;
                                 existing.SizeEN = submittedSize.SizeEN;
@@ -529,7 +537,7 @@ namespace ArtStation_Dashboard.Controllers
                                 _unitOfWork.Repository<ProductSize>().Update(existing);
                             }
                         }
-                       
+
                     }
                     else if (submittedSize.Id == 0 && submittedSize.SizeEN != null && submittedSize.SizeAR != null)
                     {
@@ -569,7 +577,7 @@ namespace ArtStation_Dashboard.Controllers
                 {
                     var existing = existingColors.FirstOrDefault(s => s.NameEN == submittedColor.NameEN
                         && s.NameAR == submittedColor.NameAR && s.HexCode == submittedColor.Hex);
-                    if(existing == null)
+                    if (existing == null)
                     {
                         var newColor = new ProductColor
                         {
@@ -580,7 +588,7 @@ namespace ArtStation_Dashboard.Controllers
                         };
                         _unitOfWork.Repository<ProductColor>().Add(newColor);
                     }
-                    
+
                 }
                 var toDelete = existingColors
                     .Where(s => !colors.Any(
@@ -607,9 +615,9 @@ namespace ArtStation_Dashboard.Controllers
                     {
                         // Update existing
                         var existing = existingFlavours.FirstOrDefault(s => s.Id == submittedFlavour.Id);
-                        if (existing != null )
+                        if (existing != null)
                         {
-                            if(existing.NameAR != submittedFlavour.FlavourAR || existing.NameEN != submittedFlavour.FlavourEN)
+                            if (existing.NameAR != submittedFlavour.FlavourAR || existing.NameEN != submittedFlavour.FlavourEN)
                             {
                                 existing.NameAR = submittedFlavour.FlavourAR;
                                 existing.NameEN = submittedFlavour.FlavourEN;
@@ -646,7 +654,7 @@ namespace ArtStation_Dashboard.Controllers
                 }
             }
         }
-        private async Task HandleSale(SaleVM sale , Product product)
+        private async Task HandleSale(SaleVM sale, Product product)
         {
             if (sale.Id == null && sale.Discount > 0)
             {
@@ -681,7 +689,7 @@ namespace ArtStation_Dashboard.Controllers
         }
         private async Task HandleImages(List<IFormFile> files, Product product, List<string> deletedPhotos)
         {
-           await AddFiles(files, product);
+            await AddFiles(files, product);
 
             if (deletedPhotos.Any())
             {
@@ -690,7 +698,7 @@ namespace ArtStation_Dashboard.Controllers
                 {
                     if (deletedPhotos.Contains(photo.Photo))
                     {
-                        FileSettings.DeleteFile("Products",photo.Photo,_environment.WebRootPath);
+                        FileSettings.DeleteFile("Products", photo.Photo, _environment.WebRootPath);
                         _unitOfWork.Repository<ProductPhotos>().Delete(photo);
                     }
                 }
@@ -698,7 +706,7 @@ namespace ArtStation_Dashboard.Controllers
         }
         private async Task HandleForWhom(List<string> SelectedForWhoms, Product product)
         {
-            var existingForWhoms = await _forwhomRepository.GetProductTypes(product.Id); 
+            var existingForWhoms = await _forwhomRepository.GetProductTypes(product.Id);
 
             var submittedSet = new HashSet<string>(SelectedForWhoms);
             foreach (var existing in existingForWhoms)
@@ -726,6 +734,16 @@ namespace ArtStation_Dashboard.Controllers
                     _unitOfWork.Repository<ProductForWhom>().Add(newForWhom);
                 }
             }
+        }
+        #endregion
+        [Authorize]
+        public async Task<IActionResult> Create()
+        {
+            string language = GetLanguage();
+            ViewData["Language"] = language;
+            var productCreation = new ProductCreation();
+            productCreation = await FillForm(language, productCreation);
+            return View(productCreation);
         }
 
         [HttpPost]
@@ -785,7 +803,7 @@ namespace ArtStation_Dashboard.Controllers
         }
 
 
-        [Authorize(Roles = ("بائع,Admin"))]
+        [Authorize(Roles = ("Trader,Admin"))]
         public async Task<IActionResult> Edit(int id)
         {
             var language = GetLanguage();
@@ -853,14 +871,24 @@ namespace ArtStation_Dashboard.Controllers
         [ValidateAntiForgeryToken]
         [RequestFormLimits(ValueCountLimit = int.MaxValue)]
         [DisableRequestSizeLimit]
+        [Authorize(Roles = ("Trader,Admin"))]
         public async Task<IActionResult> Edit(ProductCreation productCreation)
         {
                 var language = GetLanguage();
+            var Images = await _photoRepository.GetProductTypes(productCreation.Id);
             try
             {
                 ModelState.Remove("Sale");
                 if (!ModelState.IsValid)
                 {
+                    if (Images.Any())
+                    {
+                        productCreation.Images = Images.Select(p => p.Photo).ToList();
+                    }
+                    else
+                    {
+                        productCreation.Images = new List<string>();
+                    }
                     productCreation = await FillForm(language, productCreation);
                     return View(productCreation);
                 }
@@ -895,18 +923,28 @@ namespace ArtStation_Dashboard.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("CategoryId", "ادخل اسم القسم من فضلك");
-                ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
+                ModelState.AddModelError("UserId", ("ادخل اسم الشركه من فضلك","Please select company").Localize(language));
 
+            }
+            if (Images.Any())
+            {
+                productCreation.Images = Images.Select(p => p.Photo).ToList();
+            }
+            else
+            {
+                productCreation.Images = new List<string>();
             }
             productCreation = await FillForm(language, productCreation);
             return View(productCreation);
         }
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             return await Details(id);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Delete(ProductDetailsVM productDetails)
         {
             var language = GetLanguage();
