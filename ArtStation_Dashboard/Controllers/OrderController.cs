@@ -2,6 +2,7 @@
 using ArtStation.Core.Entities.Order;
 using ArtStation.Core.Helper.Order;
 using ArtStation.Core.Services.Contract;
+using ArtStation_Dashboard.Helper;
 using ArtStation_Dashboard.Resource;
 using ArtStation_Dashboard.ViewModels.Order;
 using ArtStation_Dashboard.ViewModels.User;
@@ -100,6 +101,25 @@ namespace ArtStation_Dashboard.Controllers
                 return RedirectToAction("Details", new { id = orderid });
             }
         }
-    }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateStatus(int orderId, string status)
+        {
+            var order = await _unitOfWork.Repository<Order>().GetByIdAsync(orderId);
+            if (order == null)
+                return Json(new { success = false, message = "Not found" });
+
+            if (!Enum.TryParse<OrderStatus>(status, true, out var newStatus))
+                return Json(new { success = false, message = "Invalid status value" });
+
+            order.Status = newStatus;
+            await _unitOfWork.Complet();
+            return Json(new { success = true, status = newStatus.ToString() });
+        }
+
 
     }
+
+}

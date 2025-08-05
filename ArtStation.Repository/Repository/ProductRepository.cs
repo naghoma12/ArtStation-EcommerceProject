@@ -241,7 +241,7 @@ namespace ArtStation.Repository.Repository
         public async Task<ProductsOFSpecificOrder> GetProductsOfSpecificOrder(int productId, int sizeId, int? flavourId, int? ColorId, string lang = "en")
         {
             var product = await _context.Products
-               .Where(p => p.IsActive && !p.IsDeleted && p.Id == productId)
+               .Where(p => p.Id == productId)
                .Include(p => p.Sales)
                .Include(p => p.ProductSizes)
                .Include(p => p.ProductColors)
