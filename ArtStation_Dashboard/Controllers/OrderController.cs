@@ -105,6 +105,7 @@ namespace ArtStation_Dashboard.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(int orderId, string status)
         {
             var order = await _unitOfWork.Repository<Order>().GetByIdAsync(orderId);

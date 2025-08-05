@@ -1,23 +1,16 @@
 ﻿@using ArtStation_Dashboard.ViewModels.Order
 @model IEnumerable<OrderVM>
-
 @{
-    var culture = System.Globalization.CultureInfo.CurrentUICulture;
-    var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
-    var lang = culture.Name;
-    // helper to map status to Bootstrap button classes
+    var lang = System.Globalization.CultureInfo.CurrentUICulture.Name;
     Func<string, string> statusClass = s => s switch
     {
         "Delivered" => "btn btn-success",
         "Shipped" => "btn btn-info",
         _ => "btn btn-secondary"
     };
-    
 }
-
-
-<div class="table-responsive p-0">
-    <table class="table align-items-center mb-0">
+<div class="table-responsive">
+    <table class="table">
         <thead>
             <tr>
                 <th class="text-center  text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("رقم الطلب", "Order Number").Localize(lang))</th>
@@ -30,51 +23,51 @@
                 <th class="text-secondary opacity-7"></th>
             </tr>
         </thead>
+        <!-- headers omitted for brevity -->
         <tbody>
-            @if (Model != null)
+               @if (Model != null)
             {
-                @foreach (var item in Model)
-                {
-                    <tr data-order-id="@item.OrderNum">
-
+            @foreach (var item in Model)
+            {
+                <tr data-order-id="@item.OrderNum">
+                    <!-- other cells -->
                         <td class="align-middle text-center text-sm">
-                            <p class="text-xs font-weight-bold mb-0">@(@item.OrderNum + 1000)</p>
+                            <span>@(item.OrderNum + 1000)</span>
+
                         </td>
                         <td class="align-middle text-center text-sm">
-                            <p class="text-xs font-weight-bold mb-0">@item.CustomerPhone</p>
+                            <span class="">@item.CustomerPhone</span>
                         </td>
-
-                        <td class="align-middle text-center">
-                            <span class="text-secondary text-xs font-weight-bold">@item.OrderDate</span>
+                        <td class="align-middle text-center text-sm">
+                            <span class="">@item.OrderDate</span>
                         </td>
-                       
-                       
-                        <td id="status-cell-@item.OrderNum">
-                            <button id="statusDropdown_@item.OrderNum"
-                                    class="@statusClass(item.Status) dropdown-toggle"
-                                    type="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                        @item.Status
-                            </button>
+                    <td id="status-cell-@item.OrderNum" class="text-center">
+                        <button id="statusDropdown_@item.OrderNum"
+                                class="@statusClass(item.Status) dropdown-toggle"
+                                type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            @item.Status
+                        </button>
                             <ul class="dropdown-menu" aria-labelledby="statusDropdown_@item.OrderNum">
-                                        @foreach (var st in new[] { "Placed", "Shipped", "Delivered" })
-                                        {
+                                @foreach (var st in new[] {
+                        ("تم التسجيل", "Placed"),
+                        ("تم الشحن", "Shipped"),
+                        ("تم التوصيل", "Delivered")
+                        })
+                                {
+                                    var (ar, en) = st;
+                                    var statusKey = en; // data-status should remain English for server parsing
                                     <li>
-                                        <a class="dropdown-item status-change @(item.Status == st ? "disabled fw-bold" : "")"
+                                        <a class="dropdown-item status-change @(item.Status == statusKey ? "disabled fw-bold" : "")"
                                            href="#"
-                                           data-status="@st">
-                                                    @st
+                                           data-status="@statusKey">
+                                            @((ar, en).Localize(lang))
                                         </a>
                                     </li>
-                                        }
+                                }
                             </ul>
-                        </td>
-                       
-                      
-                        @* <td class="align-middle text-center text-sm"> *@
-                        @*     <span class="badge badge-sm bg-gradient-success">@item.Status</span> *@
-                        @* </td> *@
+
+                    </td>
                         <td class="align-middle text-center text-sm">
                             <span class="badge badge-sm  bg-gradient-info">@item.PaymentStatus</span>
                         </td>
@@ -98,11 +91,12 @@
                                 </ul>
                             </div>
                         </td>
-                    </tr>
-                }
+                </tr>
             }
-
-
+            }
         </tbody>
     </table>
 </div>
+
+
+
