@@ -4,6 +4,32 @@
     var language = ViewData["Language"] as string ?? "en";
     ViewData["Title"] = ("مجموعة التصنيفات" , "Category List").Localize(language);
 }
+<style>
+    .clickable-row:hover {
+        background-color: #f5f5f5;
+    }
+
+    .bulk-action-select {
+        min-width: 180px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        background-color: #fff;
+        color: gray;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+        padding : 10px;
+    }
+
+        .bulk-action-select:focus {
+            border-color: #4e73df; /* Primary color */
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+        .bulk-action-select option {
+            padding: 12px;
+        }
+</style>
 @if (!string.IsNullOrEmpty(TempData["Message"] as string))
 {
     <div class="alert alert-success mt-3 mb-2 text-white">
@@ -12,10 +38,11 @@
 }
 
 <div class="d-flex justify-content-center my-3">
-    <div class="col-md-5">
+    <div class="col-md-4">
         <div class="input-group">
             <input type="text" id="categorySearch"
-                   class="form-control text-center fw-bolder bg-white text-primary"
+                   style="border-radius:8px ; padding-left: 10px;"
+                   class="form-control  bg-white text-secondary"
                    placeholder="@(("ابحث باسم التصنيف", "Search by Category name").Localize(language))" />
         </div>
     </div>
@@ -35,11 +62,125 @@
 </div>
 @section Scripts {
     <script>
+        function bindClickableRows() {
+            const rows = document.querySelectorAll(".clickable-row");
+            rows.forEach(row => {
+                row.addEventListener("click", function (e) {
+                    // Prevent click if the target is a link or a checkbox
+                    if (e.target.closest('a') || e.target.type === 'checkbox') {
+                        return;
+                    }
+
+                    const url = this.getAttribute("data-url");
+                    if (url) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        }
+        function bindSelection(){
+
+               const bulkActionSelect = document.getElementById("bulkAction");
+
+        function updateBulkActions() {
+            const checkboxes = document.querySelectorAll(".select-row");
+            const checked = document.querySelectorAll(".select-row:checked");
+
+            bulkActionSelect.innerHTML = '<option value="">Select Action</option>'; // Reset
+
+            if (checked.length === 1) {
+                bulkActionSelect.innerHTML += `
+                    <option value="edit">Edit</option>
+                    <option value="delete">Delete</option>
+                    <option value="archive">Archive</option>
+                `;
+            }
+            else if (checked.length > 1 && checked.length < checkboxes.length) {
+                bulkActionSelect.innerHTML += `
+                    <option value="delete">Delete</option>
+                    <option value="archive">Archive</option>
+                `;
+            }
+            else if (checked.length === checkboxes.length && checkboxes.length > 0) {
+                bulkActionSelect.innerHTML += `
+                    <option value="deleteAll">Delete All</option>
+                    <option value="archiveAll">Archive All</option>
+                `;
+            }
+        }
+
+        function getSelectedIds() {
+            return Array.from(document.querySelectorAll(".select-row:checked")).map(cb => cb.value);
+        }
+
+        // Update dropdown when selection changes
+        document.addEventListener("change", function(e) {
+            if (e.target.classList.contains("select-row") || e.target.id === "select-all") {
+                updateBulkActions();
+            }
+        });
+
+        // Trigger action immediately when dropdown changes
+        bulkActionSelect.addEventListener("change", function() {
+            const action = this.value;
+            const selectedIds = getSelectedIds();
+
+            if (!action) return; // Do nothing if no action selected
+            if (selectedIds.length === 0) {
+                alert("Please select at least one category.");
+                return;
+            }
+
+            switch(action) {
+                case "edit":
+                    if (selectedIds.length > 1) {
+                        alert("Edit is allowed for only one category.");
+                        return;
+                    }
+                    window.location.href = `/Category/Edit/${selectedIds[0]}`;
+                    break;
+
+                case "delete":
+                case "deleteAll":
+                    if (confirm("Are you sure you want to delete?")) {
+                        console.log("Deleting:", selectedIds);
+                        // Call backend here
+                    }
+                    break;
+
+                case "archive":
+                case "archiveAll":
+                    if (confirm("Are you sure you want to archive?")) {
+                        console.log("Archiving:", selectedIds);
+                        // Call backend here
+                    }
+                    break;
+            }
+
+            // Reset dropdown after action
+            this.value = "";
+        });
+        }
+    
+        function bindSelectAllCheckbox() {
+            const selectAll = document.getElementById("select-all");
+            if (selectAll) {
+                selectAll.addEventListener("change", function () {
+                    const isChecked = this.checked;
+                    document.querySelectorAll(".select-row").forEach(cb => {
+                        cb.checked = isChecked;
+                    });
+                });
+            }
+        }
         function loadCategories(page = 1, searchText = '') {
             fetch(`/Category/FilterCategories?page=${page}&searchText=${encodeURIComponent(searchText)}`)
                 .then(res => res.text())
                 .then(html => {
                     document.getElementById("categoryContainer").innerHTML = html;
+                    bindSelectAllCheckbox(); // re-bind after load
+                    bindClickableRows(); // re-bind row click events
+                    bindSelection();
                 });
         }
 
@@ -63,14 +204,7 @@
                 loadCategories(page, searchText);
             }
         });
-        document.addEventListener("click", function (e) {
-            if (e.target.matches(".ajax-page")) {
-                e.preventDefault();
-                const page = e.target.dataset.page;
-                const searchText = document.getElementById("categorySearch").value;
-                loadCategories(page, searchText);
-            }
-        });
+        
 
     </script>
 }

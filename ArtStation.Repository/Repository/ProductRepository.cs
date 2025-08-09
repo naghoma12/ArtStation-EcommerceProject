@@ -494,5 +494,16 @@ namespace ArtStation.Repository.Repository
                 .Where(x => x.IsDeleted && x.Id == productId)
                 .FirstOrDefaultAsync();
         }
+        public async Task<IEnumerable<Product>> GetProductsByCategoryId(int categoryId)
+        {
+            return await _context.Products
+                .Where(p => p.CategoryId == categoryId && p.IsActive && !p.IsDeleted)
+                .Include(p => p.ProductPhotos)
+                .Include(p => p.ProductSizes)
+                .Include(p => p.Sales)
+                .Include(p => p.Category)
+                .Include(p => p.User)
+                .ToListAsync();
+        }
     }
 }

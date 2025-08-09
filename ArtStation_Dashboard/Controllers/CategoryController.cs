@@ -62,11 +62,11 @@ namespace ArtStation_Dashboard.Controllers
         }
 
         // Get Category By Id --GET
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int id, int page = 1)
         {
             string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName;
             ViewData["Language"] = language;
-            var item = await _categoryRepository.GetCategoryById(language,id,null);
+            var item = await _categoryRepository.GetCategoryWithProducts(language,id,null,page,3);
             if (item == null) return NotFound();
             return View(item);
         }
@@ -77,6 +77,7 @@ namespace ArtStation_Dashboard.Controllers
         {
             string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName;
             ViewData["Language"] = language;
+
             return View();
         }
         //Create New Category --post  Category/Create
@@ -90,7 +91,7 @@ namespace ArtStation_Dashboard.Controllers
                 {
                     if (category.PhotoFile != null)
                     {
-                        category.Image = Guid.NewGuid().ToString() + Path.GetExtension(category.PhotoFile.FileName);
+                        //category.Image = Guid.NewGuid().ToString() + Path.GetExtension(category.PhotoFile.FileName);
                         category.Image = await FileSettings.UploadFile(category.PhotoFile, "Categories", _environment.WebRootPath);
                     }
                     var CatMapped = _mapper.Map<CreatedCategory, Category>(category);
@@ -140,7 +141,7 @@ namespace ArtStation_Dashboard.Controllers
                     if (categoryVM.PhotoFile != null)
                     {
                         FileSettings.DeleteFile("Categories",categoryVM.Image,_environment.WebRootPath);
-                        categoryVM.Image = Guid.NewGuid().ToString() + Path.GetExtension(categoryVM.PhotoFile.FileName);
+                       // categoryVM.Image = Guid.NewGuid().ToString() + Path.GetExtension(categoryVM.PhotoFile.FileName);
                         categoryVM.Image = await FileSettings.UploadFile(categoryVM.PhotoFile, "Categories", _environment.WebRootPath);
                     }
                     var catMapped = _mapper.Map<CategoryVM, Category>(categoryVM);
@@ -203,6 +204,11 @@ namespace ArtStation_Dashboard.Controllers
             }
                return View(categoryVM);
         }
+
+        //public async Task<IActionResult> InActivateCategories()
+        //{
+
+        //}
 
     }
 }

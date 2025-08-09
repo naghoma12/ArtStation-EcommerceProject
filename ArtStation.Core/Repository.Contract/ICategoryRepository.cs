@@ -19,5 +19,7 @@ namespace ArtStation.Core.Repository.Contract
     Expression<Func<Category, bool>> filter = null,
     int page = 1,
     int pageSize = 5);
+        Task<CategoryProductsPagination> GetCategoryWithProducts(string language, int id,
+        int? userId = null, int page = 1, int pageSize = 3);
     }
 }

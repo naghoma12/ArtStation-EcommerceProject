@@ -389,7 +389,7 @@ namespace ArtStation_Dashboard.Controllers
                     {
                         ProductId = product.Id
                     };
-                    productPhoto.Photo = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                    //productPhoto.Photo = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
                     productPhoto.Photo = await FileSettings.UploadFile(image, "Products", _environment.WebRootPath);
                     _unitOfWork.Repository<ProductPhotos>().Add(productPhoto);
                 }

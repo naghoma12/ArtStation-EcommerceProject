@@ -111,5 +111,66 @@ namespace ArtStation.Repository.Repository
                 TotalItems = totalItems
             };
         }
+
+        public async Task<CategoryProductsPagination> GetCategoryWithProducts(string language, int id, int? userId = null, int page = 1, int pageSize = 3)
+        {
+            var categoryData = await _context.Categories
+                .Where(c => c.Id == id && !c.IsDeleted && c.IsActive)
+                .Include(c => c.Products.Where(p => p.IsActive && !p.IsDeleted))
+                    .ThenInclude(p => p.Sales)
+                .Include(c => c.Products)
+                    .ThenInclude(p => p.ProductSizes)
+                .Include(c => c.Products)
+                    .ThenInclude(p => p.ProductPhotos)
+                .Include(c => c.Products)
+                    .ThenInclude(p => p.User)
+                .FirstOrDefaultAsync();
+            if (categoryData == null) return null;
+
+            var allProducts = categoryData.Products.ToList();
+            var totalItems = allProducts.Count;
+
+            var pagedProducts = allProducts
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p => 
+                {
+                    var price = p.ProductSizes.Select(s => s.Price).DefaultIfEmpty(0).Min();
+                    var discountPercent = p.Sales
+                        .Where(s => s.IsActive && !s.IsDeleted && s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now)
+                        .Select(s => (decimal?)s.Discount)
+                        .FirstOrDefault() ?? 0;
+
+                    var discountAmount = price * (discountPercent / 100m);
+                    return new SimpleProductVM
+                    {
+                        Id = p.Id,
+                        Name = language == "ar" ? p.NameAR : p.NameEN,
+                        Brand = language == "ar" ? p.BrandAR : p.BrandEN,
+                        CategoryName = language == "ar" ? p.Category.NameAR : p.Category.NameEN,
+                        Price = price,
+                        PriceAfterSale = price - discountAmount,
+                        Image = p.ProductPhotos.FirstOrDefault()?.Photo,
+                        UserName = p.User?.FullName ?? "Unknown User"
+                    };
+                })
+                .ToList();
+
+            return new CategoryProductsPagination
+            {
+                Id = categoryData.Id,
+                Name = language == "en" ? categoryData.NameEN : categoryData.NameAR,
+                Image = categoryData.Image,
+                ProductsPaged = new PagedResult<SimpleProductVM>
+                {
+                    Items = pagedProducts,
+                    PageNumber = page,
+                    PageSize = pageSize,
+                    TotalItems = totalItems,
+                    TotalPages = (int)Math.Ceiling((double)totalItems / pageSize)
+                }
+            };
+        }
+
     }
 }
