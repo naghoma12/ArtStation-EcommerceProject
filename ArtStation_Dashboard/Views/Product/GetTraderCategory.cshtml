@@ -1,0 +1,107 @@
+﻿@model List<SimpleCategoryDTO>
+@{
+    var language = ViewData["Language"] as string ?? "en";
+}
+
+
+<div class="container my-4">
+    <div class="row justify-content-center g-3">
+        <!-- Search Input -->
+        <div class="col-md-5">
+            <div class="input-group">
+                <span class="input-group-text bg-white text-primary">
+                    <i class="fas fa-search"></i>
+                </span>
+                <input type="text" id="searchInput"
+                       class="form-control text-center fw-bolder bg-white text-primary"
+                       placeholder="@(("ابحث باسم المنتج", "Search by product name").Localize(language))" />
+            </div>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="col-md-4">
+            <select id="categoryFilter"
+                    class="form-select text-center fw-bolder bg-white text-primary">
+                <option value="">@(("تصفية حسب الفئة", "Filter by category").Localize(language))</option>
+                @foreach (var cat in Model)
+                {
+                    <option value="@cat.Id">@cat.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+</div>
+
+
+<div id="productContainer">
+
+    @{
+        var emptyResult = new PagedResult<SimpleProductVM>
+            {
+                Items = new List<SimpleProductVM>(),
+                PageNumber = 1,
+                PageSize = 5,
+                TotalItems = 0
+            };
+        await Html.RenderPartialAsync("PartialView/_Product", emptyResult);
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDisable(productId) {
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: "سيتم إلغاء تفعيل المنتج!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'نعم، قم بإلغاء التفعيل',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/Product/DisableProduct/' + productId;
+                }
+            });
+
+            return false; // prevent default <a> action
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            loadProducts();
+        });
+        function loadProducts(categoryId = '', page = 1, searchText = '') {
+            fetch(`/Product/FilterTraderProducts?categoryId=${categoryId}&page=${page}&searchText=${encodeURIComponent(searchText)}`)
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById("productContainer").innerHTML = html;
+                });
+        }
+
+        document.getElementById("categoryFilter").addEventListener("change", function () {
+            let categoryId = this.value;
+            loadProducts(categoryId);
+        });
+        let debounceTimeout;
+        document.getElementById("searchInput").addEventListener("input", function () {
+            clearTimeout(debounceTimeout);
+            const searchText = this.value;
+            const categoryId = document.getElementById("categoryFilter").value;
+
+            debounceTimeout = setTimeout(() => {
+                loadProducts(categoryId, 1, searchText);
+            }, 300); // wait 300ms after user stops typing
+        });
+        // لو عايزة تدعمي التنقل بين الصفحات عبر AJAX
+        document.addEventListener("click", function (e) {
+            if (e.target.matches(".ajax-page")) {
+                e.preventDefault();
+                const page = e.target.dataset.page;
+                const searchText = document.getElementById("searchInput").value;
+                const categoryId = document.getElementById("categoryFilter").value;
+                loadProducts(categoryId, page, searchText);
+            }
+        });
+    </script>
+}

@@ -15,6 +15,7 @@ namespace ArtStation.Core.Helper
         public List<string> Images { get; set; } = new List<string>();
         public float? AvgRating { get; set; }
         public int ReviewsNumber { get; set; }
+        public int StockCount { get; set; }
 
         public List<ColorsDTO> Colors { get; set; } = new List<ColorsDTO>();
         public List<SizesDTO> Sizes { get; set; } = new List<SizesDTO>();

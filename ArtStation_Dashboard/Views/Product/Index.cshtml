@@ -2,15 +2,52 @@
 @{
     var language = ViewData["Language"] as string ?? "en";
 }
-<div class="d-flex justify-content-center">
-    <div class="col-md-2">
-        <select id="categoryFilter" class="form-select   text-center fw-bolder bg-white text-primary">
-            <option value="">@(("تصفية حسب الفئة", "Filter by category").Localize(language))</option>
-            @foreach (var cat in Model)
-            {
-                <option value="@cat.Id">@cat.Name</option>
-            }
-        </select>
+
+<style>
+    .clickable-row:hover {
+        background-color: #f5f5f5;
+    }
+.filter-products{
+        min-width: 300px;
+        padding: 6px 23px;
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        background-color: #fff;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+        padding: 10px;
+}
+.filter-products:focus{
+     border-color: #4e73df; /* Primary color */
+ box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+</style>
+<div class="container my-4">
+    <div class="row justify-content-center g-3">
+        <!-- Search Input -->
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-text bg-white text-primary " >
+                    <i class="fas fa-search"></i>
+                </span>
+                <input type="text" id="searchInput"
+                       style="border-radius:8px ; padding-left: 10px;"
+                       class="form-control  bg-white text-secondary"
+                       placeholder="@(("ابحث باسم المنتج", "Search by product name").Localize(language))" />
+            </div>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="col-md-4">
+            <select id="categoryFilter"
+                    class="filter-products fw-bolder bg-white text-secondary">
+                <option value="">@(("تصفية حسب الفئة", "Filter by category").Localize(language))</option>
+                @foreach (var cat in Model)
+                {
+                    <option value="@cat.Id">@cat.Name</option>
+                }
+            </select>
+        </div>
     </div>
 </div>
 
@@ -53,8 +90,8 @@
         window.addEventListener("DOMContentLoaded", () => {
             loadProducts();
         });
-        function loadProducts(categoryId = '', page = 1) {
-            fetch(`/Product/FilterProducts?categoryId=${categoryId}&page=${page}`)
+        function loadProducts(categoryId = '', page = 1, searchText = '') {
+            fetch(`/Product/FilterProducts?categoryId=${categoryId}&page=${page}&searchText=${encodeURIComponent(searchText)}`)
                 .then(res => res.text())
                 .then(html => {
                     document.getElementById("productContainer").innerHTML = html;
@@ -65,15 +102,108 @@
             let categoryId = this.value;
             loadProducts(categoryId);
         });
+        let debounceTimeout;
+        document.getElementById("searchInput").addEventListener("input", function () {
+            clearTimeout(debounceTimeout);
+            const searchText = this.value;
+            const categoryId = document.getElementById("categoryFilter").value;
 
+            debounceTimeout = setTimeout(() => {
+                loadProducts(categoryId, 1, searchText);
+            }, 300); // wait 300ms after user stops typing
+        });
         // لو عايزة تدعمي التنقل بين الصفحات عبر AJAX
         document.addEventListener("click", function (e) {
             if (e.target.matches(".ajax-page")) {
                 e.preventDefault();
-                let page = e.target.dataset.page;
-                let categoryId = document.getElementById("categoryFilter").value;
-                loadProducts(categoryId, page);
+                const page = e.target.dataset.page;
+                const searchText = document.getElementById("searchInput").value;
+                const categoryId = document.getElementById("categoryFilter").value;
+                loadProducts(categoryId, page, searchText);
             }
         });
+           function bindSelection(){
+
+               const bulkActionSelect = document.getElementById("bulkAction");
+
+        function updateBulkActions() {
+            const checkboxes = document.querySelectorAll(".select-row");
+            const checked = document.querySelectorAll(".select-row:checked");
+
+            bulkActionSelect.innerHTML = '<option value="">Select Action</option>'; // Reset
+
+            if (checked.length === 1) {
+                bulkActionSelect.innerHTML += `
+                    <option value="edit">Edit</option>
+                    <option value="delete">Delete</option>
+                    <option value="details">Details</option>
+                `;
+            }
+            else if (checked.length > 1 && checked.length < checkboxes.length) {
+                bulkActionSelect.innerHTML += `
+                    <option value="delete">Delete</option>
+                    <option value="archive">Archive</option>
+                `;
+            }
+            else if (checked.length === checkboxes.length && checkboxes.length > 0) {
+                bulkActionSelect.innerHTML += `
+                    <option value="deleteAll">Delete All</option>
+                    <option value="archiveAll">Archive All</option>
+                `;
+            }
+        }
+
+        function getSelectedIds() {
+            return Array.from(document.querySelectorAll(".select-row:checked")).map(cb => cb.value);
+        }
+
+        // Update dropdown when selection changes
+        document.addEventListener("change", function(e) {
+            if (e.target.classList.contains("select-row") || e.target.id === "select-all") {
+                updateBulkActions();
+            }
+        });
+
+        // Trigger action immediately when dropdown changes
+        bulkActionSelect.addEventListener("change", function() {
+            const action = this.value;
+            const selectedIds = getSelectedIds();
+
+            if (!action) return; // Do nothing if no action selected
+            if (selectedIds.length === 0) {
+                alert("Please select at least one category.");
+                return;
+            }
+
+            switch(action) {
+                case "edit":
+                    if (selectedIds.length > 1) {
+                        alert("Edit is allowed for only one category.");
+                        return;
+                    }
+                    window.location.href = `/Category/Edit/${selectedIds[0]}`;
+                    break;
+
+                case "delete":
+                case "deleteAll":
+                    if (confirm("Are you sure you want to delete?")) {
+                        console.log("Deleting:", selectedIds);
+                        // Call backend here
+                    }
+                    break;
+
+                case "archive":
+                case "archiveAll":
+                    if (confirm("Are you sure you want to archive?")) {
+                        console.log("Archiving:", selectedIds);
+                        // Call backend here
+                    }
+                    break;
+            }
+
+            // Reset dropdown after action
+            this.value = "";
+        });
+        }
     </script>
 }

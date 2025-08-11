@@ -9,7 +9,6 @@ using ArtStation.Repository.Data;
 using Microsoft.EntityFrameworkCore;
 using ArtStation_Dashboard.ViewModels;
 using System.Linq.Expressions;
-using Twilio.TwiML.Voice;
 
 namespace ArtStation.Repository
 {
@@ -49,9 +48,7 @@ namespace ArtStation.Repository
         public async Task<T> GetByIdAsync(int id)
         {
             return await _context.Set<T>()
-            .Where(z => z.IsDeleted == false 
-          
-            && z.Id == id).FirstOrDefaultAsync();
+            .Where(z =>z.Id == id).FirstOrDefaultAsync();
         }
 
         public void Add(T entity)
@@ -81,6 +78,9 @@ namespace ArtStation.Repository
             return await _context.Set<T>().FirstOrDefaultAsync(predicate);
         }
 
-        
+        public async Task UpdateRange(IEnumerable<T> entities)
+        {
+            _context.UpdateRange(entities);
+        }
     }
 }

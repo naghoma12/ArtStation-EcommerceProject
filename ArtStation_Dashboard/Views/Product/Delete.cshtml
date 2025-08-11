@@ -9,9 +9,18 @@
     <partial name="PartialView/_DetailsDeleteView" />
 
 <div class="form-group ">
-    <a asp-action="Index" class="btn btn-light ms-2">
-        @(language == "en" ? "Back to List" : "العودة إلى القائمة")
-    </a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Index" class="btn btn-light ms-2">
+                @(language == "en" ? "Back to List" : "العودة إلى القائمة")
+            </a>
+        }
+        else
+        {
+            <a asp-action="GetTraderCategory" class="btn btn-light ms-2">
+                @(language == "en" ? "Back to My Products" : "العودة إلى منتجاتي")
+            </a>
+        }
     <input type="submit" value="@(("حذف المنتج","Delete Product").Localize(language))" class="btn btn-danger" />
 </div>
 </form>

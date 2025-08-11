@@ -34,6 +34,7 @@ namespace ArtStation.Core.Helper
                 Discount = discount,
                 IsSale = discount > 0,
                 PriceAfterSale = priceAfterSale,
+                StockCount = p.StockCount,
                 Brand = language == "en" ? p.BrandEN : p.BrandAR,
                 ForWhom = p.ForWhoms.Select(f => new ForWhomDTO
                 {

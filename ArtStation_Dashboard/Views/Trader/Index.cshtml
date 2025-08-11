@@ -47,6 +47,10 @@
 </div>
 
 <div class="container-fluid py-4">
+    <a class="btn btn-icon btn-3 btn-primary" a asp-action="AddTrader" asp-controller="Trader" type="button">
+        <span class="btn-inner--icon"><i class="fa-solid fa-plus"></i></span>
+        <span class="">@(("أضف حساب", "Add Account").Localize(lang))</span>
+    </a>
 
    
     <form id="antiForgeryForm" method="post" style="display:none;">

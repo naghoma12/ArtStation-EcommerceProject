@@ -186,10 +186,6 @@ namespace ArtStation.Controllers
                 //        message = ControllerMessages.InvalidVerificationCode
                 //    });
                 //}
-
-
-
-
             }
 
         [HttpPost("sendLoginCode")]

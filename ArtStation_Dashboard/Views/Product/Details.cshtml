@@ -15,7 +15,18 @@
 }
 <partial name="PartialView/_DetailsDeleteView" />
 <div class="mt-1 ms-3">
-    <a asp-action="Index" class="btn btn-outline-primary">@backToList</a>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Index" class="btn btn-light text-primary ms-2">
+            @(language == "en" ? "Back to List" : "العودة إلى القائمة")
+        </a>
+    }
+    else
+    {
+        <a asp-action="GetTraderCategory" class="btn btn-light text-primary ms-2">
+            @(language == "en" ? "Back to My Products" : "العودة إلى منتجاتي")
+        </a>
+    }
     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
         @(("تعديل المنتج", "Edit Product").Localize(language)) </a>
 </div>

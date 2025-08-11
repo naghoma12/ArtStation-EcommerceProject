@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Localization;
 using ArtStation_Dashboard.Resource;
 using Microsoft.AspNetCore.Authorization;
 using ArtStation.Core.Repository.Contract;
+using ArtStation.Core.Helper;
+using System.Linq.Expressions;
 
 namespace ArtStation_Dashboard.Controllers
 {
@@ -28,28 +30,44 @@ namespace ArtStation_Dashboard.Controllers
             _environment = webHostEnvironment;
            _categoryRepository = categoryRepository;
         }
-        // Get All Categories --GET
-        public async Task<IActionResult> Index(int page = 1 , int pageSize = 5)
+
+        public async Task<IActionResult> FilterCategories(string searchText, int page = 1, int pageSize = 5)
         {
             try
             {
-                string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName;
+                string language = HttpContext.Features.Get<IRequestCultureFeature>()?
+                    .RequestCulture.Culture.TwoLetterISOLanguageName;
                 ViewData["Language"] = language;
-                var List = await _unitOfWork.Repository<Category>().GetAllAsync(page , pageSize);
-                return View(List);
+
+                Expression<Func<Category, bool>> filter = null;
+
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    filter = c => c.NameAR.Contains(searchText) || c.NameEN.ToLower().Contains(searchText.ToLower()) && c.IsActive && !c.IsDeleted;
+                }
+                filter = filter ?? (c => c.IsActive && !c.IsDeleted);
+                var result = await _categoryRepository.GetFilteredAsync(filter, page, pageSize);
+
+                return PartialView("_Category",result);
             }
             catch (Exception ex)
             {
-                return View(ex.Message.ToString());
+                return View("Error", ex.Message);
             }
+        }
+        // Get All Categories --GET
+        public IActionResult Index()
+        {
+            return View();  
         }
 
         // Get Category By Id --GET
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int id, int page = 1)
         {
             string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName;
             ViewData["Language"] = language;
-            var item = await _categoryRepository.GetCategoryById(language,id,null);
+            TempData["CategoryId"] = id;
+            var item = await _categoryRepository.GetCategoryWithProducts(language,id,null,page,3);
             if (item == null) return NotFound();
             return View(item);
         }
@@ -60,6 +78,7 @@ namespace ArtStation_Dashboard.Controllers
         {
             string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName;
             ViewData["Language"] = language;
+
             return View();
         }
         //Create New Category --post  Category/Create
@@ -73,8 +92,8 @@ namespace ArtStation_Dashboard.Controllers
                 {
                     if (category.PhotoFile != null)
                     {
-                        category.Image = Guid.NewGuid().ToString() + Path.GetExtension(category.PhotoFile.FileName);
-                        await FileSettings.UploadFile(category.PhotoFile, "Categories", _environment.WebRootPath);
+                        //category.Image = Guid.NewGuid().ToString() + Path.GetExtension(category.PhotoFile.FileName);
+                        category.Image = await FileSettings.UploadFile(category.PhotoFile, "Categories", _environment.WebRootPath);
                     }
                     var CatMapped = _mapper.Map<CreatedCategory, Category>(category);
                     _unitOfWork.Repository<Category>().Add(CatMapped);
@@ -102,7 +121,13 @@ namespace ArtStation_Dashboard.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            return await Details(id);
+            var category = await _unitOfWork.Repository<Category>().GetByIdAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            var catMapped = _mapper.Map<Category, CategoryVM>(category);
+            return View(catMapped);
         }
 
         //Edit category --post Category/Edit/id
@@ -117,7 +142,7 @@ namespace ArtStation_Dashboard.Controllers
                     if (categoryVM.PhotoFile != null)
                     {
                         FileSettings.DeleteFile("Categories",categoryVM.Image,_environment.WebRootPath);
-                        categoryVM.Image = Guid.NewGuid().ToString() + Path.GetExtension(categoryVM.PhotoFile.FileName);
+                       // categoryVM.Image = Guid.NewGuid().ToString() + Path.GetExtension(categoryVM.PhotoFile.FileName);
                         categoryVM.Image = await FileSettings.UploadFile(categoryVM.PhotoFile, "Categories", _environment.WebRootPath);
                     }
                     var catMapped = _mapper.Map<CategoryVM, Category>(categoryVM);
@@ -145,7 +170,13 @@ namespace ArtStation_Dashboard.Controllers
         {
             string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
             ViewData["Language"] = language;
-            return await Details(id);
+            var category = await _unitOfWork.Repository<Category>().GetByIdAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            var catMapped = _mapper.Map<Category, CategoryVM>(category);
+            return View(catMapped);
         }
 
         //Delete category --post
@@ -158,9 +189,7 @@ namespace ArtStation_Dashboard.Controllers
             {
                 var  existCategory = await _unitOfWork.Repository<Category>().GetByIdAsync(id);
                 FileSettings.DeleteFile("Categories", existCategory.Image, _environment.WebRootPath);
-                existCategory.IsDeleted = true;
-                existCategory.IsActive = false;
-                _unitOfWork.Repository<Category>().Update(existCategory);
+                _unitOfWork.Repository<Category>().Delete(existCategory);
                 var count = await _unitOfWork.Complet();
                 if (count > 0)
                 {
@@ -173,6 +202,25 @@ namespace ArtStation_Dashboard.Controllers
                 TempData["Message"] = ("فشلت عملية الحذف","The deletion operation failed").Localize(language);
             }
                return View(categoryVM);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BulkDelete([FromBody] List<int> ids)
+        {
+            if (ids == null || !ids.Any())
+                return BadRequest();
+
+            foreach (var id in ids)
+            {
+                var category = await _unitOfWork.Repository<Category>().GetByIdAsync(id);
+                if (category != null)
+                {
+                    FileSettings.DeleteFile("Categories", category.Image, _environment.WebRootPath);
+                    _unitOfWork.Repository<Category>().Delete(category);
+                }
+            }
+            await _unitOfWork.Complet();
+            return Ok();
         }
 
     }

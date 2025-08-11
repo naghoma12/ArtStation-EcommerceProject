@@ -3,67 +3,67 @@
     var language = ViewData["Language"] as string ?? "en";
 }
 
-<div asp-validation-summary="All" class="text-danger" hidden></div>
+<div asp-validation-summary="All" class="text-danger" ></div>
 <input asp-for="Id" type="hidden" />
 <input asp-for="SellersCount" type="hidden" />
 <div class="row  ">
 
     <br />
     <div class="col-md-6">
-        <div class="input-group input-group-static my-3">
-            <label class="form-label">@(("اسم المنتج باللغه العربية", "Product Name In Arabic").Localize(language))</label>
+        <div class="input-group input-group-static mb-4">
+            <label>@(("اسم المنتج باللغه العربية", "Product Name In Arabic").Localize(language))</label>
             <input asp-for="NameAR" type="text" class="form-control">
+        </div>
             <span asp-validation-for="NameAR" class="text-danger"></span>
-        </div>
     </div>
     <div class="col-md-6">
-        <div class="input-group input-group-static my-3">
-            <label class="form-label">@(("اسم المنتج باللغه الإنجليزية", "Product Name In English").Localize(language))</label>
+        <div class="input-group input-group-static mb-4">
+            <label>@(("اسم المنتج باللغه الإنجليزية", "Product Name In English").Localize(language))</label>
             <input asp-for="NameEN" type="text" class="form-control">
+        </div>
             <span asp-validation-for="NameEN" class="text-danger"></span>
-        </div>
     </div>
     <div class="col-md-6">
-        <div class="input-group input-group-static my-3">
-            <label class="form-label">@(("اسم الماركة باللغه العربية", "Brand Name In Arabic").Localize(language))</label>
+        <div class="input-group input-group-static mb-4">
+            <label >@(("اسم الماركة باللغه العربية", "Brand Name In Arabic").Localize(language))</label>
             <input asp-for="BrandAR" type="text" class="form-control">
+        </div>
             <span asp-validation-for="BrandAR" class="text-danger"></span>
-        </div>
     </div>
     <div class="col-md-6">
-        <div class="input-group input-group-static my-3">
-            <label class="form-label">@(("اسم الماركة باللغه الإنجليزية", "Brand Name In English").Localize(language))</label>
+        <div class="input-group input-group-static mb-4">
+            <label >@(("اسم الماركة باللغه الإنجليزية", "Brand Name In English").Localize(language))</label>
             <input asp-for="BrandEN" type="text" class="form-control">
+        </div>
             <span asp-validation-for="BrandEN" class="text-danger"></span>
-        </div>
     </div>
     <div class="col-md-6">
-        <div class="input-group input-group-static my-3">
-            <label class="form-label">@(("تفاصيل الشحن باللغه العربية", "Shipping Details In Arabic").Localize(language))</label>
+        <div class="input-group input-group-static mb-4">
+            <label >@(("تفاصيل الشحن باللغه العربية", "Shipping Details In Arabic").Localize(language))</label>
             <input asp-for="ShippingDetailsAR" type="text" class="form-control">
+        </div>
             <span asp-validation-for="ShippingDetailsAR" class="text-danger"></span>
-        </div>
     </div>
     <div class="col-md-6">
-        <div class="input-group input-group-static my-3">
-            <label class="form-label">@(("تفاصيل الشحن باللغه الإنجليزية", "Shipping Details In English").Localize(language))</label>
+        <div class="input-group input-group-static mb-4">
+            <label >@(("تفاصيل الشحن باللغه الإنجليزية", "Shipping Details In English").Localize(language))</label>
             <input asp-for="ShippingDetailsEN" type="text" class="form-control">
+        </div>
             <span asp-validation-for="ShippingDetailsEN" class="text-danger"></span>
-        </div>
     </div>
     <div class="col-md-6">
-        <div class="input-group input-group-static my-3">
-            <label class="form-label">@(("مدة التسليم باللغه العربية", "Delivery duration In Arabic").Localize(language))</label>
+        <div class="input-group input-group-static ">
+            <label>@(("مدة التسليم باللغه العربية", "Delivery duration In Arabic").Localize(language))</label>
             <input asp-for="DeliveredOnAR" type="text" class="form-control">
-            <span asp-validation-for="DeliveredOnAR" class="text-danger"></span>
         </div>
+            <span asp-validation-for="DeliveredOnAR" class="text-danger"></span>
     </div>
     <div class="col-md-6">
-        <div class="input-group input-group-static my-3 position-relative">
-            <label class="form-label">@(("مدة التسليم باللغه الإنجليزية", "Delivery duration In English").Localize(language))</label>
+        <div class="input-group input-group-static mb-4 position-relative">
+            <label >@(("مدة التسليم باللغه الإنجليزية", "Delivery duration In English").Localize(language))</label>
             <input asp-for="DeliveredOnEN" type="text" class="form-control">
-            <span asp-validation-for="DeliveredOnEN" class="text-danger"></span>
         </div>
+            <span asp-validation-for="DeliveredOnEN" class="text-danger"></span>
     </div>
     <div class="col-md-6">
         <label class="form-label">@(("الوصف باللغه العربية", "Description In Arabic").Localize(language))</label>
@@ -80,16 +80,20 @@
         </div>
     </div>
     <div class="col-md-6">
-        <div class="input-group input-group-static my-3">
+        <div class="input-group input-group-static mb-4">
+            <label >@(("التصنيف", "Category").Localize(language))</label>
             <select asp-for="CategoryId" class="form-control" class="form-select  form-select-lg mb-3" aria-label="Large select example" asp-items="@(new SelectList(Model.Categories,"Id","Name"))">
-                <option value="0" class="ps-2">@(("اختر اسم التصنيف", "Choose Category Name").Localize(language))</option>
-            </select>
+                    <option value="0" class="ps-2">@(("اختر اسم التصنيف","Choose Category Name").Localize(language))</option>
+                </select>
         </div>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+
     </div>
     @if (User.IsInRole("Admin"))
     {
         <div class="col-md-6">
-            <div class="input-group input-group-static my-3">
+            <div class="input-group input-group-static mb-4">
+                <label>@(("الشركه", "Company").Localize(language))</label>
                 <select asp-for="UserId" class="form-control" class="form-select  form-select-lg mb-3" aria-label="Large select example" asp-items="@(new SelectList(Model.Traders,"Id","FullName"))">
                     <option value="0">@(("اختر اسم التاجر", "Choose Trader Name").Localize(language))</option>
                 </select>
@@ -99,8 +103,8 @@
     else
     {
         <div class="col-md-6">
-            <div class="input-group input-group-static my-3">
-                <label class="form-label">@(("اسم التاجر", "Trader Name").Localize(language))</label>
+            <div class="input-group input-group-static mb-4">
+                <label>@(("اسم التاجر", "Trader Name").Localize(language))</label>
                 <input asp-for="UserId" type="hidden" class="form-control" readonly>
                 <input asp-for="TraderName" type="text" class="form-control" readonly>
             </div>

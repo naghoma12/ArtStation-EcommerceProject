@@ -9,9 +9,10 @@ namespace ArtStation.Core.Helper
 {
     public class ProductWithPriceDto
     {
-        public Product Product { get; set; }
+        public Product product { get; set; }
         public decimal Price { get; set; }
         public decimal PriceAfterSale { get; set; }
         public int UserId { get; set; }
+
     }
 }

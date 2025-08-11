@@ -141,6 +141,9 @@
   <data name="RequiredField" xml:space="preserve">
     <value />
   </data>
+  <data name="CategoryRequired" xml:space="preserve">
+    <value />
+  </data>
   <data name="AddBannerSucessfully" xml:space="preserve">
     <value />
   </data>

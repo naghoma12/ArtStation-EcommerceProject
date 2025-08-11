@@ -15,9 +15,18 @@
       
         <div class="form-group mt-4">
             <input type="submit" value="@(("إضافة","Add").Localize(language))" class="btn btn-primary" />
-            <a asp-action="Index" class="btn btn-light ms-2">
-                @(language == "en" ? "Back to List" : "العودة إلى القائمة")
-            </a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Index" class="btn btn-light ms-2">
+                    @(language == "en" ? "Back to List" : "العودة إلى القائمة")
+                </a>
+            }
+            else
+            {
+                <a asp-action="GetTraderCategory" class="btn btn-light ms-2">
+                    @(language == "en" ? "Back to My Products" : "العودة إلى منتجاتي")
+                </a>
+            }
         </div>
     </form>
 

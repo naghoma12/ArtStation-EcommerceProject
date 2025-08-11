@@ -1,0 +1,98 @@
+﻿@model PagedResult<Category>
+
+@{
+    var language = ViewData["Language"] as string ?? "en";
+}
+
+<div class="container-fluid py-4">
+        <a asp-action="Create" asp-controller="Category" class="btn btn-icon btn-3 btn-primary">
+            <i class="fa-solid fa-plus"></i>
+            @(("أضف تصنيف", "Add Category").Localize(language))
+        </a>
+
+ 
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 pe-3">
+                        <h6 class="text-white text-capitalize ps-3">@(("جدول التصنيفات", "Category Table").Localize(language))</h6>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <!-- Select All Checkbox -->
+                                   
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                                        @(("المعرف", "Id").Localize(language))
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                                        @(("اسم التصنيف", "Category Name").Localize(language))
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
+                                        @(("الصورة", "Image").Localize(language))
+                                    </th>
+                                    <th class="text-secondary text-center opacity-7"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var category in Model.Items)
+                                {
+                                 
+                                        <tr class="clickable-row"  data-url="/Category/Details/@category.Id" style="cursor: pointer;">
+                                            
+                                            <td class="align-middle text-center">
+                                                <span class="text-secondary text-xs font-weight-bold">@category.Id</span>
+                                           
+                                            </td>
+                                            <td class="align-middle text-center">
+                                           
+                                                <span class="text-secondary text-xs font-weight-bold">@((category.NameAR, category.NameEN).Localize(language))</span>
+                                           
+                                                </td>
+                                            <td class="align-middle text-center">
+                                                <img src="~/Uploads/Categories/@category.Image" class="avatar avatar-sm border-radius-lg" alt="category">
+                                            </td>
+                                        <td class="align-middle text-center">
+                                        <div class="dropdown">
+                                            <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                @(("العمليات", "Actions").Localize(language))
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <li><a class="dropdown-item" asp-action="Details" asp-controller="Category" asp-route-id="@category.Id">@(("تفاصيل", "Details").Localize(language))</a></li>
+                                                <li><a class="dropdown-item" asp-action="Edit" asp-controller="Category" asp-route-id="@category.Id">@(("تعديل", "Edit").Localize(language))</a></li>
+                                                <li><a class="dropdown-item" asp-action="Delete" asp-controller="Category" asp-route-id="@category.Id">@(("حذف", "Delete").Localize(language))</a></li>
+                                                
+
+                                            </ul>
+                                        </div>
+                                    </td>
+                                        </tr>
+                                    
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <nav>
+            <ul class="pagination pagination-primary justify-content-center">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link ajax-page" asp-action="Index" data-page="@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>

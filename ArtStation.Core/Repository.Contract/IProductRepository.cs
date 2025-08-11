@@ -33,7 +33,6 @@ namespace ArtStation.Core.Repository.Contract
         Task<Product> GetProductAsync(int id);
         Task<IEnumerable<Product>> GetDeletedProducts();
         Task<IEnumerable<Product>> GetInActiveProducts();
-        Task<Product> GetDeletedProduct(int productId);
-        Task<Product> GetInActiveProduct(int productId);
+        
     }
 }

@@ -141,4 +141,7 @@
   <data name="RequiredField" xml:space="preserve">
     <value>This Field Is Required!</value>
   </data>
+  <data name="CategoryRequired" xml:space="preserve">
+    <value>Category Name is required .</value>
+  </data>
 </root>
