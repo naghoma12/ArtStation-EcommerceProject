@@ -94,7 +94,6 @@ namespace ArtStation_Dashboard.Controllers
                     return PartialView("_TraderTablePartial", customers);
                 }
 
-                return View(customers);
             }
             catch (Exception ex)
             {
@@ -102,33 +101,6 @@ namespace ArtStation_Dashboard.Controllers
             }
 
         }
-
-        //public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
-        //{
-        //    var traderUsers = await _userManager.GetUsersInRoleAsync(Roles.Customer);
-
-        //    var totalUsers = traderUsers.Count;
-        //    var totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
-
-        //    var users = traderUsers
-        //        .Skip((page - 1) * pageSize)
-        //        .Take(pageSize)
-        //        .Select(u => new UserViewModel
-        //        {
-        //            Id = u.Id,
-        //            Image = u.Image,
-        //           IsActive=u.IsActive,
-        //            FullName = u.FullName,
-        //            Email = u.Email,
-        //            PhoneNumber = u.PhoneNumber
-        //        }).ToList();
-
-        //    ViewBag.CurrentPage = page;
-        //    ViewBag.TotalPages = totalPages;
-
-        //    return View(users);
-        //}
-
 
 
         //Get : Get User Details
@@ -238,7 +210,6 @@ namespace ArtStation_Dashboard.Controllers
             var trader = await _userManager.FindByIdAsync(id.ToString());
             if (trader == null) return NotFound();
 
-            trader.IsActive = isActive;
             var result = await _userManager.UpdateAsync(trader);
 
             return result.Succeeded ? Ok() : BadRequest(result.Errors);
