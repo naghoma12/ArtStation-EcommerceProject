@@ -83,8 +83,8 @@
         <div class="input-group input-group-static mb-4">
             <label >@(("التصنيف", "Category").Localize(language))</label>
             <select asp-for="CategoryId" class="form-control" class="form-select  form-select-lg mb-3" aria-label="Large select example" asp-items="@(new SelectList(Model.Categories,"Id","Name"))">
-                <option value="0" class="ps-2">@(("اختر اسم التصنيف", "Choose Category Name").Localize(language))</option>
-            </select>
+                    <option value="0" class="ps-2">@(("اختر اسم التصنيف","Choose Category Name").Localize(language))</option>
+                </select>
         </div>
         <span asp-validation-for="CategoryId" class="text-danger"></span>
 

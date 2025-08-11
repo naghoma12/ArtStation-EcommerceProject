@@ -21,6 +21,7 @@
         padding : 10px;
     }
 
+
         .bulk-action-select:focus {
             border-color: #4e73df; /* Primary color */
             box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
@@ -78,116 +79,137 @@
                 });
             });
         }
-        function bindSelection(){
 
-               const bulkActionSelect = document.getElementById("bulkAction");
+        //       function bindSelection(){
 
-        function updateBulkActions() {
-            const checkboxes = document.querySelectorAll(".select-row");
-            const checked = document.querySelectorAll(".select-row:checked");
+        //        const bulkActionSelect = document.getElementById("bulkAction");
 
-            bulkActionSelect.innerHTML = '<option value="">Select Action</option>'; // Reset
+        // function updateBulkActions() {
+        //     const checkboxes = document.querySelectorAll(".select-row");
+        //     const checked = document.querySelectorAll(".select-row:checked");
 
-            if (checked.length === 1) {
-                bulkActionSelect.innerHTML += `
-                    <option value="edit">Edit</option>
-                    <option value="delete">Delete</option>
-                    <option value="archive">Archive</option>
-                `;
-            }
-            else if (checked.length > 1 && checked.length < checkboxes.length) {
-                bulkActionSelect.innerHTML += `
-                    <option value="delete">Delete</option>
-                    <option value="archive">Archive</option>
-                `;
-            }
-            else if (checked.length === checkboxes.length && checkboxes.length > 0) {
-                bulkActionSelect.innerHTML += `
-                    <option value="deleteAll">Delete All</option>
-                    <option value="archiveAll">Archive All</option>
-                `;
-            }
-        }
+        //     bulkActionSelect.innerHTML = '<option value="">Select Action</option>'; // Reset
 
-        function getSelectedIds() {
-            return Array.from(document.querySelectorAll(".select-row:checked")).map(cb => cb.value);
-        }
+        //     if (checked.length === 1) {
+        //         bulkActionSelect.innerHTML +=
+        //             <option value="edit">Edit</option>
+        //             <option value="delete">Delete</option>
+        //             <option value="details">Details</option>
+        //         ;
+        //     }
+        //     else if (checked.length > 1 && checked.length < checkboxes.length) {
+        //         bulkActionSelect.innerHTML +=
+        //             <option value="delete">Delete</option>
+        //         ;
+        //     }
+        //     else if (checked.length === checkboxes.length && checkboxes.length > 0) {
+        //         bulkActionSelect.innerHTML +=
+        //             <option value="deleteAll">Delete All</option>
+        //         ;
+        //     }
+        // }
 
-        // Update dropdown when selection changes
-        document.addEventListener("change", function(e) {
-            if (e.target.classList.contains("select-row") || e.target.id === "select-all") {
-                updateBulkActions();
-            }
-        });
+        // function getSelectedIds() {
+        //     return Array.from(document.querySelectorAll(".select-row:checked")).map(cb => cb.value);
+        // }
 
-        // Trigger action immediately when dropdown changes
-        bulkActionSelect.addEventListener("change", function() {
-            const action = this.value;
-            const selectedIds = getSelectedIds();
-
-            if (!action) return; // Do nothing if no action selected
-            if (selectedIds.length === 0) {
-                alert("Please select at least one category.");
-                return;
-            }
-
-            switch(action) {
-                case "edit":
-                    if (selectedIds.length > 1) {
-                        alert("Edit is allowed for only one category.");
-                        return;
-                    }
-                    window.location.href = `/Category/Edit/${selectedIds[0]}`;
-                    break;
-
-                case "delete":
-                case "deleteAll":
-                    if (confirm("Are you sure you want to delete?")) {
-                        console.log("Deleting:", selectedIds);
-                        // Call backend here
-                    }
-                    break;
-
-                case "archive":
-                case "archiveAll":
-                    if (confirm("Are you sure you want to archive?")) {
-                        console.log("Archiving:", selectedIds);
-                        // Call backend here
-                    }
-                    break;
-            }
-
-            // Reset dropdown after action
-            this.value = "";
-        });
-        }
+        // // Update dropdown when selection changes
+        // document.addEventListener("change", function(e) {
+        //     if (e.target.classList.contains("select-row") || e.target.id === "select-all") {
+        //         updateBulkActions();
+        //     }
+        // });}
     
-        function bindSelectAllCheckbox() {
-            const selectAll = document.getElementById("select-all");
-            if (selectAll) {
-                selectAll.addEventListener("change", function () {
-                    const isChecked = this.checked;
-                    document.querySelectorAll(".select-row").forEach(cb => {
-                        cb.checked = isChecked;
-                    });
-                });
-            }
-        }
+        // function bindSelectAllCheckbox() {
+        //     const selectAll = document.getElementById("select-all");
+        //     if (selectAll) {
+        //         selectAll.addEventListener("change", function () {
+        //             const isChecked = this.checked;
+        //             document.querySelectorAll(".select-row").forEach(cb => {
+        //                 cb.checked = isChecked;
+        //             });
+        //         });
+        //     }
+        // }
         function loadCategories(page = 1, searchText = '') {
             fetch(`/Category/FilterCategories?page=${page}&searchText=${encodeURIComponent(searchText)}`)
                 .then(res => res.text())
                 .then(html => {
                     document.getElementById("categoryContainer").innerHTML = html;
-                    bindSelectAllCheckbox(); // re-bind after load
-                    bindClickableRows(); // re-bind row click events
-                    bindSelection();
+                    // bindSelectAllCheckbox(); // re-bind after load
+                     bindClickableRows(); // re-bind row click events
+                    //bindSelection();
                 });
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            loadCategories();
+                    document.addEventListener("DOMContentLoaded", () => {
+            loadCategories(); // load on page start
+
+            // const bulkActionSelect = document.getElementById("bulkActionSelect");
+            // if (bulkActionSelect) {
+            //     bulkActionSelect.addEventListener("change", handleBulkAction);
+            // }
         });
 
+        // function handleBulkAction() {
+        //     const action = this.value;
+        //     const selectedIds = getSelectedIds();
+
+        //     if (!action) return;
+        //     if (selectedIds.length === 0) {
+        //         alert("Please select at least one category.");
+        //         this.value = "";
+        //         return;
+        //     }
+
+        //     switch (action) {
+        //         case "edit":
+        //             if (selectedIds.length > 1) {
+        //                 alert("Edit is allowed for only one category.");
+        //                 break;
+        //             }
+        //             window.location.href = `/Category/Edit/${selectedIds[0]}`;
+        //             break;
+
+        //         case "details":
+        //             if (selectedIds.length > 1) {
+        //                 alert("Details is allowed for only one category.");
+        //                 break;
+        //             }
+        //             window.location.href = `/Category/Details/${selectedIds[0]}`;
+        //             break;
+
+        //         case "delete":
+        //             if (selectedIds.length === 1) {
+        //                 window.location.href = `/Category/Delete/${selectedIds[0]}`;
+        //             } else {
+        //                 if (confirm("Are you sure you want to delete selected categories?")) {
+        //                     fetch(`/Category/BulkDelete`, {
+        //                         method: "POST",
+        //                         headers: {
+        //                             "Content-Type": "application/json",
+        //                             "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+        //                         },
+        //                         body: JSON.stringify(selectedIds)
+        //                     }).then(res => res.ok ? location.reload() : alert("Failed to delete categories."));
+        //                 }
+        //             }
+        //             break;
+
+        //         case "deleteAll":
+        //             if (confirm("Are you sure you want to delete ALL categories?")) {
+        //                 fetch(`/Category/BulkDeleteAll`, {
+        //                     method: "POST",
+        //                     headers: {
+        //                         "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+        //                     }
+        //                 }).then(res => res.ok ? location.reload() : alert("Failed to delete all categories."));
+        //             }
+        //             break;
+        //     }
+
+        //     this.value = "";
+        // }
         document.getElementById("categorySearch").addEventListener("input", function () {
             clearTimeout(window.debounceTimeout);
             const search = this.value;

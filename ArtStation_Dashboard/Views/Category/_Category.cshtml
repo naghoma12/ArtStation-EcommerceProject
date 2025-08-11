@@ -5,20 +5,12 @@
 }
 
 <div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
         <a asp-action="Create" asp-controller="Category" class="btn btn-icon btn-3 btn-primary">
             <i class="fa-solid fa-plus"></i>
             @(("أضف تصنيف", "Add Category").Localize(language))
         </a>
 
-        <div class="input-group w-auto">
-            <select id="bulkAction" class="bulk-action-select">
-                <option value="">@(("اختر الإجراء", "Select Action").Localize(language))</option>
-            </select>
-        </div>
-    </div>
-    </div>
-
+ 
 
     <div class="row">
         <div class="col-12">
@@ -34,21 +26,17 @@
                             <thead>
                                 <tr>
                                     <!-- Select All Checkbox -->
-                                    <th class="text-center">
-                                        <input type="checkbox" id="select-all" />
-                                    </th>
+                                   
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
                                         @(("المعرف", "Id").Localize(language))
                                     </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
                                         @(("اسم التصنيف", "Category Name").Localize(language))
                                     </th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">
                                         @(("الصورة", "Image").Localize(language))
                                     </th>
-                                    <th class="text-secondary opacity-7"></th>
-                                    <th class="text-secondary opacity-7"></th>
-                                    <th class="text-secondary opacity-7"></th>
+                                    <th class="text-secondary text-center opacity-7"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -56,11 +44,7 @@
                                 {
                                  
                                         <tr class="clickable-row"  data-url="/Category/Details/@category.Id" style="cursor: pointer;">
-                                            <td class="align-middle text-center">
-                                               
-                                               <input type="checkbox" class="select-row" value="@category.Id" />
-                                                
-                                            </td>
+                                            
                                             <td class="align-middle text-center">
                                                 <span class="text-secondary text-xs font-weight-bold">@category.Id</span>
                                            
@@ -73,21 +57,20 @@
                                             <td class="align-middle text-center">
                                                 <img src="~/Uploads/Categories/@category.Image" class="avatar avatar-sm border-radius-lg" alt="category">
                                             </td>
-                                            <td class="align-middle text-center">
-                                                <a asp-action="Details" asp-route-id="@category.Id" class="text-secondary font-weight-bold text-xs">
-                                                    @(("تفاصيل", "Details").Localize(language))
-                                                </a>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <a asp-action="Edit" asp-route-id="@category.Id" class="text-secondary font-weight-bold text-xs">
-                                                    @(("تعديل", "Edit").Localize(language))
-                                                </a>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <a asp-action="Delete" asp-route-id="@category.Id" class="text-secondary font-weight-bold text-xs">
-                                                    @(("حذف", "Delete").Localize(language))
-                                                </a>
-                                            </td>
+                                        <td class="align-middle text-center">
+                                        <div class="dropdown">
+                                            <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                @(("العمليات", "Actions").Localize(language))
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <li><a class="dropdown-item" asp-action="Details" asp-controller="Category" asp-route-id="@category.Id">@(("تفاصيل", "Details").Localize(language))</a></li>
+                                                <li><a class="dropdown-item" asp-action="Edit" asp-controller="Category" asp-route-id="@category.Id">@(("تعديل", "Edit").Localize(language))</a></li>
+                                                <li><a class="dropdown-item" asp-action="Delete" asp-controller="Category" asp-route-id="@category.Id">@(("حذف", "Delete").Localize(language))</a></li>
+                                                
+
+                                            </ul>
+                                        </div>
+                                    </td>
                                         </tr>
                                     
 

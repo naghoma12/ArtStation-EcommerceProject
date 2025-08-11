@@ -24,6 +24,7 @@ namespace ArtStation_Dashboard.Controllers
 
             return Redirect(Request.Headers["Referer"].ToString());
         }
+
         [Authorize]
         public IActionResult Index()
         {

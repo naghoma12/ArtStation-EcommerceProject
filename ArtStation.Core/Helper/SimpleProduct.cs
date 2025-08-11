@@ -18,6 +18,7 @@ namespace ArtStation.Core.Helper
         public int? Discount { get; set; }
         public string PhotoUrl { get; set; }
         public float? AvgRating { get; set; }
+        public int StockCount { get; set; }
         public string Brand { get; set; }
         public List<ForWhomDTO> ForWhom { get; set; } = new List<ForWhomDTO>();
         public bool IsFav { get; set; } = false;

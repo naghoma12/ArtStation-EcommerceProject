@@ -37,6 +37,7 @@ namespace ArtStation.Repository.Repository
                     Reviews = f.Product.Reviews,
                     Sizes = f.Product.ProductSizes,
                     Sales = f.Product.Sales,
+                    f.Product.StockCount,
                     f.Product.IsActive,
                     f.Product.Favourites,
                     Brand = language == "en" ? f.Product.BrandEN : f.Product.BrandAR,
@@ -65,6 +66,7 @@ namespace ArtStation.Repository.Repository
                     IsSale = discount > 0,
                     PriceAfterSale = priceAfterSale,
                     Brand = p.Brand,
+                    StockCount = p.StockCount,
                     ForWhom = p.ForWhoms
                    .Select(f => new ForWhomDTO { ForWhom = f })
                    .ToList(),

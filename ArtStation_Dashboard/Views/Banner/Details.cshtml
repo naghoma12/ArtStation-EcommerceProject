@@ -1,0 +1,37 @@
+﻿
+@model ArtStation.Core.Entities.Banner
+@{
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
+    var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
+    var lang = culture.Name;
+}
+<div class="container py-5 ">
+    <div class="card shadow-lg rounded-4 overflow-hidden">
+        <div class="row g-0">
+            <div class="col-md-5">
+                <img src="~/Uploads/Banners/@Model.ImageUrl " class="img-fluid h-100 w-100 object-fit-cover" alt="@Model.Title" style="min-height: 300px;" />
+            </div>
+            <div class="col-md-7">
+                <div class="card-body p-5">
+                    
+
+                    <ul class="list-group list-group-flush mt-4">
+                        @* <li class="list-group-item"><strong>@(("صوره اللوحله", "Banner Image").Localize(lang)) : </strong>@Model.ImageUrl </li> *@
+                        <li class="list-group-item"><strong>@(("عنوان اللوحه", "Banner Title").Localize(lang)) : </strong>@Model.Title</li>
+                       
+                            <li class="list-group-item"><strong>@(("ترتيب اللوحه", "Banner Order").Localize(lang)) : </strong>@Model.OrderBanner</li>
+                          <li class="list-group-item"><strong>@(("تاريخ الانشاء", "Date Created").Localize(lang)) : </strong>@Model.CreatedDate</li>
+                        
+                       
+                    </ul>
+
+                    <div class="mt-5">
+                        <a asp-action="Index" class="btn btn-outline-primary">
+                            @(( "Back to List","العودة إلى القائمة").Localize(lang))
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

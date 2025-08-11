@@ -6,7 +6,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using Twilio.TwiML.Voice;
 
 namespace ArtStation.Core
 {
@@ -21,6 +20,7 @@ namespace ArtStation.Core
 
         void Update(T entity);
         void Delete(T entity);
+        Task UpdateRange(IEnumerable<T> entities);
 
     }
 }

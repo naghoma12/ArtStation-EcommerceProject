@@ -1,5 +1,5 @@
 ﻿@using ArtStation_Dashboard.ViewModels.User
-@model IEnumerable<UserViewModel>
+@model PagedResult<UserViewModel>
 
 @{
     var culture = System.Globalization.CultureInfo.CurrentUICulture;
@@ -19,6 +19,20 @@
         </button>
     </div>
 }
+<div class="d-flex justify-content-center my-3">
+    <a href="#" class="btn btn-outline-primary mx-1 ajax-filter @(ViewBag.StatusFilter == null ? "active" : "")"
+       data-status="">
+        @(("الكل", "All").Localize(lang))
+    </a>
+    <a href="#" class="btn btn-outline-info mx-1 ajax-filter @(ViewBag.StatusFilter?.ToString() == "True" ? "active" : "")"
+       data-status="true">
+        @(("مفعل", "Active").Localize(lang))
+    </a>
+    <a href="#" class="btn btn-outline-danger mx-1 ajax-filter @(ViewBag.StatusFilter?.ToString() == "False" ? "active" : "")"
+       data-status="false">
+        @(("غير مفعل", "NonActive").Localize(lang))
+    </a>
+</div>
 
 <div class="container-fluid py-4">
     <form style="display:none;">
@@ -35,78 +49,7 @@
                 </div>
                 <div class="card-body px-0 pb-2">
                     <div class="table-responsive p-0">
-                        <table class="table align-items-center mb-0">
-                            <thead>
-                                <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("اسم العميل", "Customer Name").Localize(lang))</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("رقم العميل", "Customer Phone").Localize(lang))</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("نشط", "Is Active").Localize(lang))</th>
-                                    <th class="text-secondary opacity-7"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model.Any())
-                                {
-                                    foreach (var item in Model)
-                                    {
-                                        <tr id="row_@item.Id">
-                                            <td>
-                                                <div class="d-flex px-2 py-2">
-                                                    <div>
-                                                        <img src="~/Uploads/Users/@item.Image" class="avatar avatar-sm me-3 ms-3 border-radius-lg" alt="user">
-                                                    </div>
-                                                    <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">@item.FullName</h6>
-                                                        @if (!string.IsNullOrEmpty(item.Email))
-                                                        {
-                                                            <p class="text-xs text-secondary mb-0">@item.Email</p>
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="text-xs font-weight-bold mb-0">@item.PhoneNumber</p>
-                                            </td>
-                                            <td>
-                                                <div class="form-check form-switch">
-                                                    <input type="checkbox"
-                                                           class="form-check-input toggle-active"
-                                                           data-id="@item.Id"
-                                                           id="toggle_@item.Id"
-                                                    @(item.IsActive ? "checked=\"checked\"" : "") />
-
-
-                                                    <label class="form-check-label" for="toggle_@item.Id">
-                                                        @(item.IsActive ? ("مفعل", "Active").Localize(lang) : ("غير مفعل", "Inactive").Localize(lang))
-                                                    </label>
-                                                </div>
-                                            </td>
-                                            <td class="align-middle">
-                                                <div class="dropdown">
-                                                    <button class="btn bg-gradient-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                                        @(("العمليات", "Actions").Localize(lang))
-                                                    </button>
-                                                    <ul class="dropdown-menu">
-                                                        <li><a class="dropdown-item" asp-action="Details" asp-controller="User" asp-route-id="@item.Id">@(("تفاصيل", "Details").Localize(lang))</a></li>
-                                                        <li><a class="dropdown-item" asp-action="Edit" asp-controller="User" asp-route-id="@item.Id">@(("تعديل", "Edit").Localize(lang))</a></li>
-                                                        <li>
-
-                                                            <button type="button"
-                                                                    class="dropdown-item text-danger delete-user-btn"
-                                                                    data-user-id="@item.Id"
-                                                                    data-user-name="@item.FullName"
-                                                                    data-row-id="row_@item.Id">
-                                                                @(("حذف", "Delete").Localize(lang))
-                                                            </button>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                        </table>
+                        @Html.Partial("_UserTablePartial", Model)
                     </div>
                 </div>
             </div>
@@ -133,6 +76,47 @@
 
 
     <script>
+         let currentStatus = '@ViewBag.StatusFilter'.toLowerCase();
+        let pageSize = '@Model.PageSize';
+                function loadBanners(page, status) {
+            $.ajax({
+                url: '@Url.Action("Index", "User")',
+                type: 'GET',
+                data: {
+                    page: page,
+                    pageSize: pageSize,
+                    statusFilter: status === "" ? null : status
+                },
+                success: function (data) {
+                    $("#banner-table-container").html(data);
+                    currentStatus = status;
+                },
+                error: function (xhr) {
+                    console.error("Error loading banners:", xhr);
+                }
+            });
+        }
+
+
+        // Handle filter buttons
+        $(document).on("click", ".ajax-filter", function (e) {
+            e.preventDefault();
+            let status = $(this).data("status")?.toString().toLowerCase() || "";
+            $(".ajax-filter").removeClass("active");
+            $(this).addClass("active");
+            loadBanners(1, status);
+        });
+
+        // Handle pagination
+        $(document).on("click", ".ajax-page", function (e) {
+            e.preventDefault();
+            let page = $(this).data("page");
+            loadBanners(page, currentStatus);
+        });
+
+
+
+       
          $(document).on("change", ".toggle-active", function () {
 
 

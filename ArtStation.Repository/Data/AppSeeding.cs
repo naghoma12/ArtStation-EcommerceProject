@@ -12,14 +12,15 @@ namespace ArtStation.Repository.Data
 {
     public static class AppSeeding
     {
-        public static async Task SeedUsersAsync(UserManager<AppUser> _usermanager, RoleManager<IdentityRole> _roleManager)
+        public static async Task SeedUsersAsync(UserManager<AppUser> _usermanager, RoleManager<AppRole> _roleManager)
         {
             if (_usermanager.Users.Count() == 0)
             {
                 var arwa = new AppUser()
                 {
                     Email = "arwaalaa99@hotmail.com",
-                    UserName = "Arwa10",
+                    UserName = "Arwa1",
+                    FullName="Arwa Alaa",
                     PhoneNumber = "01011037481"
                 };
 
@@ -27,10 +28,11 @@ namespace ArtStation.Repository.Data
                 {
                     Email = "nagham15@gmail.com",
                     UserName = "nagham",
+                    FullName = "Nagham Yasser",
                     PhoneNumber = "01011037481"
                 };
 
-                var role = new IdentityRole()
+                var role = new AppRole()
                 {
 
                     Name = "Admin"

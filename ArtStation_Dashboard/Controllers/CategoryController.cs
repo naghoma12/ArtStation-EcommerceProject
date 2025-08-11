@@ -66,6 +66,7 @@ namespace ArtStation_Dashboard.Controllers
         {
             string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName;
             ViewData["Language"] = language;
+            TempData["CategoryId"] = id;
             var item = await _categoryRepository.GetCategoryWithProducts(language,id,null,page,3);
             if (item == null) return NotFound();
             return View(item);
@@ -188,9 +189,7 @@ namespace ArtStation_Dashboard.Controllers
             {
                 var  existCategory = await _unitOfWork.Repository<Category>().GetByIdAsync(id);
                 FileSettings.DeleteFile("Categories", existCategory.Image, _environment.WebRootPath);
-                existCategory.IsDeleted = true;
-                existCategory.IsActive = false;
-                _unitOfWork.Repository<Category>().Update(existCategory);
+                _unitOfWork.Repository<Category>().Delete(existCategory);
                 var count = await _unitOfWork.Complet();
                 if (count > 0)
                 {
@@ -204,11 +203,25 @@ namespace ArtStation_Dashboard.Controllers
             }
                return View(categoryVM);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BulkDelete([FromBody] List<int> ids)
+        {
+            if (ids == null || !ids.Any())
+                return BadRequest();
 
-        //public async Task<IActionResult> InActivateCategories()
-        //{
-
-        //}
+            foreach (var id in ids)
+            {
+                var category = await _unitOfWork.Repository<Category>().GetByIdAsync(id);
+                if (category != null)
+                {
+                    FileSettings.DeleteFile("Categories", category.Image, _environment.WebRootPath);
+                    _unitOfWork.Repository<Category>().Delete(category);
+                }
+            }
+            await _unitOfWork.Complet();
+            return Ok();
+        }
 
     }
 }

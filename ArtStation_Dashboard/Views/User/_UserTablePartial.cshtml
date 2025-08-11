@@ -1,0 +1,92 @@
+﻿@using ArtStation_Dashboard.ViewModels.User
+@model PagedResult<UserViewModel>
+
+@{
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
+    var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
+    var lang = culture.Name;
+}
+
+<table class="table align-items-center mb-0">
+    <thead>
+        <tr>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("اسم العميل", "Customer Name").Localize(lang))</th>
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("رقم العميل", "Customer Phone").Localize(lang))</th>
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("نشط", "Is Active").Localize(lang))</th>
+            <th class="text-secondary opacity-7"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Items.Any())
+        {
+            foreach (var item in Model.Items)
+            {
+                <tr id="row_@item.Id">
+                    <td>
+                        <div class="d-flex px-2 py-2">
+                            <div>
+                                <img src="~/Uploads/Users/@item.Image" class="avatar avatar-sm me-3 ms-3 border-radius-lg" alt="user">
+                            </div>
+                            <div class="d-flex flex-column justify-content-center">
+                                <h6 class="mb-0 text-sm">@item.FullName</h6>
+                                @if (!string.IsNullOrEmpty(item.Email))
+                                {
+                                    <p class="text-xs text-secondary mb-0">@item.Email</p>
+                                }
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <p class="text-xs font-weight-bold mb-0">@item.PhoneNumber</p>
+                    </td>
+                    <td>
+                        <div class="form-check form-switch">
+                            <input type="checkbox"
+                                   class="form-check-input toggle-active"
+                                   data-id="@item.Id"
+                                   id="toggle_@item.Id"
+                            @(item.IsActive ? "checked=\"checked\"" : "") />
+
+
+                            <label class="form-check-label" for="toggle_@item.Id">
+                                @(item.IsActive ? ("مفعل", "Active").Localize(lang) : ("غير مفعل", "Inactive").Localize(lang))
+                            </label>
+                        </div>
+                    </td>
+                    <td class="align-middle">
+                        <div class="dropdown">
+                            <button class="btn bg-gradient-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                @(("العمليات", "Actions").Localize(lang))
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-action="Details" asp-controller="User" asp-route-id="@item.Id">@(("تفاصيل", "Details").Localize(lang))</a></li>
+                                <li><a class="dropdown-item" asp-action="Edit" asp-controller="User" asp-route-id="@item.Id">@(("تعديل", "Edit").Localize(lang))</a></li>
+                                <li>
+
+                                    <button type="button"
+                                            class="dropdown-item text-danger delete-user-btn"
+                                            data-user-id="@item.Id"
+                                            data-user-name="@item.FullName"
+                                            data-row-id="row_@item.Id">
+                                        @(("حذف", "Delete").Localize(lang))
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination justify-content-center">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link ajax-page" href="#" data-page="@i">@i</a>
+            </li>
+        }
+    </ul>
+</nav>

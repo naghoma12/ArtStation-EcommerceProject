@@ -37,10 +37,10 @@ namespace ArtStation
                 //    options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
                 //})
                 ;
-            FirebaseApp.Create(new AppOptions()
-            {
-                Credential = GoogleCredential.FromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, builder.Configuration["Firebase:ServiceAccountPath"])),
-            });
+            //FirebaseApp.Create(new AppOptions()
+            //{
+            //    Credential = GoogleCredential.FromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, builder.Configuration["Firebase:ServiceAccountPath"])),
+            //});
             builder.Services.AddScoped<IAuthorizationMiddlewareResultHandler, ValidationAuthorization>();
             ;
             builder.Services.AddDbContext<ArtStationDbContext>(
@@ -146,7 +146,11 @@ namespace ArtStation
             using (var scope = app.Services.CreateScope())
             {
                 var dbcontext = scope.ServiceProvider.GetRequiredService<ArtStationDbContext>();
+               var usermanager =scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+                var rolemanager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
+
                 await AppSeeding.SeedShippingCost(dbcontext);
+                await AppSeeding.SeedUsersAsync(usermanager,rolemanager);
             }
 
             HandlerPhoto.Initialize(app.Environment);

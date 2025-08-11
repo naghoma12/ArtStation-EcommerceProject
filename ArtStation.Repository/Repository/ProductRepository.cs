@@ -104,6 +104,7 @@ namespace ArtStation.Repository.Repository
                     Image = s.Product.ProductPhotos.Select(ph => string.IsNullOrEmpty(ph.Photo) ? null :
                 $"http://artstationdashboard.runasp.net//Uploads//Products/{ph.Photo}").FirstOrDefault() ?? "",
                     PriceAfterSale = priceAfterSale,
+                    StockCount = s.Product.StockCount
 
                 };
             });
@@ -144,6 +145,7 @@ namespace ArtStation.Repository.Repository
                 .ToList(),
                 AvgRating = product.Reviews.Any() ? product.Reviews.Average(r => r.Rating) : 0,
                 ReviewsNumber = product.Reviews.Count,
+                StockCount = product.StockCount,
                 Colors = product.ProductColors.Select(c => new ColorsDTO
                 {
                     Id = c.Id,
@@ -228,7 +230,7 @@ namespace ArtStation.Repository.Repository
             var priceAfterSale = size.Price - (size.Price * discount / 100m);
             return new ProductWithPriceDto()
             {
-                Product = product,
+                product = product,
                 Price = size.Price,
                 PriceAfterSale = priceAfterSale,
                 UserId = product.UserId
@@ -241,7 +243,7 @@ namespace ArtStation.Repository.Repository
         public async Task<ProductsOFSpecificOrder> GetProductsOfSpecificOrder(int productId, int sizeId, int? flavourId, int? ColorId, string lang = "en")
         {
             var product = await _context.Products
-               .Where(p => p.IsActive && !p.IsDeleted && p.Id == productId)
+               .Where(p => p.Id == productId)
                .Include(p => p.Sales)
                .Include(p => p.ProductSizes)
                .Include(p => p.ProductColors)
@@ -482,18 +484,6 @@ namespace ArtStation.Repository.Repository
                 .Include(p => p.User)
                 .AsNoTracking();
         }
-        public async Task<Product> GetInActiveProduct(int productId)
-        {
-            return await _context.Products
-                .Where(x => !x.IsActive && x.Id == productId)
-                .FirstOrDefaultAsync();
-        }
-        public async Task<Product> GetDeletedProduct(int productId)
-        {
-            return await _context.Products
-                .Where(x => x.IsDeleted && x.Id == productId)
-                .FirstOrDefaultAsync();
-        }
         public async Task<IEnumerable<Product>> GetProductsByCategoryId(int categoryId)
         {
             return await _context.Products
@@ -505,5 +495,7 @@ namespace ArtStation.Repository.Repository
                 .Include(p => p.User)
                 .ToListAsync();
         }
+
+        
     }
 }

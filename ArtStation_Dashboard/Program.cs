@@ -59,7 +59,7 @@ namespace ArtStation_Dashboard
             builder.Services.AddScoped(typeof(ICartService), typeof(CartService));
             builder.Services.AddScoped(typeof(IAddressRepository), typeof(AddressRepository));
             builder.Services.AddScoped(typeof(IPaymentService), typeof(PaymentService));
-
+            builder.Services.AddScoped(typeof(IBannerRepository), typeof(BannerRepository));
             builder.Services.AddScoped(typeof(IProductTypeRepository<ProductSize>), typeof(SizeRepository));
             builder.Services.AddScoped(typeof(IProductTypeRepository<ProductColor>), typeof(ColorRepository));
             builder.Services.AddScoped(typeof(IProductTypeRepository<ProductFlavour>), typeof(FlavourRepository));

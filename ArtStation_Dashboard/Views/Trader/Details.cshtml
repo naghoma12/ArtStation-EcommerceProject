@@ -10,7 +10,7 @@
     <div class="card shadow-lg rounded-4 overflow-hidden">
         <div class="row g-0">
             <div class="col-md-5">
-                <img src="~/@Model.Photo" class="img-fluid h-100 w-100 object-fit-cover" alt="@Model.DispalyName" style="min-height: 300px;" />
+                <img src="~/Uploads/Traders/@Model.Photo" class="img-fluid h-100 w-100 object-fit-cover" alt="@Model.DispalyName" style="min-height: 300px;" />
             </div>
             <div class="col-md-7">
                 <div class="card-body p-5">
@@ -31,6 +31,11 @@
                         {
                             <li class="list-group-item"><strong>@(("الجنسية", "Nationality").Localize(lang)) : </strong>@Model.Nationality</li>
                         }
+                        @if (!(@Model.InActiveMessage == null))
+                        {
+                            <li class="list-group-item text-danger"><strong>@(("سبب تعطيل الحساب", "Reasome DeActivate Account").Localize(lang)) : </strong>@Model.InActiveMessage</li>
+                        }
+                       
                     </ul>
 
                     <div class="mt-5">

@@ -81,6 +81,16 @@ namespace ArtStation_Dashboard.Resource {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string AddBannerSucessfully {
+            get {
+                return ResourceManager.GetString("AddBannerSucessfully", resourceCulture);
+            }
+        }
+        
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string MaxLength1000 {
             get {
                 return ResourceManager.GetString("MaxLength1000", resourceCulture);

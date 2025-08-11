@@ -1,23 +1,23 @@
-﻿using ArtStation.Core.Entities;
+﻿using ArtStation.Core;
+using ArtStation.Core.Entities;
+using ArtStation.Core.Entities.Identity;
+using ArtStation.Core.Helper;
 using ArtStation.Core.Repository.Contract;
 using ArtStation_Dashboard.Helper;
 using ArtStation_Dashboard.ViewModels;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using System.Drawing.Printing;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Identity;
-using ArtStation.Core.Entities.Identity;
-using ArtStation.Core;
-using Newtonsoft.Json;
-using ArtStation.Core.Helper;
-using System.Drawing;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Build.Framework;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json;
+using System.Drawing;
+using System.Drawing.Printing;
+using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ArtStation_Dashboard.Controllers
 {
@@ -117,7 +117,7 @@ namespace ArtStation_Dashboard.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ActivateProduct(int id)
         {
-            var product = await _productRepository.GetInActiveProduct(id);
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -182,10 +182,26 @@ namespace ArtStation_Dashboard.Controllers
 
             return View(pageResult);
         }
+
+        public async Task<IActionResult> DeleteAll(List<int> productIDs)
+        {
+            try
+            {
+                foreach (var id in productIDs)
+                {
+                    await Delete(id);
+                }
+            }
+            catch
+            {
+                ViewData["Message"] = ("حدث خطأ أثناء حذف المنتج", "An error occurred while deleting the product").Localize(GetLanguage());
+            }
+            return RedirectToAction(nameof(Index));
+        }
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RestoreProduct(int id)
         {
-            var product = await _productRepository.GetDeletedProduct(id);
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -737,12 +753,16 @@ namespace ArtStation_Dashboard.Controllers
         }
         #endregion
         [Authorize]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int categoryId)
         {
             string language = GetLanguage();
             ViewData["Language"] = language;
             var productCreation = new ProductCreation();
             productCreation = await FillForm(language, productCreation);
+            if(categoryId > 0)
+            {
+                productCreation.CategoryId = categoryId;
+            }
             return View(productCreation);
         }
 
@@ -1010,7 +1030,7 @@ namespace ArtStation_Dashboard.Controllers
             }
             catch
             {
-                ViewData["Message"] = ("حدث خطأ أثناء حذف المنتج", "An error occurred while deleting the product").Localize(language);
+                ViewData["Message"] = ("حدث خطأ أثناء حذف المنتج", $"An error occurred while deleting the product with id {productDetails.Id}").Localize(language);
             }
             return View(productDetails);
         }
