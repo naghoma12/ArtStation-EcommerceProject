@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using ArtStation_Dashboard.ViewModels;
 using ArtStation.Core.Helper.Order;
 using Microsoft.EntityFrameworkCore;
+using Twilio.Base;
 
 namespace ArtStation.Services
 {
@@ -177,36 +178,61 @@ namespace ArtStation.Services
             return order;
         }
 
-        //public async Task<PagedResult<Order>> GetOrdersDashboardAsync(int page, int pageSize)
-        //{
-        //    return await _unitOfWork.Repository<Order>().GetAllAsync(page, pageSize);
-        //}
 
+        //Get All Orders For Admin
         public async Task<PagedResult<Order>> GetOrdersDashboardAsync(int page, int pageSize, string statusFilter)
         {
-            var query = await _unitOfWork.Repository<Order>().GetAllAsync();
+            var query = await _unitOfWork.Repository<Order>().GetAllAsync(page, pageSize);
+           
 
             if (!string.IsNullOrEmpty(statusFilter))
-                query = query.Where(o => o.Status.ToString() == statusFilter);
+                query = (PagedResult<Order>)query.Items.Where(o => o.Status.ToString() == statusFilter)
+                    .OrderByDescending(o => o.OrderDate);
 
-            var totalItems = query.Count();
-            var items =  query
-                .OrderByDescending(o => o.OrderDate)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+            return query;
+            //var totalItems = query.Count();
+            //var items =  query
+            //    .OrderByDescending(o => o.OrderDate)
+            //    .Skip((page - 1) * pageSize)
+            //    .Take(pageSize)
+            //    .ToList();
 
-            return new PagedResult<Order>
-            {
-                TotalItems = totalItems,
-                Items = items
-            };
+            //return new PagedResult<Order>
+            //{
+            //    TotalItems = totalItems,
+            //    Items = items
+            //};
         }
 
-
+        // Get Order details with as invoice 
         public async Task<OrderInvoiceDto> GetOrderWithDetailsDashboardAsync(int id)
         {
             return await _orderRepo.GetOrderWithDetailsAsync(id);
+        }
+
+        //For Company Dashboard 
+
+        //Get Company Orders 
+        public async Task<PagedResult<Order>> GetOrdersForCompanyAsync(int TraderId, int page, int pageSize, string statusFilter)
+        {
+            var orders=await _orderRepo.GetOrdersForSpecificCompanyAsync(TraderId,  page,  pageSize, statusFilter);
+           
+           return orders;  
+           
+        }
+
+        //Get Company Orders with items 
+        public Task<Order> GetOrderWithItemsForCompanyAsync(int OrderId, int traderid)
+        {
+           var orders =_orderRepo.GetOrderWithItemsForSpecificCompanyAsync(OrderId,traderid);
+            return orders;
+        }
+
+        //Get Invoice 
+        public Task<Order> GetInvoiceForCompanyAsync(int OrderId, int TraderId)
+        {
+            var invoice= _orderRepo.GetInvoiceForTraderAsync(OrderId,TraderId);
+            return invoice;
         }
     }
 }

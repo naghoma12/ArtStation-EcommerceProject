@@ -3,6 +3,7 @@ using ArtStation.Core.Helper;
 using ArtStation.Core.Helper.Order;
 using ArtStation.Core.Repository.Contract;
 using ArtStation.Repository.Data;
+using ArtStation_Dashboard.ViewModels;
 using Google.Apis.Util;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
@@ -12,6 +13,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Order = ArtStation.Core.Entities.Order.Order;
 
 namespace ArtStation.Repository.Repository
@@ -111,5 +113,55 @@ namespace ArtStation.Repository.Repository
         }
 
 
+
+        /// For Company Dashboard 
+        public async Task<PagedResult<Order>> GetOrdersForSpecificCompanyAsync(int TraderId, int page, int pageSize, string statusFilter)
+        {
+            var ordersQuery = _context.Set<Order>()
+    .Where(order => order.OrderItems.Any(item => item.TraderId == TraderId))
+    .Include(o => o.OrderItems.Where(item => item.TraderId == TraderId));
+
+            
+            // Get total count AFTER filtering
+            var totalItems = ordersQuery.Count();
+
+            // Apply pagination
+            var items = ordersQuery
+                .OrderByDescending(o => o.OrderDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+
+            return new PagedResult<Order>
+            {
+                TotalItems = totalItems,
+                Items = items,
+                PageNumber = page,
+                PageSize = pageSize
+            };
+        }
+
+        //Get Order With Items Of Specific Trader
+        public async Task<Order> GetOrderWithItemsForSpecificCompanyAsync(int OrderId, int traderid)
+        {
+            var order = await _context.Set<Order>()
+               .Where(order => order.Id == OrderId)
+               .Include(oi => oi.OrderItems.Where(i => i.TraderId == traderid))
+               .FirstOrDefaultAsync();
+
+            return order;
+        }
+
+        public async Task<Order> GetInvoiceForTraderAsync(int OrderId, int TraderId)
+        {
+           var order = await _context.Set<Order>()
+             .Where(order => order.Id == OrderId)
+             .Include(oi => oi.OrderItems.Where(i => i.TraderId == TraderId))
+             .Include(o => o.Address)
+             .FirstOrDefaultAsync();
+
+            return order;
+        }
     }
 }

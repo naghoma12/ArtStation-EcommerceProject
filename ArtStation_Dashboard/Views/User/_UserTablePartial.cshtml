@@ -21,7 +21,8 @@
         {
             foreach (var item in Model.Items)
             {
-                <tr id="row_@item.Id">
+                <tr id="row_@item.Id" style="cursor:pointer;"
+                    onclick="handleRowClick(event, '@Url.Action("Details", "User", new { id = item.Id })')">
                     <td>
                         <div class="d-flex px-2 py-2">
                             <div>
@@ -47,12 +48,15 @@
                                    id="toggle_@item.Id"
                             @(item.IsActive ? "checked=\"checked\"" : "") />
 
-
                             <label class="form-check-label" for="toggle_@item.Id">
-                                @(item.IsActive ? ("مفعل", "Active").Localize(lang) : ("غير مفعل", "Inactive").Localize(lang))
+                                <span id="label-status-@item.Id"
+                                      class="@(item.IsActive ? "text-success" : "text-danger")">
+                                    @(item.IsActive ? ("مفعل", "Active").Localize(lang) : ("غير مفعل", "Inactive").Localize(lang))
+                                </span>
                             </label>
                         </div>
                     </td>
+
                     <td class="align-middle">
                         <div class="dropdown">
                             <button class="btn bg-gradient-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -62,12 +66,7 @@
                                 <li><a class="dropdown-item" asp-action="Details" asp-controller="User" asp-route-id="@item.Id">@(("تفاصيل", "Details").Localize(lang))</a></li>
                                 <li><a class="dropdown-item" asp-action="Edit" asp-controller="User" asp-route-id="@item.Id">@(("تعديل", "Edit").Localize(lang))</a></li>
                                 <li>
-
-                                    <button type="button"
-                                            class="dropdown-item text-danger delete-user-btn"
-                                            data-user-id="@item.Id"
-                                            data-user-name="@item.FullName"
-                                            data-row-id="row_@item.Id">
+                                    <button class="dropdown-item btn-delete" data-id="@item.Id">
                                         @(("حذف", "Delete").Localize(lang))
                                     </button>
                                 </li>
@@ -76,6 +75,14 @@
                     </td>
                 </tr>
             }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center text-muted py-4">
+                    @(("لا توجد بيانات مطابقة", "No matching records found").Localize(lang))
+                </td>
+            </tr>
         }
     </tbody>
 </table>

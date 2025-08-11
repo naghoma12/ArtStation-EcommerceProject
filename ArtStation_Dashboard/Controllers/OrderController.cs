@@ -1,13 +1,16 @@
 ﻿using ArtStation.Core;
 using ArtStation.Core.Entities.Order;
 using ArtStation.Core.Helper.Order;
+using ArtStation.Core.Roles;
 using ArtStation.Core.Services.Contract;
 using ArtStation_Dashboard.Helper;
 using ArtStation_Dashboard.Resource;
 using ArtStation_Dashboard.ViewModels.Order;
 using ArtStation_Dashboard.ViewModels.User;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ArtStation_Dashboard.Controllers
 {
@@ -120,6 +123,45 @@ namespace ArtStation_Dashboard.Controllers
             return Json(new { success = true, status = newStatus.ToString() });
         }
 
+        ////EndPoints For Get Specific Orders For Company
+        [Authorize(Roles = Roles.Trader)]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<CompanyOrderVM>>> CompanyOrder(
+     int page = 1,
+     int pageSize = 6,
+     string statusFilter = null)
+        {
+            // Preserve filters & pagination for the view
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.StatusFilter = statusFilter;
+
+            try
+            {
+                // Get Trader ID from Claims
+                var traderIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(traderIdString) || !int.TryParse(traderIdString, out var traderId))
+                {
+                    TempData["ErrorMessage"] = "لم يتم العثور على معرف التاجر.";
+                    return View(Enumerable.Empty<CompanyOrderVM>());
+                }
+
+                // Get orders for this trader
+                var result = await _orderService.GetOrdersForCompanyAsync(traderId, page, pageSize, statusFilter);
+
+                // Map to VM
+                var mappedOrders = _mapper.Map<IEnumerable<CompanyOrderVM>>(result.Items);
+
+                return View(mappedOrders);
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex, "Error loading company orders");
+                TempData["ErrorMessage"] = "حدث خطأ أثناء تحميل الطلبات.";
+                return View(Enumerable.Empty<CompanyOrderVM>());
+            }
+        }
 
     }
 
