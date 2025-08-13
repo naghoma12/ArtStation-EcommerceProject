@@ -31,7 +31,10 @@ namespace ArtStation.Core.Services.Contract
         public Task<Order> GetOrderWithItemsForCompanyAsync(int OrderId, int traderid);
 
         //Get Invoice
-        public Task<Order> GetInvoiceForCompanyAsync(int OrderId, int TraderId);
+        public Task<OrderInvoiceDto> GetInvoiceForCompanyAsync(int OrderId, int TraderId);
+
+        //Ready Order
+        public Task<string> ReadyOrderForCompanyAsync(int OrderId, int TraderId);
 
     }
 }

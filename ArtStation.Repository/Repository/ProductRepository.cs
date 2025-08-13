@@ -270,6 +270,7 @@ namespace ArtStation.Repository.Repository
                 ProductId = product.Id,
                 ProductName = lang == "en" ? product.NameEN : product.NameAR,
                 //OriginalPrice = size.Price,
+                
                 PhotoUrl = $"http://artstationdashboard.runasp.net//Uploads//Products/{product.ProductPhotos.FirstOrDefault()?.Photo}",
                 Size = lang == "en" ? size.SizeEN : size.SizeAR,
                 Color = color == null ? null : (lang == "en" ? color.NameEN : color.NameAR),

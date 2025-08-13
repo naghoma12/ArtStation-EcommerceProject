@@ -1,0 +1,64 @@
+﻿@using ArtStation.Core.Entities.Order
+@using ArtStation_Dashboard.ViewModels.Order
+@using NuGet.Protocol
+@model PagedResult<Order>
+
+@{
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
+    var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
+    var lang = culture.Name;
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-center  text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("رقم الطلب", "Order Number").Localize(lang))</th>
+
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("تاريخ الطلب", "Order Date").Localize(lang))</th>
+
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("الحساب الجزئى", "Sub Total").Localize(lang))</th>
+            <th class="text-secondary opacity-7"></th>
+        </tr>
+    </thead>
+    <!-- headers omitted for brevity -->
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var item in Model.Items)
+            {
+                <tr data-order-orderId="@item.Id"
+                    style="cursor:pointer;"
+                    onclick="handleRowClick(event, '@Url.Action("InvoiceForCompany", "Order", new { orderId = item.Id })')">
+                    <!-- other cells -->
+                    <td class="align-middle text-center text-sm">
+                        <span>@(item.Id + 1000)</span>
+
+                    </td>
+
+                    <td class="align-middle text-center text-sm">
+                        <span class="">@item.OrderDate</span>
+                    </td>
+
+
+                    <td class="align-middle text-center text-sm">
+                        <span class="badge badge-sm bg-gradient-warning">@item.SubTotal</span>
+                    </td>
+                    <td class="align-middle">
+                        <div class="dropdown">
+                            <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                @(("العمليات", "Actions").Localize(lang))
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li><a class="dropdown-item" asp-action="InvoiceForCompany" asp-controller="Order" asp-route-orderId="@item.Id">@(("تفاصيل", "Details").Localize(lang))</a></li>
+                                @* <li><a class="dropdown-item" asp-action="Edit" asp-controller="Trader" asp-route-id="@item.OrderNum">@(("تعديل", "Edit").Localize(lang))</a></li> *@
+                                @* <li><a class="dropdown-item" asp-action="ChangePassword" asp-controller="Trader" asp-route-id="@item.OrderNum">@(("تغيير كلمه السر", "Change Password").Localize(lang))</a></li> *@
+
+
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

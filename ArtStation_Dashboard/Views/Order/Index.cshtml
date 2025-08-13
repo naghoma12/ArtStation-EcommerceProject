@@ -81,7 +81,7 @@
       $(document).on("click", ".status-change:not(.disabled)", function (e) {
         e.preventDefault();
         const $item = $(this);
-        const newStatus = $item.data("status");
+     
         const $row = $item.closest("tr");
         const orderId = $row.data("order-id");
 
@@ -100,8 +100,7 @@
                 'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
               },
               data: {
-                orderId: orderId,
-                status: newStatus
+                orderId: orderId
               }
             })
             .then(res => {

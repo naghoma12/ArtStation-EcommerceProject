@@ -70,6 +70,12 @@ namespace ArtStation_Dashboard.Helper
                .ForMember(dest => dest.AddressDetails, src => src.MapFrom(opt => opt.Address.AddressDetails))
              .ReverseMap();
 
+            CreateMap<OrderInvoiceDto, InvoiceCompanyVM>()
+              .ForMember(dest => dest.OrderNum, src => src.MapFrom(opt => opt.Order.Id))
+              .ForMember(dest => dest.OrderDate, src => src.MapFrom(opt => opt.Order.OrderDate.ToString("yyyy-MM-dd HH:mm:ss")))
+               .ForMember(dest => dest.Total, src => src.MapFrom(opt => opt.Items.Sum(i=>i.SubTotal)))
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items))
+                 .ReverseMap();
 
         }
     }

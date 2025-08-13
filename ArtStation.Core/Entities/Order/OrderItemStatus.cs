@@ -14,8 +14,10 @@ namespace ArtStation.Core.Entities.Order
 
         [Display(Name = "Placed", ResourceType = typeof(Messages))]
         Placed,
-        [Display(Name = "Ready", ResourceType = typeof(Messages))]
-        Ready,
+        [Display(Name = "Shipped", ResourceType = typeof(Messages))]
+        Shipped,
+        [Display(Name = "Delivered", ResourceType = typeof(Messages))]
+        Delivered,
      
     }
 

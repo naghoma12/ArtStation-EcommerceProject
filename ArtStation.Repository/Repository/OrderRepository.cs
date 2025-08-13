@@ -115,53 +115,100 @@ namespace ArtStation.Repository.Repository
 
 
         /// For Company Dashboard 
-        public async Task<PagedResult<Order>> GetOrdersForSpecificCompanyAsync(int TraderId, int page, int pageSize, string statusFilter)
+        public async Task<PagedResult<Order>> GetOrdersForSpecificCompanyAsync(
+     int traderId, int page, int pageSize, string statusFilter)
         {
+            // Try to parse the filter into the enum
+            OrderItemStatus? parsedStatus = null;
+            if (!string.IsNullOrEmpty(statusFilter) &&
+                Enum.TryParse(statusFilter, out OrderItemStatus statusEnum))
+            {
+                parsedStatus = statusEnum;
+            }
+
+            // Build query
             var ordersQuery = _context.Set<Order>()
-    .Where(order => order.OrderItems.Any(item => item.TraderId == TraderId))
-    .Include(o => o.OrderItems.Where(item => item.TraderId == TraderId));
+                .Where(order => order.OrderItems.Any(item =>
+                    item.TraderId == traderId && item.OrderItemStatus == parsedStatus)).Include(order=>order.OrderItems.Where(i=>i.TraderId==traderId));
 
-            
-            // Get total count AFTER filtering
-            var totalItems = ordersQuery.Count();
 
-            // Apply pagination
-            var items = ordersQuery
+            // Count after filtering
+            var totalItems = await ordersQuery.CountAsync();
+
+            // Apply pagination and ordering
+            var items = await ordersQuery
                 .OrderByDescending(o => o.OrderDate)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .ToList();
+                .ToListAsync();
 
-
+            // Return paged result
             return new PagedResult<Order>
             {
-                TotalItems = totalItems,
                 Items = items,
-                PageNumber = page,
-                PageSize = pageSize
+                TotalItems = totalItems,
+                PageNumber =page,
+                PageSize=pageSize,
+              TotalPages= (int)Math.Ceiling((double)totalItems / pageSize)
             };
-        }
+         }
 
         //Get Order With Items Of Specific Trader
         public async Task<Order> GetOrderWithItemsForSpecificCompanyAsync(int OrderId, int traderid)
         {
             var order = await _context.Set<Order>()
-               .Where(order => order.Id == OrderId)
+               //.Where(order => order.Id == OrderId)
                .Include(oi => oi.OrderItems.Where(i => i.TraderId == traderid))
                .FirstOrDefaultAsync();
 
             return order;
         }
 
-        public async Task<Order> GetInvoiceForTraderAsync(int OrderId, int TraderId)
+        public async Task<OrderInvoiceDto> GetInvoiceForTraderAsync(int OrderId, int TraderId)
         {
            var order = await _context.Set<Order>()
              .Where(order => order.Id == OrderId)
              .Include(oi => oi.OrderItems.Where(i => i.TraderId == TraderId))
              .Include(o => o.Address)
              .FirstOrDefaultAsync();
+            var lang = CultureInfo.CurrentUICulture.Name;
+            List<ProductsOFSpecificOrder> items = new List<ProductsOFSpecificOrder>();
+            foreach (var item in order.OrderItems)
+            {
+                var orderItem = await _productRepository.GetProductsOfSpecificOrder(item.ProductItem.ProductId, (int)item.ProductItem.SizeId, item.ProductItem.FlavourId, item.ProductItem.ColorId, lang);
+                orderItem.Quantity = item.Quantity;
+                orderItem.SubTotal = item.TotalPrice;
+                orderItem.OrderItemStatus = item.OrderItemStatus.ToString();
 
-            return order;
+
+                items.Add(orderItem);
+            }
+            return new OrderInvoiceDto
+            {
+                Order = order,
+                Items = items,
+            };
+          
+        }
+
+        public async Task<string> ReadyOrderForCompanyAsync(int OrderId, int traderid)
+        {
+            var order =  await _context.Set<Order>()
+            .Where(order => order.Id == OrderId)
+            .Include(oi => oi.OrderItems.Where(i => i.TraderId == traderid))
+            .FirstOrDefaultAsync();
+
+            foreach (var item in order.OrderItems)
+            {
+                item.OrderItemStatus = OrderItemStatus.Shipped;
+            }
+
+            var row=_context.SaveChanges();
+            if (row >0)
+            {
+                return "Ready Order";
+            }
+            return "Not Ready Order";
         }
     }
 }

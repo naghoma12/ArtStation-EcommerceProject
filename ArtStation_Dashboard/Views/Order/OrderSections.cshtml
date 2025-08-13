@@ -1,0 +1,92 @@
+﻿@{
+    ViewData["Title"] = "OrderSections";
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
+    var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
+    var lang = culture.Name;
+}
+
+<div class="container py-5 mt-3">
+    <h2 class="text-center mb-5 fw-bold text-primary">@(("إداره الطلبات", "Order Management").Localize(lang))</h2>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+            <a asp-action="CompanyOrder" asp-controller="Order" asp-route-statusFilter="Placed" class="text-decoration-none">
+                <div class="card border-0 shadow-lg h-100 rounded-4 modern-card hover-up bg-gradient-success">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-box-seam-fill fs-1 mb-3 text-white"></i>
+                        <h5 class="fw-bold text-white mb-2">@((" الطلبات", "Placed Orders").Localize(lang))</h5>
+                        <p class="text-white-50 small">@((" إداره كل الطلبات الجديده", "Manage All Placed Orders.").Localize(lang))</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a asp-action="CompanyOrder" asp-controller="Order" asp-route-statusFilter="Shipped" class="text-decoration-none">
+                <div class="card border-0 shadow-lg h-100 rounded-4 modern-card hover-up bg-gradient-warning">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-hourglass-split fs-1 mb-3 text-dark"></i>
+                        <h5 class="fw-bold text-dark mb-2">@((" الطلبات الجاهزه للتوصيل ", "Shipped Orders").Localize(lang))</h5>
+                        <p class="text-dark-50 small">@((" إداره كل الطلبات االجاهزه للتوصيل", "Manage All Shipped Orders.").Localize(lang))</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4">
+            <a asp-action="CompanyOrder" asp-controller="Order" asp-route-statusFilter="Delivered" class="text-decoration-none">
+                <div class="card border-0 shadow-lg h-100 rounded-4 modern-card hover-up bg-gradient-danger">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-trash3-fill fs-1 mb-3 text-white"></i>
+                        <h5 class="fw-bold text-white mb-2">@(("الطلبات التى تم توصيلها ", "Delivered Orders").Localize(lang))</h5>
+                        <p class="text-white-50 small">@((" إداره كل الطلبات التى تم توصيلها", "Manage All Delivered Orders.").Localize(lang))</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .text-gradient {
+        background: linear-gradient(to right, #0d6efd, #6610f2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hover-up {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .hover-up:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+    .bg-gradient-success {
+        background: linear-gradient(135deg, #28a745, #218838);
+    }
+
+    .bg-gradient-warning {
+        background: linear-gradient(135deg, #ffc107, #e0a800);
+    }
+
+    .bg-gradient-danger {
+        background: linear-gradient(135deg, #dc3545, #bd2130);
+    }
+
+    .modern-card {
+        border-radius: 1rem;
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+
+    .text-dark-50 {
+        color: rgba(0, 0, 0, 0.5);
+    }
+
+    .text-white-50 {
+        color: rgba(255, 255, 255, 0.6);
+    }
+</style>
