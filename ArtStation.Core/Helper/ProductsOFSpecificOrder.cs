@@ -12,6 +12,7 @@ namespace ArtStation.Core.Helper
         public string ProductName { get; set; }
         //public decimal  OriginalPrice { get; set; }
         //public decimal PriceAfterSale { get; set; }
+        public string OrderItemStatus { get; set; }
         public string PhotoUrl { get; set; }
         public string? Size { get; set; }
         public string? Color { get; set; }

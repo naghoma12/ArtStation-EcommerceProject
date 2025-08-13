@@ -34,53 +34,43 @@ namespace ArtStation_Dashboard.Controllers
             _environment = environment;
             _userHelper = userHelper;
         }
-        public async Task<IActionResult> Index(bool? statusFilter, int page = 1, int pageSize = 5)
+        public async Task<IActionResult> Index(string search, bool? statusFilter, int page = 1, int pageSize = 5)
         {
             try
             {
-                var Users = await _userManager.GetUsersInRoleAsync(Roles.Customer);
+                var customers = await _userManager.GetUsersInRoleAsync(Roles.Customer);
 
-                var totalUsers = Users.Count;
-                var totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
-                ViewBag.StatusFilter = statusFilter;
-                var users = new List<UserViewModel>();
-                if (statusFilter == null)
+                if (statusFilter != null)
+                    customers = customers.Where(i => i.IsActive == statusFilter).ToList();
+
+                if (!string.IsNullOrWhiteSpace(search))
                 {
-                    users = Users.Where(i=>i.IsDeleted==false)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .Select(u => new UserViewModel
-                {
-                    Id = u.Id,
+                    search = search.Trim().ToLower();
+                    customers = customers.Where(i =>
+                        (!string.IsNullOrEmpty(i.FullName) && i.FullName.ToLower().Contains(search)) ||
+                        (!string.IsNullOrEmpty(i.PhoneNumber) && i.PhoneNumber.ToLower().Contains(search)) 
+                      
+                    ).ToList();
+                }
+
+                customers = customers.Where(i => !i.IsDeleted).ToList();
+
+                var totalUsers = customers.Count;
+
+                var users = customers
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(u => new UserViewModel
+                    {
+                       Id = u.Id,
                     Image = u.Image,
                     IsActive = u.IsActive,
                     FullName = u.FullName,
                     Email = u.Email,
                     PhoneNumber = u.PhoneNumber
-                }).ToList();
+                    }).ToList();
 
-                }
-                else
-                {
-                    users = Users
-                        .Where(i => i.IsActive == statusFilter)
-                     .Where(i => i.IsDeleted == false)
-               .Skip((page - 1) * pageSize)
-               .Take(pageSize)
-               .Select(u => new UserViewModel
-               {
-                   Id = u.Id,
-                   Image = u.Image,
-                   IsActive = u.IsActive,
-                   FullName = u.FullName,
-                   Email = u.Email,
-                   PhoneNumber = u.PhoneNumber
-               }).ToList();
-
-               
-                }
-
-                var customers = new PagedResult<UserViewModel>
+                var model = new PagedResult<UserViewModel>
                 {
                     Items = users,
                     TotalItems = totalUsers,
@@ -89,12 +79,14 @@ namespace ArtStation_Dashboard.Controllers
 
                 };
 
-                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-                {
-                    return PartialView("_TraderTablePartial", customers);
-                }
+                ViewBag.StatusFilter = statusFilter;
+                ViewBag.Search = search;
 
-                return View(customers);
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return PartialView("_UserTablePartial", model);
+
+                return View(model);
+               
             }
             catch (Exception ex)
             {
@@ -103,34 +95,7 @@ namespace ArtStation_Dashboard.Controllers
 
         }
 
-        //public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
-        //{
-        //    var traderUsers = await _userManager.GetUsersInRoleAsync(Roles.Customer);
-
-        //    var totalUsers = traderUsers.Count;
-        //    var totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
-
-        //    var users = traderUsers
-        //        .Skip((page - 1) * pageSize)
-        //        .Take(pageSize)
-        //        .Select(u => new UserViewModel
-        //        {
-        //            Id = u.Id,
-        //            Image = u.Image,
-        //           IsActive=u.IsActive,
-        //            FullName = u.FullName,
-        //            Email = u.Email,
-        //            PhoneNumber = u.PhoneNumber
-        //        }).ToList();
-
-        //    ViewBag.CurrentPage = page;
-        //    ViewBag.TotalPages = totalPages;
-
-        //    return View(users);
-        //}
-
-
-
+       
         //Get : Get User Details
         public async Task<IActionResult> Details(int id)
         {
@@ -209,40 +174,84 @@ namespace ArtStation_Dashboard.Controllers
             return View(userVM);
         }
 
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteAjax(int id)
+        public async Task<IActionResult> ToggleActive(int id, bool isActive, string reason)
         {
-            var user = await _userManager.FindByIdAsync(id.ToString());
-            if (user == null)
+            try
             {
-                return Json(new { success = false, message = "المستخدم غير موجود." });
-            }
+                var trader = await _userManager.FindByIdAsync(id.ToString());
+                if (trader == null)
+                {
+                    return NotFound("المستخدم غير موجود");
+                }
 
-            var result = await _userManager.DeleteAsync(user);
-            if (result.Succeeded)
-            {
-                return Json(new { success = true });
+                trader.IsActive = isActive;
+
+                if (!isActive && !string.IsNullOrWhiteSpace(reason))
+                {
+                    trader.InActiveMessage = reason;
+                    trader.DeactivatedAt = DateTime.UtcNow;
+                }
+                else if (isActive)
+                {
+                    // Reset message and time if re-activated
+                    trader.InActiveMessage = null;
+                    trader.DeactivatedAt = null;
+                }
+
+                var result = await _userManager.UpdateAsync(trader);
+
+                if (result.Succeeded)
+                {
+                    return Ok(new { success = true });
+                }
+                else
+                {
+                    var errors = string.Join("; ", result.Errors.Select(e => e.Description));
+                    return BadRequest($"فشل في التحديث: {errors}");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var errorMessages = result.Errors.Select(e => e.Description).ToList();
-                return Json(new { success = false, message = string.Join(" - ", errorMessages) });
+
+                return StatusCode(500, $"حدث خطأ غير متوقع: {ex.Message}");
+            }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id.ToString());
+                if (user == null)
+                    return NotFound();
+
+                user.IsDeleted = true;
+
+                var result = await _userManager.UpdateAsync(user);
+
+                if (!result.Succeeded)
+                {
+                    // Collect error messages and return as BadRequest
+                    var errors = string.Join("; ", result.Errors.Select(e => e.Description));
+                    return BadRequest(new { message = errors });
+                }
+
+                return Ok(new { message = "User deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                // Log exception here if you have logging configured
+                // _logger.LogError(ex, "Error deleting user with ID {Id}", id);
+
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
             }
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ToggleActive(int id, bool isActive)
-        {
-            var trader = await _userManager.FindByIdAsync(id.ToString());
-            if (trader == null) return NotFound();
 
-            trader.IsActive = isActive;
-            var result = await _userManager.UpdateAsync(trader);
-
-            return result.Succeeded ? Ok() : BadRequest(result.Errors);
-        }
 
     }
 }

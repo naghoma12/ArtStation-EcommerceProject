@@ -29,7 +29,9 @@
             {
             @foreach (var item in Model)
             {
-                <tr data-order-id="@item.OrderNum">
+                    <tr data-order-id="@item.OrderNum"
+                        style="cursor:pointer;"
+                        onclick="handleRowClick(event, '@Url.Action("Details", "Order", new { id = item.OrderNum })')">
                     <!-- other cells -->
                         <td class="align-middle text-center text-sm">
                             <span>@(item.OrderNum + 1000)</span>

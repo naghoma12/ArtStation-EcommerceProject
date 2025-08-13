@@ -1,6 +1,8 @@
 ﻿using ArtStation.Core.Entities.Order;
 using ArtStation.Core.Helper;
 using ArtStation.Core.Helper.Order;
+using ArtStation_Dashboard.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +27,23 @@ namespace ArtStation.Core.Repository.Contract
         int GetYesterdayOrdersCount(string phoneNumber);
         List<decimal> GetWeeklySales();
         List<decimal> GetWeeklySales(string phoneNumber);
+
+
+        //For Company 
+
+        //Get Orders for specific company 
+        public Task<PagedResult<Order>>  GetOrdersForSpecificCompanyAsync(int TraderId, int page, int pageSize, string statusFilter);
+
+        //Get Order With Items Of Specific Trader
+        public Task<Order> GetOrderWithItemsForSpecificCompanyAsync(int OrderId, int traderid);
+
+        //Get Invoice
+        public Task<OrderInvoiceDto> GetInvoiceForTraderAsync(int OrderId, int TraderId);
+
+        //Make Items Ready 
+
+        public Task<string> ReadyOrderForCompanyAsync(int OrderId, int traderid);
+
 
     }
 }

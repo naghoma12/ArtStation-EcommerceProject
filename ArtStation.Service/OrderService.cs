@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using ArtStation_Dashboard.ViewModels;
 using ArtStation.Core.Helper.Order;
 using Microsoft.EntityFrameworkCore;
+using Twilio.Base;
 
 namespace ArtStation.Services
 {
@@ -50,117 +51,117 @@ namespace ArtStation.Services
             _paymentService = paymentService;
            _config = config;
         }
-        //public async Task<(Order? order, string? redirectUrl, string? paymentToken)> CreateOrderAsync(AppUser user, string CartId, int AddressId, string paymentType)
-        //{
-        //    //1.Get Cart from cart repo
-        //    var cart = await _cartRepository.GetCartAsync(CartId);
-        //    //var cartData = await _cartService.MapCartToReturnDto(cart, CultureInfo.CurrentUICulture.Name);
-        //    //2 Get OrderItems  fro product 
-        //    var OrderItems = new List<OrderItem>();
+        public async Task<(Order? order, string? redirectUrl, string? paymentToken)> CreateOrderAsync(AppUser user, string CartId, int AddressId, string paymentType)
+        {
+            //1.Get Cart from cart repo
+            var cart = await _cartRepository.GetCartAsync(CartId);
+            //var cartData = await _cartService.MapCartToReturnDto(cart, CultureInfo.CurrentUICulture.Name);
+            //2 Get OrderItems  fro product 
+            var OrderItems = new List<OrderItem>();
 
-        //    if (cart?.CartItems?.Count() > 0)
-        //    {
-        //        foreach (var item in cart.CartItems)
-        //        {
-        //            ProductItemDetails productDetails = new ProductItemDetails();
-        //            var Photos = string.Empty;
+            if (cart?.CartItems?.Count() > 0)
+            {
+                foreach (var item in cart.CartItems)
+                {
+                    ProductItemDetails productDetails = new ProductItemDetails();
+                    var Photos = string.Empty;
 
-        //            var product = await _productRepo.GetProductWithPrice(item.ProductId, (int)item.SizeId);
-        //            productDetails = new ProductItemDetails(product.Product.Id, item.ColorId > 0 ? item.ColorId : null, item.SizeId, item.FlavourId > 0 ? item.FlavourId : null);
+                    var product = await _productRepo.GetProductWithPrice(item.ProductId, (int)item.SizeId);
+                    productDetails = new ProductItemDetails(product.product.Id, item.ColorId > 0 ? item.ColorId : null, item.SizeId, item.FlavourId > 0 ? item.FlavourId : null);
 
-        //            //var orderitem = new OrderItem(productDetails, item.Quantity,1); //static userid
-        //            var orderitem = new OrderItem(productDetails, item.Quantity, product.UserId);
+                    //var orderitem = new OrderItem(productDetails, item.Quantity,1); //static userid
+                    var orderitem = new OrderItem(productDetails, item.Quantity, product.UserId);
 
-        //            orderitem.TotalPrice = (decimal)(product.PriceAfterSale == 0 ? product.Price * item.Quantity : product.PriceAfterSale * item.Quantity);
+                    orderitem.TotalPrice = (decimal)(product.PriceAfterSale == 0 ? product.Price * item.Quantity : product.PriceAfterSale * item.Quantity);
 
-        //            OrderItems.Add(orderitem);
+                    OrderItems.Add(orderitem);
 
-        //        }
-        //    }
+                }
+            }
 
-        //    //3. calc subtotal
+            //3. calc subtotal
 
-        //    var TotalPrice = OrderItems.Sum(OI => OI.TotalPrice);
-
-
-        //    //5. createorder
-
-        //    var order = new Order(user.PhoneNumber, AddressId, TotalPrice, OrderItems);
-        //    //  الدفع عبر Paymob
-        //    string? redirectUrl = null;
-        //    string? paymentToken = null;
-
-        //    if (paymentType.ToLower() != "cash")
-        //    {
-        //        var totalCents = (int)(TotalPrice * 100);
-        //        var token = await _paymentService.AuthenticateAsync();
-
-        //        var itemTasks = OrderItems.Select(async i =>
-        //        {
-        //            //var product = await _productRepo.GetProductById(CultureInfo.CurrentUICulture.Name, i.ProductItem.ProductId, null);
-        //            return new ItemDto
-        //            {
-        //                ProductName = "product?.Name",
-        //                AmountCent = (int)(i.TotalPrice * 100),
-        //                Quantity = i.Quantity
-        //            };
-        //        });
-
-        //        var itemDtos = (await Task.WhenAll(itemTasks)).ToList();
-        //        if (!Enum.TryParse<PaymentType>(paymentType, true, out var paymentTypeEnum))
-        //        {
-        //            throw new ArgumentException("نوع الدفع غير مدعوم");
-        //        }
-        //        var dto = new PaymentRequestDto
-        //        {
-        //            AmountCents = totalCents,
-        //            Currency = "EGP",
-        //            Email = string.IsNullOrEmpty(user.Email) ? "no@email.com" : user.Email,
-        //            FullName = user.FullName,
-        //            Phone = user.PhoneNumber,
-        //            PaymentType = paymentTypeEnum,
-        //            Items = itemDtos
-        //        };
-
-        //        var paymobOrderId = await _paymentService.CreateOrderAsync(token, dto);
-        //        paymentToken = await _paymentService.GeneratePaymentKeyAsync(token, paymobOrderId, dto);
-        //        order.PaymentToken = paymentToken;
-
-        //        order.PaymobOrderId = paymobOrderId;
-        //        order.PaymentMethod = paymentTypeEnum;
-
-        //        switch (paymentType.ToLower())
-        //        {
-        //            case "card":
-        //                redirectUrl = $"https://accept.paymob.com/api/acceptance/iframes/{_config["Paymob:IframeId"]}?payment_token={paymentToken}";
-        //                break;
-
-        //            case "wallet":
-        //                // يتم فتح هذه الصفحة ليدخل المستخدم رقم هاتفه ويختار شبكة المحفظة
-        //                redirectUrl = $"https://accept.paymob.com/api/acceptance/iframes/937215?payment_token={paymentToken}";
-        //                break;
-
-        //            case "cash":
-        //            default:
-        //                redirectUrl = null;
-        //                break;
-        //        }
-        //    }
-
-        //    //// 3. حفظ الـ token
-        //    //order.PaymentId = paymentToken;
+            var TotalPrice = OrderItems.Sum(OI => OI.TotalPrice);
 
 
-        //    //save to db
-        //    _unitOfWork.Repository<Order>().Add(order);
-        //    var rows = await _unitOfWork.Complet();
-        //    if (rows <= 0)
-        //        return (null, null, null);
+            //5. createorder
 
-        //    return (order, redirectUrl, paymentToken);
+            var order = new Order(user.PhoneNumber, AddressId, TotalPrice, OrderItems);
+            //  الدفع عبر Paymob
+            string? redirectUrl = null;
+            string? paymentToken = null;
+
+            if (paymentType.ToLower() != "cash")
+            {
+                var totalCents = (int)(TotalPrice * 100);
+                var token = await _paymentService.AuthenticateAsync();
+
+                var itemTasks = OrderItems.Select(async i =>
+                {
+                    //var product = await _productRepo.GetProductById(CultureInfo.CurrentUICulture.Name, i.ProductItem.ProductId, null);
+                    return new ItemDto
+                    {
+                        ProductName = "product?.Name",
+                        AmountCent = (int)(i.TotalPrice * 100),
+                        Quantity = i.Quantity
+                    };
+                });
+
+                var itemDtos = (await Task.WhenAll(itemTasks)).ToList();
+                if (!Enum.TryParse<PaymentType>(paymentType, true, out var paymentTypeEnum))
+                {
+                    throw new ArgumentException("نوع الدفع غير مدعوم");
+                }
+                var dto = new PaymentRequestDto
+                {
+                    AmountCents = totalCents,
+                    Currency = "EGP",
+                    Email = string.IsNullOrEmpty(user.Email) ? "no@email.com" : user.Email,
+                    FullName = user.FullName,
+                    Phone = user.PhoneNumber,
+                    PaymentType = paymentTypeEnum,
+                    Items = itemDtos
+                };
+
+                var paymobOrderId = await _paymentService.CreateOrderAsync(token, dto);
+                paymentToken = await _paymentService.GeneratePaymentKeyAsync(token, paymobOrderId, dto);
+                order.PaymentToken = paymentToken;
+
+                order.PaymobOrderId = paymobOrderId;
+                order.PaymentMethod = paymentTypeEnum;
+
+                switch (paymentType.ToLower())
+                {
+                    case "card":
+                        redirectUrl = $"https://accept.paymob.com/api/acceptance/iframes/{_config["Paymob:IframeId"]}?payment_token={paymentToken}";
+                        break;
+
+                    case "wallet":
+                        // يتم فتح هذه الصفحة ليدخل المستخدم رقم هاتفه ويختار شبكة المحفظة
+                        redirectUrl = $"https://accept.paymob.com/api/acceptance/iframes/937215?payment_token={paymentToken}";
+                        break;
+
+                    case "cash":
+                    default:
+                        redirectUrl = null;
+                        break;
+                }
+            }
+
+            //// 3. حفظ الـ token
+            //order.PaymentId = paymentToken;
 
 
-        //}
+            //save to db
+            _unitOfWork.Repository<Order>().Add(order);
+            var rows = await _unitOfWork.Complet();
+            if (rows <= 0)
+                return (null, null, null);
+
+            return (order, redirectUrl, paymentToken);
+
+
+        }
 
 
         public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string PhoneNumber)
@@ -177,36 +178,67 @@ namespace ArtStation.Services
             return order;
         }
 
-        //public async Task<PagedResult<Order>> GetOrdersDashboardAsync(int page, int pageSize)
-        //{
-        //    return await _unitOfWork.Repository<Order>().GetAllAsync(page, pageSize);
-        //}
 
+        //Get All Orders For Admin
         public async Task<PagedResult<Order>> GetOrdersDashboardAsync(int page, int pageSize, string statusFilter)
         {
-            var query = await _unitOfWork.Repository<Order>().GetAllAsync();
+            var query = await _unitOfWork.Repository<Order>().GetAllAsync(page, pageSize);
+           
 
             if (!string.IsNullOrEmpty(statusFilter))
-                query = query.Where(o => o.Status.ToString() == statusFilter);
+                query = (PagedResult<Order>)query.Items.Where(o => o.Status.ToString() == statusFilter)
+                    .OrderByDescending(o => o.OrderDate);
 
-            var totalItems = query.Count();
-            var items =  query
-                .OrderByDescending(o => o.OrderDate)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+            return query;
+            //var totalItems = query.Count();
+            //var items =  query
+            //    .OrderByDescending(o => o.OrderDate)
+            //    .Skip((page - 1) * pageSize)
+            //    .Take(pageSize)
+            //    .ToList();
 
-            return new PagedResult<Order>
-            {
-                TotalItems = totalItems,
-                Items = items
-            };
+            //return new PagedResult<Order>
+            //{
+            //    TotalItems = totalItems,
+            //    Items = items
+            //};
         }
 
-
+        // Get Order details with as invoice 
         public async Task<OrderInvoiceDto> GetOrderWithDetailsDashboardAsync(int id)
         {
             return await _orderRepo.GetOrderWithDetailsAsync(id);
+        }
+
+        //For Company Dashboard 
+
+        //Get Company Orders 
+        public async Task<PagedResult<Order>> GetOrdersForCompanyAsync(int TraderId, int page, int pageSize, string statusFilter)
+        {
+            var orders=await _orderRepo.GetOrdersForSpecificCompanyAsync(TraderId,  page,  pageSize, statusFilter);
+           
+           return orders;  
+           
+        }
+
+        //Get Company Orders with items 
+        public Task<Order> GetOrderWithItemsForCompanyAsync(int OrderId, int traderid)
+        {
+           var orders =_orderRepo.GetOrderWithItemsForSpecificCompanyAsync(OrderId,traderid);
+            return orders;
+        }
+
+        //Get Invoice 
+        public Task<OrderInvoiceDto> GetInvoiceForCompanyAsync(int OrderId, int TraderId)
+        {
+            var invoice= _orderRepo.GetInvoiceForTraderAsync(OrderId,TraderId);
+            return invoice;
+        }
+
+        public Task<string> ReadyOrderForCompanyAsync(int OrderId, int TraderId)
+        {
+           var msg =_orderRepo.ReadyOrderForCompanyAsync(OrderId, TraderId);
+            return msg; 
         }
     }
 }

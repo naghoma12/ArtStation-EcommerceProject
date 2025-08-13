@@ -22,7 +22,8 @@
         {
             @foreach (var item in Model.Items)
             {
-                                                <tr>
+                <tr style="cursor:pointer;"
+                    onclick="handleRowClick(event, '@Url.Action("Details", "Trader", new { id = item.Id })')">
                                                     <td>
                                                         <div class="d-flex px-2 py-2">
                                                             <div>

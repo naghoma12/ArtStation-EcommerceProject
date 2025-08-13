@@ -1,4 +1,5 @@
 ﻿@using ArtStation_Dashboard.ViewModels.User
+@using NuGet.Protocol
 @model PagedResult<UserViewModel>
 
 @{
@@ -19,23 +20,34 @@
         </button>
     </div>
 }
+
+<div class="d-flex justify-content-center my-3">
+    <label class="form-label">  @(("بحث", "Search").Localize(lang))</label>
+    <div class="input-group input-group-outline my-3 w-50">
+
+        <input type="text" id="searchInput" value="@ViewBag.Search" placeholder="@(("  ابحث بالاسم أو رقم الموبايل ", "Search With Name ,Phone Number").Localize(lang)) " class="form-control w-auto mx-1" />
+    </div>
+</div>
+
 <div class="d-flex justify-content-center my-3">
     <a href="#" class="btn btn-outline-primary mx-1 ajax-filter @(ViewBag.StatusFilter == null ? "active" : "")"
        data-status="">
         @(("الكل", "All").Localize(lang))
     </a>
+
     <a href="#" class="btn btn-outline-info mx-1 ajax-filter @(ViewBag.StatusFilter?.ToString() == "True" ? "active" : "")"
        data-status="true">
         @(("مفعل", "Active").Localize(lang))
     </a>
+
     <a href="#" class="btn btn-outline-danger mx-1 ajax-filter @(ViewBag.StatusFilter?.ToString() == "False" ? "active" : "")"
        data-status="false">
-        @(("غير مفعل", "NonActive").Localize(lang))
+        @(("غير مفعل", "Inactive").Localize(lang))
     </a>
-</div>
 
+</div>
 <div class="container-fluid py-4">
-    <form style="display:none;">
+    <form id="antiForgeryForm" style="display:none;">
         @Html.AntiForgeryToken()
     </form>
 
@@ -49,7 +61,10 @@
                 </div>
                 <div class="card-body px-0 pb-2">
                     <div class="table-responsive p-0">
-                        @Html.Partial("_UserTablePartial", Model)
+                        <div id="user-table-container">
+                            @Html.Partial("_UserTablePartial", Model)
+                        </div>
+                      
                     </div>
                 </div>
             </div>
@@ -76,114 +91,243 @@
 
 
     <script>
-         let currentStatus = '@ViewBag.StatusFilter'.toLowerCase();
-        let pageSize = '@Model.PageSize';
-                function loadBanners(page, status) {
+        let currentPage = 1;
+        let currentStatus = "";
+                let currentSearch = "";
+        let searchTimeout = null; // المؤقت
+          var lang = $('#currentLang').val(); // "ar" or "en"
+         var localized = {
+             deleteSuccessTitle: @Html.Raw(("تم الحذف!", "Deleted!").Localize(lang).ToJson()),
+            deleteSuccessText: @Html.Raw(("تم حذف اللوحة بنجاح.", "Banner deleted successfully.").Localize(lang).ToJson()),
+            deleteErrorTitle: @Html.Raw(("خطأ في الحذف", "Delete Error").Localize(lang).ToJson()),
+            deleteErrorText: @Html.Raw(("حدث خطأ أثناء الحذف.", "An error occurred while deleting.").Localize(lang).ToJson()),
+            confirmDeleteTitle: @Html.Raw(("هل أنت متأكد؟", "Are you sure?").Localize(lang).ToJson()),
+            confirmDeleteText: @Html.Raw(("لا يمكنك التراجع عن هذه العملية!", "This action cannot be undone!").Localize(lang).ToJson()),
+            confirmButtonText: @Html.Raw(("نعم، احذفها!", "Yes, delete it!").Localize(lang).ToJson()),
+            cancelButtonText: @Html.Raw(("إلغاء", "Cancel").Localize(lang).ToJson()),
+            deactivationTitle: @(Html.Raw(("سبب التعطيل", "Deactivation Reason").Localize(lang).ToJson())),
+            deactivationInputLabel: @(Html.Raw(("يرجى إدخال سبب التعطيل", "Please enter a reason").Localize(lang).ToJson())),
+            deactivationInputPlaceholder: @(Html.Raw(("اكتب السبب هنا...", "Write the reason here...").Localize(lang).ToJson())),
+            confirmBtn: @(Html.Raw(("تأكيد", "Confirm").Localize(lang).ToJson())),
+            cancelBtn: @(Html.Raw(("إلغاء", "Cancel").Localize(lang).ToJson())),
+            reasonRequired: @(Html.Raw(("السبب مطلوب!", "Reason is required!").Localize(lang).ToJson())),
+            updatedSuccess: @(Html.Raw(("تم التحديث بنجاح", "Updated successfully").Localize(lang).ToJson())),
+            updateError: @(Html.Raw(("حدث خطأ أثناء التحديث", "Error occurred while updating").Localize(lang).ToJson())),
+            activeStatus: @(Html.Raw(("مفعل", "Active").Localize(lang).ToJson())),
+            inactiveStatus: @(Html.Raw(("غير مفعل", "Inactive").Localize(lang).ToJson()))
+        };
+                         function  loadUsers(page, status, search) {
             $.ajax({
-                url: '@Url.Action("Index", "User")',
+                url: '/User/Index',
                 type: 'GET',
                 data: {
                     page: page,
-                    pageSize: pageSize,
-                    statusFilter: status === "" ? null : status
+                    pageSize: @Model.PageSize,
+                    statusFilter: status,
+                             search: search
                 },
+                           headers: { 'X-Requested-With': 'XMLHttpRequest' },
                 success: function (data) {
-                    $("#banner-table-container").html(data);
+                    $("#user-table-container").html(data);
+                    currentPage = page;
                     currentStatus = status;
+                   currentSearch = search;
+                    // initEvents();
+                    initTraderEvents();
                 },
                 error: function (xhr) {
-                    console.error("Error loading banners:", xhr);
+                    Swal.fire({
+                        icon: 'error',
+                        title: localized.updateError,
+                        text: xhr.responseJSON?.message || xhr.responseText || ''
+                    });
                 }
             });
         }
 
 
-        // Handle filter buttons
-        $(document).on("click", ".ajax-filter", function (e) {
-            e.preventDefault();
-            let status = $(this).data("status")?.toString().toLowerCase() || "";
-            $(".ajax-filter").removeClass("active");
-            $(this).addClass("active");
-            loadBanners(1, status);
+
+
+                    function initTraderEvents() {
+                    // Filters
+            $(document).off("click", ".ajax-filter").on("click", ".ajax-filter", function (e) {
+                e.preventDefault();
+                $(".ajax-filter").removeClass("active");
+                $(this).addClass("active");
+
+                let statusStr = $(this).attr("data-status");
+                currentStatus = statusStr === "" ? null : (statusStr === "true");
+
+                loadUsers(1, currentStatus, currentSearch);
+            });
+            // Pagination
+            $(document).off("click", ".ajax-page").on("click", ".ajax-page", function (e) {
+                e.preventDefault();
+                const page = $(this).data("page");
+                loadUsers(page, currentStatus, currentSearch);
+            });
+               // Live Search (delay 1 ثانية)
+            $("#searchInput").off("input").on("input", function () {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function () {
+                    currentSearch = $("#searchInput").val();
+                    loadUsers(1, currentStatus, currentSearch);
+                }, 1000);
+            });
+        
+              $(document).off("click", ".btn-delete").on("click", ".btn-delete", function (e) {
+                e.preventDefault();
+                const id = $(this).data('id');
+
+                Swal.fire({
+                    title: localized.confirmDeleteTitle,
+                    text: localized.confirmDeleteText,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: localized.confirmButtonText,
+                    cancelButtonText: localized.cancelButtonText
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/User/DeleteConfirmed/' + id,
+                            type: 'POST',
+                            headers: {
+                                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                            },
+                            success: function () {
+                                Swal.fire(localized.deleteSuccessTitle, localized.deleteSuccessText, 'success')
+                                    .then(() => {
+                                        loadUsers(currentPage, currentStatus, currentSearch);
+                                    });
+                            },
+                            error: function (xhr) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: localized.deleteErrorTitle,
+                                    text: xhr.responseJSON?.message || xhr.responseText || localized.deleteErrorText
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+          $(document).ready(function () {
+
+
+            $(document).on("change", ".toggle-active", function () {
+                var checkbox = $(this);
+                var id = checkbox.data("id");
+                var isActive = checkbox.is(":checked");
+
+                if (!isActive) {
+                    Swal.fire({
+                        title: localized.deactivationTitle,
+                        input: 'text',
+                        inputLabel: localized.deactivationInputLabel,
+                        inputPlaceholder: localized.deactivationInputPlaceholder,
+                        showCancelButton: true,
+                        confirmButtonText: localized.confirmBtn,
+                        cancelButtonText: localized.cancelBtn,
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return localized.reasonRequired;
+                            }
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            var reason = result.value;
+                            sendToggleRequest(id, isActive, reason, checkbox);
+                        } else {
+                            checkbox.prop('checked', true);
+                        }
+                    });
+                } else {
+                    sendToggleRequest(id, isActive, '', checkbox);
+                }
+            });
+
+            function sendToggleRequest(id, isActive, reason, checkbox) {
+                var token = $('#antiForgeryForm input[name="__RequestVerificationToken"]').val();
+
+                $.ajax({
+                    url: '/User/ToggleActive',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        isActive: isActive,
+                        reason: reason
+                    },
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                          success: function () {
+            Swal.fire({
+                icon: 'success',
+                title: localized.updatedSuccess,
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+            let statusText = isActive ? localized.activeStatus : localized.inactiveStatus;
+
+            // تحديث النص واللون في label بجانب السويتش
+            let labelEl = $('#label-status-' + id);
+            if (labelEl.length > 0) {
+                labelEl
+                    .text(statusText)
+                    .removeClass('text-success text-danger')
+                    .addClass(isActive ? 'text-success' : 'text-danger');
+            }
+
+            // (اختياري) تحديث العنصر الآخر إن وجد
+            let statusEl = $('#status-' + id);
+            if (statusEl.length > 0) {
+                statusEl
+                    .text(statusText)
+                    .removeClass('text-success text-danger')
+                    .addClass(isActive ? 'text-success' : 'text-danger');
+            }
+        },
+
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: localized.updateError,
+                        });
+                        checkbox.prop('checked', !isActive);
+                    }
+                });
+            }
+
+
+
         });
 
-        // Handle pagination
-        $(document).on("click", ".ajax-page", function (e) {
-            e.preventDefault();
-            let page = $(this).data("page");
-            loadBanners(page, currentStatus);
-        });
+
 
 
 
        
-         $(document).on("change", ".toggle-active", function () {
+        function handleRowClick(event, url) {
+            // Get the tag name of what was clicked
+            const tag = event.target.tagName.toLowerCase();
 
+            // Ignore clicks on inputs, selects, buttons, and links
+            if (tag === 'input' || tag === 'select' || tag === 'button' || tag === 'a') {
+                return;
+            }
 
-            var checkbox = $(this);
-            var id = checkbox.data("id");
-            var isActive = checkbox.is(":checked");
+            // Otherwise, navigate
+            window.location = url;
+        }
 
-            $.ajax({
-                url: '/User/ToggleActive',
-                type: 'POST',
-                headers: {
-                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-                },
-                data: {
-                    id: id,
-                    isActive: isActive
-                },
-                success: function () {
-                    var label = checkbox.closest('.form-check').find('label');
-                    label.text(isActive ? "مفعل" : "غير مفعل");
-                },
-                error: function () {
-                    alert("حدث خطأ أثناء تحديث حالة التفعيل.");
-                    checkbox.prop("checked", !isActive);
-                }
-            });
+        $(document).ready(function () {
+            loadUsers(1, currentStatus);
         });
 
-        $(document).on("click", ".delete-user-btn", function () {
-            const userId = $(this).data("user-id");
-            const userName = $(this).data("user-name");
-            const rowId = $(this).data("row-id");
-
-            Swal.fire({
-                title: "هل أنت متأكد؟",
-                text: `هل تريد حذف المستخدم: ${userName}؟`,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "نعم، احذف",
-                cancelButtonText: "إلغاء",
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const token = $('input[name="__RequestVerificationToken"]').val();
-
-                    $.ajax({
-                        url: '/User/DeleteAjax',
-                        type: 'POST',
-                        headers: {
-                            'RequestVerificationToken': token
-                        },
-                        data: { id: userId },
-                        success: function (response) {
-                            if (response.success) {
-                                $("#" + rowId).remove();
-                                Swal.fire("تم الحذف!", "تم حذف المستخدم بنجاح.", "success");
-                            } else {
-                                Swal.fire("خطأ", response.message || "فشل في حذف المستخدم.", "error");
-                            }
-                        },
-                        error: function () {
-                            Swal.fire("خطأ", "حدث خطأ أثناء تنفيذ العملية.", "error");
-                        }
-                    });
-                }
-            });
-        });
     </script>
 }

@@ -46,7 +46,8 @@
             {
                 @foreach (var item in Model.Items)
                 {
-                    <tr>
+                    <tr style="cursor:pointer;"
+                        onclick="window.location='@Url.Action("Details", "Banner", new { id = item.Id })'">
                         <td>
 
                             <div>
