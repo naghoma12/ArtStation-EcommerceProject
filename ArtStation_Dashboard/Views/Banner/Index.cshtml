@@ -64,6 +64,8 @@
     </div>
 </div>
 
+
+
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -112,15 +114,16 @@
                 }
             });
         }
+         
+        
 
         function initBannerEvents() {
-            // Pagination
+                // Pagination
             $(document).off("click", ".ajax-page").on("click", ".ajax-page", function (e) {
                 e.preventDefault();
                 const page = $(this).data("page");
                 loadBanners(page, currentStatus);
             });
-
             // Filters
             $(document).off("click", ".ajax-filter").on("click", ".ajax-filter", function (e) {
                 e.preventDefault();
@@ -203,13 +206,23 @@
                 });
             });
         }
-          function handleRowClick(event, url) {
-            // Ignore clicks if they happened inside these interactive elements
-            if (event.target.closest('button, a, input, select, textarea, label, i')) {
+        
+         function handleRowClick(event, url) {
+            const tag = event.target.tagName.toLowerCase();
+
+            // Ignore clicks on inputs, selects, buttons, labels, and links
+            if (['input', 'select', 'button', 'a', 'label', 'i'].includes(tag)) {
                 return;
             }
+
+            // Also ignore elements inside dropdown menus
+            if ($(event.target).closest('.dropdown-menu').length) {
+                return;
+            }
+
             window.location = url;
         }
+
         $(document).ready(function () {
             loadBanners(1, currentStatus);
         });

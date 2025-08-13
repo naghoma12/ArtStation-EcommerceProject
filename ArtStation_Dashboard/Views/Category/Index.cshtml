@@ -80,57 +80,6 @@
             });
         }
 
-        //       function bindSelection(){
-
-        //        const bulkActionSelect = document.getElementById("bulkAction");
-
-        // function updateBulkActions() {
-        //     const checkboxes = document.querySelectorAll(".select-row");
-        //     const checked = document.querySelectorAll(".select-row:checked");
-
-        //     bulkActionSelect.innerHTML = '<option value="">Select Action</option>'; // Reset
-
-        //     if (checked.length === 1) {
-        //         bulkActionSelect.innerHTML +=
-        //             <option value="edit">Edit</option>
-        //             <option value="delete">Delete</option>
-        //             <option value="details">Details</option>
-        //         ;
-        //     }
-        //     else if (checked.length > 1 && checked.length < checkboxes.length) {
-        //         bulkActionSelect.innerHTML +=
-        //             <option value="delete">Delete</option>
-        //         ;
-        //     }
-        //     else if (checked.length === checkboxes.length && checkboxes.length > 0) {
-        //         bulkActionSelect.innerHTML +=
-        //             <option value="deleteAll">Delete All</option>
-        //         ;
-        //     }
-        // }
-
-        // function getSelectedIds() {
-        //     return Array.from(document.querySelectorAll(".select-row:checked")).map(cb => cb.value);
-        // }
-
-        // // Update dropdown when selection changes
-        // document.addEventListener("change", function(e) {
-        //     if (e.target.classList.contains("select-row") || e.target.id === "select-all") {
-        //         updateBulkActions();
-        //     }
-        // });}
-    
-        // function bindSelectAllCheckbox() {
-        //     const selectAll = document.getElementById("select-all");
-        //     if (selectAll) {
-        //         selectAll.addEventListener("change", function () {
-        //             const isChecked = this.checked;
-        //             document.querySelectorAll(".select-row").forEach(cb => {
-        //                 cb.checked = isChecked;
-        //             });
-        //         });
-        //     }
-        // }
         function loadCategories(page = 1, searchText = '') {
             fetch(`/Category/FilterCategories?page=${page}&searchText=${encodeURIComponent(searchText)}`)
                 .then(res => res.text())

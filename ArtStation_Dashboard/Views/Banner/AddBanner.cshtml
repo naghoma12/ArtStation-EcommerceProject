@@ -3,57 +3,78 @@
 @{
     var culture = System.Globalization.CultureInfo.CurrentUICulture;
    
-    var lang = culture.Name;
+    var language = culture.Name;
 }
-<section>
-    <div class="page-header ">
-        <div class="container">
-            <div class="row">
-              
-                <div class="col-xl-9 col-lg-6 col-md-8 d-flex flex-column m-auto ">
-                    <div class="card card-plain">
-                        <div class="card-header">
-                            <h4 class="font-weight-bolder">@(("اضف لوحة", "Add New Banner").Localize(lang)) </h4>
-                            <p class="mb-0"></p>
-                        </div>
-                        <div class="card-body">
-                            <form role="form" asp-action="AddBanner" method="post" enctype="multipart/form-data">
-                                
-                                <input type="hidden" asp-for="Id" />    
-                                <div class="input-group input-group-outline mb-3">
-                                    <label asp-for="Title" class="form-label">@(("عنوان اللوحه", "Banner Title").Localize(lang))</label>
-                                    <input asp-for="Title" type="text" class="form-control">
-                                    <br />
-                                    <span asp-validation-for="Title" class="text-danger"></span>
-                                </div>
-                                <div class="input-group input-group-outline mb-3">
-                                    <label asp-for="Photo" class="form-label"> @(("صوره اللوحه", "Banner Image").Localize(lang))</label>
-                                     <input asp-for="Photo" class="form-control " type="file" id="formFile" />
-                                    <br />
-                                    <span asp-validation-for="Photo" class="text-danger"></span>
-                                </div> 
-                                <div class="input-group input-group-outline mb-3">
-                                    <label asp-for="OrderBanner" class="form-label">@(("ترتيب اللوحه", "Banner Order").Localize(lang))</label>
-                                    <input asp-for="OrderBanner" type="number"  class="form-control">
-                                    <span asp-validation-for="OrderBanner" class="text-danger"></span>
-                                </div>
+<div class="m-auto bg-white p-5">
+    <h1>@(("اضف لوحة", "Add New Banner").Localize(language))</h1>
 
-                                <div class="form-check form-switch mb-3">
-                                    <input asp-for="IsActive" class="form-check-input" type="checkbox" id="isActiveSwitch">
-                                    <label class="form-check-label" for="isActiveSwitch">@(("نشط", "Active").Localize(lang))</label>
-                                </div>
-                                <span asp-validation-for="IsActive" class="text-danger"></span>
+    <hr />
+    <form asp-action="AddBanner" method="post" enctype="multipart/form-data">
 
-                              
-                                <div class="text-center">
-                                    <button type="submit" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">@(("اضف لوحة", "Add New Banner").Localize(lang))</button>
-                                </div>
-                            </form>
-                        </div>
-                       
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="row">
+
+            <!-- Banner Title -->
+            <div class="col-md-6">
+                <div class="input-group input-group-outline my-3">
+                    <label class="form-label">@(("عنوان اللوحه", "Banner Title").Localize(language))</label>
+                    <input asp-for="Title" type="text" class="form-control" />
+                </div>
+                    <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <!-- Banner Order -->
+            <div class="col-md-6">
+                <div class="input-group input-group-outline my-3">
+                    <label class="form-label">@(("ترتيب اللوحه", "Banner Order").Localize(language))</label>
+                    <input asp-for="OrderBanner" type="number" class="form-control" min="1" />
+                </div>
+                    <span asp-validation-for="OrderBanner" class="text-danger"></span>
+            </div>
+
+            <!-- Banner Image -->
+            <div class="col">
+                <div class="input-group input-group-outline my-3">
+                    <label class="control-label fs-7">
+                        @(("صوره اللوحه", "Banner Image").Localize(language))
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-image"></i>
+                        </span>
+                        <input asp-for="Photo"
+                               type="file"
+                               class="form-control form-control-lg"
+                               id="formFile"
+                               accept="image/*" />
                     </div>
+                    <span asp-validation-for="Photo" class="text-danger mt-1"></span>
                 </div>
             </div>
+
+            <!-- Is Active -->
+            <div class="col-12 mt-3">
+                <div class="form-check form-switch">
+                    <input asp-for="IsActive" class="form-check-input" type="checkbox" id="isActiveSwitch" />
+                    <label class="form-check-label" for="isActiveSwitch">
+                        @(("نشط", "Active").Localize(language))
+                    </label>
+                </div>
+                <span asp-validation-for="IsActive" class="text-danger"></span>
+            </div>
+
         </div>
-    </div>
-</section>
+
+        <!-- Submit & Back -->
+        <div class="form-group mt-4">
+            <input type="submit" value="@(("اضافة", "Add").Localize(language))" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-light ms-2">
+                @(language == "en" ? "Back to List" : "العودة إلى القائمة")
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
