@@ -1,7 +1,17 @@
 ﻿@using ArtStation.Core.Statistics
+@using System.Globalization
 @model StatisticsDTO
 @{
     ViewData["Title"] = "Home Page";
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
+
+    var lang = culture.Name;
+    var culture1 = lang == "ar" ? new CultureInfo("ar-EG") : CultureInfo.InvariantCulture;
+    Func<decimal, string> formatPrice = price =>
+        lang == "ar"
+            ? price.ToString("C", culture)
+            : $"EGP {price.ToString("0.00")}";
+    var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
 }
 <style>
     .chart {
@@ -15,17 +25,17 @@
         height: 100% !important;
     }
 </style>
-<div class="container-fluid py-4">
+<div class="container-fluid py-4" >
     <div class="row">
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
             <div class="card">
-                <div class="card-header p-3 pt-2">
-                    <div class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                <div class="card-header p-3 pt-2" >
+                    <div class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute" >
                         <i class="material-icons opacity-10">weekend</i>
                     </div>
-                    <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Today's Money</p>
-                        <h4 class="mb-0">@Model.DailyMoney EGP</h4>
+                    <div class="text-end pt-1" >
+                        <p class="text-sm mb-0 text-capitalize">@(("أموال اليوم", "Today's Money").Localize(lang))</p>
+                        <h4 class="mb-0">@formatPrice(Model.DailyMoney)</h4>
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
@@ -42,7 +52,7 @@
                         <i class="material-icons opacity-10">person</i>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Total Users</p>
+                            <p class="text-sm mb-0 text-capitalize">@(("عدد المستخدمين","Total Users").Localize(lang))</p>
                         <h4 class="mb-0">@Model.ApplicationUsersCount</h4>
                     </div>
                 </div>
@@ -58,7 +68,7 @@
                         <i class="material-icons opacity-10">person</i>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Total Companies</p>
+                            <p class="text-sm mb-0 text-capitalize">@(("عدد الشركات", "Total Companies").Localize(lang))</p>
                         <h4 class="mb-0">@Model.CompaniesCount</h4>
                     </div>
                 </div>
@@ -76,7 +86,7 @@
                         <i class="material-icons opacity-10">weekend</i>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Daily Sales</p>
+                        <p class="text-sm mb-0 text-capitalize">@(("المبيعات اليوميه", "Daily Sales").Localize(lang))</p>
                         <h4 class="mb-0">@Model.dailySales.TodaySale</h4>
                     </div>
                 </div>
@@ -99,14 +109,14 @@
                     </div>
                 </div>
                 <div class="card-body " >
-                    <h6 class="mb-0" style="font-size : x-large">Daily Sales</h6>
+                    <h6 class="mb-0" style="font-size : x-large">@(("المبيعات اليوميه", "Daily Sales").Localize(lang))</h6>
                     <p class="text-md">
-                        (<span class="font-weight-bolder">@Model.dailySales.Percentage.ToString("0.##")%</span>) increase in today sales.
+                        (<span class="font-weight-bolder">@Model.dailySales.Percentage.ToString("0.##")%</span>) @(("زياده في مبيعات اليوم","increase in today sales").Localize(lang)).
                     </p>
                     <hr class="dark horizontal">
                     <div class="d-flex">
                         <i class="material-icons text-sm my-auto me-1">schedule</i>
-                        <p class="mb-0 text-md">updated @Model.dailySales.LastUpdated.ToString("h:mm tt")</p>
+                        <p class="mb-0 text-md">@(("تم التعديل", "updated").Localize(lang)) @Model.dailySales.LastUpdated.ToString("h:mm tt")</p>
                     </div>
                 </div>
             </div>
@@ -117,6 +127,7 @@
 @section Scripts{
     <script>
         var salesData = @Html.Raw(Json.Serialize(Model.SalesData));
+        
         var ctx2 = document.getElementById("chart-line").getContext("2d");
                 new Chart(ctx2, {
             type: "line",

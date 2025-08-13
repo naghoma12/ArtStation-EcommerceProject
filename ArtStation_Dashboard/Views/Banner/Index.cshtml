@@ -7,7 +7,7 @@
     var lang = culture.Name;
 }
 
-<div class="d-flex justify-content-center my-3">
+<div class="d-flex justify-content-center ">
     <a href="#" class="btn btn-outline-primary mx-1 ajax-filter @(ViewBag.StatusFilter == null ? "active" : "")"
        data-status="">
         @(("الكل", "All").Localize(lang))
@@ -71,8 +71,8 @@
     <script>
         let currentPage = 1;
         let currentStatus = "";
-      
 
+       
         const localized = {
             deleteSuccessTitle: @Html.Raw(("تم الحذف!", "Deleted!").Localize(lang).ToJson()),
             deleteSuccessText: @Html.Raw(("تم حذف اللوحة بنجاح.", "Company deleted successfully.").Localize(lang).ToJson()),
@@ -203,18 +203,13 @@
                 });
             });
         }
-           function handleRowClick(event, url) {
-                // Get the tag name of what was clicked
-                const tag = event.target.tagName.toLowerCase();
-
-                // Ignore clicks on inputs, selects, buttons, and links
-                if (tag === 'input' || tag === 'select' || tag === 'button' || tag === 'a') {
-                    return;
-                }
-
-                // Otherwise, navigate
-                window.location = url;
+          function handleRowClick(event, url) {
+            // Ignore clicks if they happened inside these interactive elements
+            if (event.target.closest('button, a, input, select, textarea, label, i')) {
+                return;
             }
+            window.location = url;
+        }
         $(document).ready(function () {
             loadBanners(1, currentStatus);
         });

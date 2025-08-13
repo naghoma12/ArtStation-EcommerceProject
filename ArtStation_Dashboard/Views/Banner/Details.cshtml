@@ -1,35 +1,56 @@
-﻿
-@model ArtStation.Core.Entities.Banner
+﻿@model ArtStation.Core.Entities.Banner
 @{
     var culture = System.Globalization.CultureInfo.CurrentUICulture;
     var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
     var lang = culture.Name;
 }
-<div class="container py-5 ">
+
+<div class="d-flex justify-content-between align-items-center my-4 ms-4 me-5">
+    <h1 class="fw-bold mb-0">
+        @(("تفاصيل اللوحات الإعلانيه", "Banners Details").Localize(lang))
+    </h1>
+    <a asp-action="Index" class="btn btn-outline-primary">
+        <i class="fa fa-arrow-left me-1"></i>
+        @(lang == "en" ? "Back to List" : "العودة إلى القائمة")
+    </a>
+</div>
+
+<div class="container">
     <div class="card shadow-lg rounded-4 overflow-hidden">
         <div class="row g-0">
+            <!-- Image Section -->
             <div class="col-md-5">
-                <img src="~/Uploads/Banners/@Model.ImageUrl " class="img-fluid h-100 w-100 object-fit-cover" alt="@Model.Title" style="min-height: 300px;" />
+                <img src="~/Uploads/Banners/@Model.ImageUrl"
+                     class="img-fluid h-100 w-100 object-fit-cover"
+                     alt="@Model.Title"
+                     style="min-height: 300px;" />
             </div>
-            <div class="col-md-7">
-                <div class="card-body p-5">
-                    
 
+            <!-- Details Section -->
+            <div class="col-md-7 position-relative">
+                <div class="card-body p-5">
+                    <!-- Edit Icon -->
+                    <a asp-action="Edit" asp-route-id="@Model.Id"
+                       class="position-absolute top-0 end-0 m-4 text-primary"
+                       style="font-size:24px;"
+                       title="@(lang == "en" ? "Edit" : "تعديل")">
+                        <i class="fa fa-edit fa-lg"></i>
+                    </a>
+
+                    <!-- Banner Info -->
                     <ul class="list-group list-group-flush mt-4">
-                        @* <li class="list-group-item"><strong>@(("صوره اللوحله", "Banner Image").Localize(lang)) : </strong>@Model.ImageUrl </li> *@
-                        <li class="list-group-item"><strong>@(("عنوان اللوحه", "Banner Title").Localize(lang)) : </strong>@Model.Title</li>
-                       
-                            <li class="list-group-item"><strong>@(("ترتيب اللوحه", "Banner Order").Localize(lang)) : </strong>@Model.OrderBanner</li>
-                          <li class="list-group-item"><strong>@(("تاريخ الانشاء", "Date Created").Localize(lang)) : </strong>@Model.CreatedDate</li>
-                        
-                       
+                        <li class="list-group-item">
+                            <strong>@(("عنوان اللوحه", "Banner Title").Localize(lang)) :</strong> @Model.Title
+                        </li>
+                        <li class="list-group-item">
+                            <strong>@(("ترتيب اللوحه", "Banner Order").Localize(lang)) :</strong> @Model.OrderBanner
+                        </li>
+                        <li class="list-group-item">
+                            <strong>@(("تاريخ الانشاء", "Date Created").Localize(lang)) :</strong> @Model.CreatedDate.ToString("yyyy-MM-dd")
+                        </li>
                     </ul>
 
-                    <div class="mt-5">
-                        <a asp-action="Index" class="btn btn-outline-primary">
-                            @(( "Back to List","العودة إلى القائمة").Localize(lang))
-                        </a>
-                    </div>
+                    
                 </div>
             </div>
         </div>
