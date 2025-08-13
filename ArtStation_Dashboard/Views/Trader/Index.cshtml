@@ -78,6 +78,16 @@
     </div>
 </div>
 
+<nav>
+    <ul class="pagination justify-content-center">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link ajax-page" href="#" data-page="@i">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
