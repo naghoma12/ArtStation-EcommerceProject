@@ -119,11 +119,12 @@
 
         function initBannerEvents() {
                 // Pagination
-            $(document).off("click", ".ajax-page").on("click", ".ajax-page", function (e) {
-                e.preventDefault();
-                const page = $(this).data("page");
-                loadBanners(page, currentStatus);
-            });
+                   $(document).off("click", ".ajax-page").on("click", ".ajax-page", function (e) {
+            e.preventDefault();
+            const page = $(this).data("page");
+            loadBanners(page, currentStatus);
+        });
+
             // Filters
             $(document).off("click", ".ajax-filter").on("click", ".ajax-filter", function (e) {
                 e.preventDefault();
