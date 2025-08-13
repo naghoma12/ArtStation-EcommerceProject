@@ -46,8 +46,7 @@
             {
                 @foreach (var item in Model.Items)
                 {
-                    <tr style="cursor:pointer;"
-                        onclick="window.location='@Url.Action("Details", "Banner", new { id = item.Id })'">
+                    <tr style="cursor:pointer;" onclick="handleRowClick(event, '@Url.Action("Details", "Banner", new { id = item.Id })')">
                         <td>
 
                             <div>
@@ -111,14 +110,13 @@
         </tbody>
     </table>
 </div>
-
-    <nav>
-        <ul class="pagination justify-content-center">
-            @for (int i = 1; i <= Model.TotalPages; i++)
-            {
-                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                    <a class="page-link ajax-page" href="#" data-page="@i">@i</a>
-                </li>
-            }
-        </ul>
-    </nav>
+<nav>
+    <ul class="pagination justify-content-center">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link ajax-page" href="#" data-page="@i">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
