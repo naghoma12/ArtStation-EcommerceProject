@@ -2,6 +2,7 @@
 using ArtStation.Core.Entities;
 using ArtStation.Core.Entities.Identity;
 using ArtStation.Core.Helper;
+using ArtStation.Core.Helper.AiDtos;
 using ArtStation.Core.Repository.Contract;
 using ArtStation_Dashboard.Helper;
 using ArtStation_Dashboard.ViewModels;
@@ -221,15 +222,19 @@ namespace ArtStation_Dashboard.Controllers
         }
         // Admin
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> FilterProducts(int? categoryId, string searchText, int page = 1, int pageSize = 5 )
+        public async Task<IActionResult> FilterProducts(int? categoryId,string? brand, string searchText, int page = 1, int pageSize = 5 )
         {
-            string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
+            string language = GetLanguage();
             ViewData["Language"] = language;
 
             var productsList = await _productRepository.GetProducts();
             if (categoryId.HasValue && categoryId.Value > 0)
             {
                 productsList = productsList.Where(p => p.CategoryId == categoryId.Value).ToList();
+            }
+            if (!string.IsNullOrEmpty(brand))
+            {
+                productsList = productsList.Where(p => !string.IsNullOrEmpty(p.BrandEN) && p.BrandEN.Contains(brand) || !string.IsNullOrEmpty(p.BrandAR) && p.BrandAR.Contains(brand));
             }
             if (!string.IsNullOrEmpty(searchText))
                 productsList = productsList.Where(p => p.NameAR.Contains(searchText) || p.NameEN.ToLower().Contains(searchText.ToLower()));
@@ -275,20 +280,26 @@ namespace ArtStation_Dashboard.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewData["Language"] = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
-            var categories = await _categoryRepository.GetSimpleCategory(GetLanguage());
-            return View(categories);
+            var language = GetLanguage();
+            ViewData["Language"] = language;
+            ProductFilters productFilters = new ProductFilters();
+            productFilters.Categories = await _categoryRepository.GetSimpleCategory(GetLanguage());
+            productFilters.Brands = await _productRepository.GetBrands(language);
+            return View(productFilters);
         }
         [Authorize(Roles = "Trader")]
         public async Task<IActionResult> GetTraderCategory()
         {
-            ViewData["Language"] = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
-            var categories = await _categoryRepository.GetSimpleCategory(GetLanguage());
-            return View(categories);
+            var language = GetLanguage();
+            ViewData["Language"] = language;
+            ProductFilters productFilters = new ProductFilters();
+            productFilters.Categories = await _categoryRepository.GetSimpleCategory(GetLanguage());
+            productFilters.Brands = await _productRepository.GetBrands(language);
+            return View(productFilters);
         }
         // Trader
         [Authorize(Roles = "Trader")]
-        public async Task<IActionResult> FilterTraderProducts(int? categoryId, string searchText,int page = 1, int pageSize =5)
+        public async Task<IActionResult> FilterTraderProducts(int? categoryId,string? brand, string searchText,int page = 1, int pageSize =5)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             string language = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture.Culture.TwoLetterISOLanguageName ?? "en";
@@ -299,6 +310,10 @@ namespace ArtStation_Dashboard.Controllers
             if (categoryId.HasValue && categoryId.Value > 0)
             {
                 productsList = productsList.Where(p => p.CategoryId == categoryId.Value).ToList();
+            }
+            if (!string.IsNullOrEmpty(brand))
+            {
+               productsList = productsList.Where(p => !string.IsNullOrEmpty(p.BrandEN) && p.BrandEN.Contains(brand) || !string.IsNullOrEmpty(p.BrandAR)&& p.BrandAR.Contains(brand));
             }
             if (!string.IsNullOrEmpty(searchText))
                 productsList = productsList.Where(p => p.NameAR.Contains(searchText) || p.NameEN.ToLower().Contains(searchText.ToLower()));

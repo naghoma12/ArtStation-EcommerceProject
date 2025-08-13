@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Twilio.Types;
 using Order = ArtStation.Core.Entities.Order.Order;
 
 namespace ArtStation.Repository.Repository
@@ -74,9 +75,6 @@ namespace ArtStation.Repository.Repository
                 .Take(pageSize)
                 .ToListAsync();
                
-       
-      
-
         }
 
         public async Task<OrderInvoiceDto> GetOrderWithDetailsAsync(int id)
@@ -109,7 +107,122 @@ namespace ArtStation.Repository.Repository
                 Items = items,
             };
         }
+        public decimal GetDailyMoneyCount()
+        {
+            var today = DateTime.Today;
+            var tomorrow = today.AddDays(1);
 
+            return _context.Set<Order>()
+                .Where(x => x.CreatedDate >= today && x.CreatedDate < tomorrow)
+                .Sum(x => x.SubTotal);
+        }
+        public int GetDailyOrdersCount()
+        {
+            var today = DateTime.Today;
+            var tomorrow = today.AddDays(1);
 
+            return _context.Set<Order>()
+                .Where(x => x.CreatedDate >= today && x.CreatedDate < tomorrow)
+                .Count();
+        }
+        public int GetCompanyOrdersCount(string phoneNumber)
+        {
+            var today = DateTime.Today;
+            var tomorrow = today.AddDays(1);
+
+            return _context.Set<Order>()
+                .Where(x => x.CreatedDate >= today && x.CreatedDate < tomorrow
+                && x.CustomerPhone == phoneNumber)
+                .Count();
+        }
+        public decimal GetDailyCompanyMoneyCount(string phoneNumber)
+        {
+            var today = DateTime.Today;
+            var tomorrow = today.AddDays(1);
+
+            return _context.Set<Order>()
+                .Where(x => x.CreatedDate >= today && x.CreatedDate < tomorrow
+                && x.CustomerPhone == phoneNumber)
+                .Sum(x => x.SubTotal);
+        }
+
+        public int GetYesterdayOrdersCount()
+        {
+            var today = DateTime.Today;
+            var yesterday = today.AddDays(-1);
+
+            return _context.Set<Order>()
+                .Where(x => x.CreatedDate >= yesterday
+                            && x.CreatedDate < today)
+                .Count();
+        }
+
+        public int GetYesterdayOrdersCount(string phoneNumber)
+        {
+            var today = DateTime.Today;
+            var yesterday = today.AddDays(-1);
+
+            return _context.Set<Order>()
+                .Where(x => x.CreatedDate >= yesterday
+                            && x.CreatedDate < today
+                            && x.CustomerPhone == phoneNumber)
+                .Count();
+        }
+
+        public List<decimal> GetWeeklySales()
+        {
+            var today = DateTime.Today;
+            var weekStart = today.AddDays(-6); // 7 days including today
+
+            // Group orders by date and sum daily sales amount
+            var salesByDay = _context.Set<Order>()
+                .Where(o => o.CreatedDate >= weekStart && o.CreatedDate <= today)
+                .GroupBy(o => o.CreatedDate.Date)
+                .Select(g => new
+                {
+                    Date = g.Key,
+                    TotalSales = g.Sum(x => x.SubTotal) // or Count() if you want order count
+                })
+                .ToList();
+
+            // Ensure all 7 days are included, even if sales = 0
+            var result = Enumerable.Range(0, 7)
+                .Select(i => {
+                    var date = weekStart.AddDays(i);
+                    var dayData = salesByDay.FirstOrDefault(x => x.Date == date);
+                    return dayData?.TotalSales ?? 0;
+                })
+                .ToList();
+
+            return result;
+        }
+        public List<decimal> GetWeeklySales(string phoneNumber)
+        {
+            var today = DateTime.Today;
+            var weekStart = today.AddDays(-6); // 7 days including today
+
+            // Group orders by date and sum daily sales amount
+            var salesByDay = _context.Set<Order>()
+                .Where(o => o.CreatedDate >= weekStart && o.CreatedDate <= today
+                && o.CustomerPhone == phoneNumber)
+                .GroupBy(o => o.CreatedDate.Date)
+                .Select(g => new
+                {
+                    Date = g.Key,
+                    TotalSales = g.Sum(x => x.SubTotal) // or Count() if you want order count
+                })
+                .ToList();
+
+            // Ensure all 7 days are included, even if sales = 0
+            var result = Enumerable.Range(0, 7)
+                .Select(i => {
+                    var date = weekStart.AddDays(i);
+                    var dayData = salesByDay.FirstOrDefault(x => x.Date == date);
+                    return dayData?.TotalSales ?? 0;
+                })
+                .ToList();
+
+            return result;
+        }
     }
 }

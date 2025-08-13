@@ -1,31 +1,62 @@
-﻿@model List<SimpleCategoryDTO>
+﻿@model ProductFilters
 @{
     var language = ViewData["Language"] as string ?? "en";
 }
+<style>
+    .clickable-row:hover {
+        background-color: #f5f5f5;
+    }
 
+    .filter-products {
+        min-width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        background-color: #fff;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+        color: #6c757d;
+    }
+
+        .filter-products:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+</style>
 
 <div class="container my-4">
     <div class="row justify-content-center g-3">
         <!-- Search Input -->
-        <div class="col-md-5">
+        <div class="col-md-4">
             <div class="input-group">
-                <span class="input-group-text bg-white text-primary">
-                    <i class="fas fa-search"></i>
+                <span class="input-group-text bg-white text-primary ">
                 </span>
                 <input type="text" id="searchInput"
-                       class="form-control text-center fw-bolder bg-white text-primary"
+                       style="border-radius:8px ; padding-left: 10px;"
+                       class="form-control  bg-white text-secondary"
                        placeholder="@(("ابحث باسم المنتج", "Search by product name").Localize(language))" />
             </div>
         </div>
 
         <!-- Category Filter -->
         <div class="col-md-4">
-            <select id="categoryFilter"
-                    class="form-select text-center fw-bolder bg-white text-primary">
+            <select id="categoryFilter" class="form-select filter-products">
                 <option value="">@(("تصفية حسب الفئة", "Filter by category").Localize(language))</option>
-                @foreach (var cat in Model)
+                @foreach (var cat in Model.Categories)
                 {
                     <option value="@cat.Id">@cat.Name</option>
+                }
+            </select>
+        </div>
+
+        <!-- Brand Filter -->
+        <div class="col-md-4">
+            <select id="brandFilter" class="form-select filter-products">
+                <option value="">@(("تصفية حسب الماركه", "Filter by brand").Localize(language))</option>
+                @foreach (var brand in Model.Brands)
+                {
+                    <option value="@brand.Name">@brand.Name</option>
                 }
             </select>
         </div>
@@ -71,37 +102,44 @@
         window.addEventListener("DOMContentLoaded", () => {
             loadProducts();
         });
-        function loadProducts(categoryId = '', page = 1, searchText = '') {
-            fetch(`/Product/FilterTraderProducts?categoryId=${categoryId}&page=${page}&searchText=${encodeURIComponent(searchText)}`)
-                .then(res => res.text())
-                .then(html => {
-                    document.getElementById("productContainer").innerHTML = html;
-                });
-        }
+        function loadProducts(categoryId = '',brand = '' , page = 1, searchText = '') {
+             fetch(`/Product/FilterTraderProducts?categoryId=${categoryId}&brand=${brand}&page=${page}&searchText=${encodeURIComponent(searchText)}`)
+                 .then(res => res.text())
+                 .then(html => {
+                     document.getElementById("productContainer").innerHTML = html;
+                      bindClickableRows();
+                 });
+         }
 
-        document.getElementById("categoryFilter").addEventListener("change", function () {
-            let categoryId = this.value;
-            loadProducts(categoryId);
-        });
-        let debounceTimeout;
-        document.getElementById("searchInput").addEventListener("input", function () {
-            clearTimeout(debounceTimeout);
-            const searchText = this.value;
-            const categoryId = document.getElementById("categoryFilter").value;
-
-            debounceTimeout = setTimeout(() => {
-                loadProducts(categoryId, 1, searchText);
-            }, 300); // wait 300ms after user stops typing
-        });
-        // لو عايزة تدعمي التنقل بين الصفحات عبر AJAX
-        document.addEventListener("click", function (e) {
-            if (e.target.matches(".ajax-page")) {
-                e.preventDefault();
-                const page = e.target.dataset.page;
-                const searchText = document.getElementById("searchInput").value;
-                const categoryId = document.getElementById("categoryFilter").value;
-                loadProducts(categoryId, page, searchText);
-            }
-        });
+         document.getElementById("categoryFilter").addEventListener("change", function () {
+             let categoryId = this.value;
+             loadProducts(categoryId);
+         });
+          document.getElementById("brandFilter").addEventListener("change", function () {
+             let brand = this.value;
+             let categoryId = document.getElementById("categoryFilter").value;
+             loadProducts(categoryId, brand);
+         });
+         let debounceTimeout;
+         document.getElementById("searchInput").addEventListener("input", function () {
+             clearTimeout(debounceTimeout);
+             const searchText = this.value;
+             const categoryId = document.getElementById("categoryFilter").value;
+             const brand = document.getElementById("brandFilter").value;
+             debounceTimeout = setTimeout(() => {
+                 loadProducts(categoryId,brand, 1, searchText);
+             }, 300); // wait 300ms after user stops typing
+         });
+         // لو عايزة تدعمي التنقل بين الصفحات عبر AJAX
+         document.addEventListener("click", function (e) {
+             if (e.target.matches(".ajax-page")) {
+                 e.preventDefault();
+                 const page = e.target.dataset.page;
+                 const searchText = document.getElementById("searchInput").value;
+                 const categoryId = document.getElementById("categoryFilter").value;
+                 const brand = document.getElementById("brandFilter").value;
+                 loadProducts(categoryId,brand, page, searchText);
+             }
+         });
     </script>
 }

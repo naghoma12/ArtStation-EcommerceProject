@@ -60,7 +60,7 @@
                             @if(Model.Items != null && Model.Items.Any()){
                                 @foreach (var product in Model.Items)
                                 {
-                                    <tr>
+                                        <tr class="clickable-row" data-url="/Product/Details/@product.Id" style="cursor: pointer;">
                                         <td class="align-middle text-center">
                                             <span class="text-secondary text-xs font-weight-bold">@product.Id</span>
                                         </td>

@@ -66,6 +66,7 @@ namespace ArtStation_Dashboard
             builder.Services.AddScoped(typeof(IProductTypeRepository<ProductForWhom>), typeof(ForWhomRepository));
             builder.Services.AddScoped(typeof(IProductTypeRepository<ProductPhotos>), typeof(PhotoRepository));
             builder.Services.AddScoped(typeof(IForWhomRepository), typeof(ForWhomRepository));
+            builder.Services.AddScoped(typeof(IStatisticsService), typeof(StatisticsService));
             builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             builder.Services.AddScoped(typeof(UserHelper), typeof(UserHelper));
             builder.Services.Configure<FormOptions>(x =>

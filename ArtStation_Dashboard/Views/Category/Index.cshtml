@@ -68,7 +68,7 @@
             rows.forEach(row => {
                 row.addEventListener("click", function (e) {
                     // Prevent click if the target is a link or a checkbox
-                    if (e.target.closest('a') || e.target.type === 'checkbox') {
+                    if (e.target.closest('a') || e.target.closest('button')) {
                         return;
                     }
 

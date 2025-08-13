@@ -17,6 +17,14 @@ namespace ArtStation.Core.Repository.Contract
         //Dashboard
         public Task<IEnumerable<Order>> GetOrdersAsync(int page, int pageSize);
         public Task<OrderInvoiceDto> GetOrderWithDetailsAsync(int id);
+        decimal GetDailyMoneyCount();
+        int GetDailyOrdersCount();
+        int GetYesterdayOrdersCount();
+        decimal GetDailyCompanyMoneyCount(string phoneNumber);
+        int GetCompanyOrdersCount(string phoneNumber);
+        int GetYesterdayOrdersCount(string phoneNumber);
+        List<decimal> GetWeeklySales();
+        List<decimal> GetWeeklySales(string phoneNumber);
 
     }
 }
