@@ -1,8 +1,10 @@
 ﻿@model ProductCreation
 
 @{
-    var language = ViewData["Language"] as string ?? "en";
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
+    var language = culture.Name;
     ViewData["Title"] = ("تعديل بيانات المنتج", "Edit Product Details").Localize(language);
+
 }
 
 

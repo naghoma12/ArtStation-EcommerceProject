@@ -2,13 +2,14 @@
 @model ProductDetailsVM
 
 @{
-    var language = ViewData["Language"] as string ?? "en";
+     var culture = System.Globalization.CultureInfo.CurrentUICulture;
+    var language = culture.Name;
     ViewData["Title"] = ("تفاصيل المنتج", "Product Details").Localize(language);
 
-    var culture = language == "ar" ? new CultureInfo("ar-EG") : CultureInfo.InvariantCulture;
+    var culture1 = language == "ar" ? new CultureInfo("ar-EG") : CultureInfo.InvariantCulture;
     Func<decimal, string> formatPrice = price =>
         language == "ar"
-            ? price.ToString("C", culture)
+            ? price.ToString("C", culture1)
             : $"EGP {price.ToString("0.00")}";
 
 }

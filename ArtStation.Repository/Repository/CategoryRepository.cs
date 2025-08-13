@@ -108,7 +108,8 @@ namespace ArtStation.Repository.Repository
                 Items = items,
                 PageNumber = page,
                 PageSize = pageSize,
-                TotalItems = totalItems
+                TotalItems = totalItems,
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize)
             };
         }
 

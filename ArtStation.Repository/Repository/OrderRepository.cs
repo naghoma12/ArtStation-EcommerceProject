@@ -146,7 +146,7 @@ namespace ArtStation.Repository.Repository
                 TotalItems = totalItems,
                 PageNumber =page,
                 PageSize=pageSize,
-              TotalPages= (int)Math.Ceiling((double)totalItems / pageSize)
+                TotalPages= (int)Math.Ceiling((double)totalItems / pageSize)
             };
         }
         public decimal GetDailyMoneyCount()

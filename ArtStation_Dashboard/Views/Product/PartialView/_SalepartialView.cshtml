@@ -1,6 +1,7 @@
 ﻿@model ProductCreation
 @{
-    var language = ViewData["Language"] as string ?? "en";
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
+    var language = culture.Name;
     var isSale = Model.Sale != null && Model.Sale.Id > 0;
 }
 

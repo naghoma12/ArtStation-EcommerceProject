@@ -9,7 +9,7 @@
     var culture1 = lang == "ar" ? new CultureInfo("ar-EG") : CultureInfo.InvariantCulture;
     Func<decimal, string> formatPrice = price =>
         lang == "ar"
-            ? price.ToString("C", culture)
+            ? price.ToString("C", culture1)
             : $"EGP {price.ToString("0.00")}";
     var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
 }

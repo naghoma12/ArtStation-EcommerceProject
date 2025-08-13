@@ -8,7 +8,7 @@
 }
 
 <table class="table align-items-center mb-0">
-    <thead>
+    <thead class="text-center">
         <tr>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("اسم العميل", "Customer Name").Localize(lang))</th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("رقم العميل", "Customer Phone").Localize(lang))</th>
@@ -21,7 +21,7 @@
         {
             foreach (var item in Model.Items)
             {
-                <tr id="row_@item.Id" style="cursor:pointer;"
+                <tr id="row_@item.Id" style="cursor:pointer;" class="text-center"
                     onclick="handleRowClick(event, '@Url.Action("Details", "User", new { id = item.Id })')">
                     <td>
                         <div class="d-flex px-2 py-2">

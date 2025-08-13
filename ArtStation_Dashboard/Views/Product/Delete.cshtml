@@ -1,13 +1,15 @@
 ﻿@using System.Globalization
 @model ProductDetailsVM
 @{
-    var language = ViewData["Language"] as string ?? "en";
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
+    var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
+    var language = culture.Name;
     ViewData["Title"] = ("حذف تفاصل المنتج","Delete Product Details").Localize(language);
 
-    var culture = language == "ar" ? new CultureInfo("ar-EG") : CultureInfo.InvariantCulture;
+    var culture1 = language == "ar" ? new CultureInfo("ar-EG") : CultureInfo.InvariantCulture;
     Func<decimal, string> formatPrice = price =>
         language == "ar"
-            ? price.ToString("C", culture)
+            ? price.ToString("C", culture1)
             : $"EGP {price.ToString("0.00")}";
 }
 
@@ -26,7 +28,7 @@
         }
         else
         {
-            <a asp-action="GetTraderCategory" class="btn btn-outline-primary">
+            <a asp-action="GetTraderCategory" class="btn btn-outline-primary" >
                 <i class="fa fa-arrow-left me-1"></i>
                 @(language == "en" ? "Back to My Products" : "العودة إلى منتجاتي")
             </a>

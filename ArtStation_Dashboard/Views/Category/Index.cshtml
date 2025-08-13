@@ -1,8 +1,9 @@
 ﻿@model PagedResult<Category>
 
 @{
-    var language = ViewData["Language"] as string ?? "en";
-    ViewData["Title"] = ("مجموعة التصنيفات" , "Category List").Localize(language);
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
+    var lang = culture.Name;
+    ViewData["Title"] = ("مجموعة التصنيفات" , "Category List").Localize(lang);
 }
 <style>
     .clickable-row:hover {
@@ -40,14 +41,19 @@
 
 <div class="d-flex justify-content-center my-3">
     <div class="col-md-4">
-        <div class="input-group">
-            <input type="text" id="categorySearch"
-                   style="border-radius:8px ; padding-left: 10px;"
-                   class="form-control  bg-white text-secondary"
-                   placeholder="@(("ابحث باسم التصنيف", "Search by Category name").Localize(language))" />
+        <div class="input-group shadow-sm" style="border-radius: 8px; overflow: hidden;">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fas fa-search text-secondary"></i>
+            </span>
+            <input type="text"
+                   id="categorySearch"
+                   class="form-control bg-white text-secondary border-start-0"
+                   style="padding: 0.6rem 0.75rem;"
+                   placeholder="@(("ابحث باسم التصنيف", "Search by Category name").Localize(lang))" />
         </div>
     </div>
 </div>
+
 
 <div id="categoryContainer">
     @{

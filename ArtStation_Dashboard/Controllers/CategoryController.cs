@@ -58,6 +58,7 @@ namespace ArtStation_Dashboard.Controllers
         // Get All Categories --GET
         public IActionResult Index()
         {
+            
             return View();  
         }
 
