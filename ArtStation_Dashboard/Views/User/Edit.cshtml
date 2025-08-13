@@ -39,22 +39,31 @@
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
             <div class="col-md-6">
-                <div class="input-group input-group-static mb-4">
-                    <label class="form-label d-block">@(("النوع", "Gender").Localize(lang))</label>
+                <div class="mb-4">
+                    <label class="form-label d-block fw-bold mb-2">
+                        @(("النوع", "Gender").Localize(lang)) :
+                    </label>
 
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="Gender" id="genderMale" value="Male"
-                        @(Model.Gender == "Male" ? "checked" : "") />
-                        <label class="form-check-label" for="genderMale">@(("ذكر", "Male").Localize(lang))</label>
+                    <div class="d-flex flex-wrap gap-4 ps-2">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="Gender" id="genderMale" value="Male"
+                            @(Model.Gender == "Male" ? "checked" : "") />
+                            <label class="form-check-label fw-medium" for="genderMale">
+                                @(("ذكر", "Male").Localize(lang))
+                            </label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="Gender" id="genderFemale" value="Female"
+                            @(Model.Gender == "Female" ? "checked" : "") />
+                            <label class="form-check-label fw-medium" for="genderFemale">
+                                @(("أنثى", "Female").Localize(lang))
+                            </label>
+                        </div>
                     </div>
 
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="Gender" id="genderFemale" value="Female"
-                        @(Model.Gender == "Female" ? "checked" : "") />
-                        <label class="form-check-label" for="genderFemale">@(("أنثى", "Female").Localize(lang))</label>
-                    </div>
+                    <span asp-validation-for="Gender" class="text-danger small mt-1 d-block"></span>
                 </div>
-                <span asp-validation-for="Gender" class="text-danger"></span>
             </div>
 
             <div class="col-md-6">

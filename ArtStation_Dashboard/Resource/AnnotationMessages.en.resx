@@ -136,12 +136,15 @@
     <value>Max Length Name is 20 charachter.</value>
   </data>
   <data name="PasswordComplexity" xml:space="preserve">
-    <value>Password must contain an uppercase letter, a lowercase letter, a digit, and be at least 5 characters long.</value>
+    <value>Password must be 8-20 characters long and include at least one uppercase letter, one lowercase letter, one digit, and one special character.</value>
   </data>
   <data name="RequiredField" xml:space="preserve">
     <value>This Field Is Required!</value>
   </data>
   <data name="CategoryRequired" xml:space="preserve">
     <value>Category Name is required .</value>
+  </data>
+  <data name="PasswordLength" xml:space="preserve">
+    <value> Password must be at least 8 characters and contain letters and numbers.</value>
   </data>
 </root>

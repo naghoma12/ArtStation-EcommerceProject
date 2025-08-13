@@ -132,6 +132,9 @@
   <data name="EditUserProfileSucess" xml:space="preserve">
     <value>Edit User Profile Sucess!</value>
   </data>
+  <data name="EditUserSucessfully" xml:space="preserve">
+    <value>User Account Updated Successfully!</value>
+  </data>
   <data name="LoginInValid" xml:space="preserve">
     <value>UserName Or Password is InCorrect!</value>
   </data>
