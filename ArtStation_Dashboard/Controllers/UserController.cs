@@ -76,6 +76,7 @@ namespace ArtStation_Dashboard.Controllers
                     TotalItems = totalUsers,
                     PageNumber = page,
                     PageSize = pageSize,
+                    TotalPages= (int)Math.Ceiling((double)totalUsers / pageSize),
 
                 };
 
@@ -154,7 +155,7 @@ namespace ArtStation_Dashboard.Controllers
 
                 if (result.Succeeded)
                 {
-                    TempData["SuccessMessage"] = ViewMessages.AddTraderSucessfully;
+                    TempData["SuccessMessage"] = ViewMessages.EditUserSucessfully;
                     return RedirectToAction("Index");
                 }
 

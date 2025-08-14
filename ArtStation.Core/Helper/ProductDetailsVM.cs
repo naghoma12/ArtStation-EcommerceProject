@@ -14,6 +14,8 @@ namespace ArtStation_Dashboard.ViewModels
         public string Brand { get; set; }
         public string Category { get; set; }
         public string Trader { get; set; }
+        public int StockCount { get; set; }
+
 
         public List<string> Images { get; set; } = new List<string>();
         public List<string> Colors { get; set; } = new List<string>();

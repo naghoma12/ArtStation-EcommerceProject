@@ -80,7 +80,8 @@ namespace ArtStation_Dashboard.Controllers
                     Items = users,
                     TotalItems = totalUsers,
                     PageNumber = page,
-                    PageSize = pageSize
+                    PageSize = pageSize,
+                    TotalPages= (int)Math.Ceiling((double)totalUsers / pageSize),
                 };
 
                 ViewBag.StatusFilter = statusFilter;
@@ -117,6 +118,7 @@ namespace ArtStation_Dashboard.Controllers
         {
             if (!ModelState.IsValid)
             {
+               addUser.Cities = await unitOfWork.Repository<Shipping>().GetAllAsync();
                 return View(addUser);
             }
 

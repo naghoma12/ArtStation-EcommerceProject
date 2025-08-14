@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CategoryRequired" xml:space="preserve">
-    <value>يجب ادخال اسم التصنيف.</value>
-  </data>
   <data name="ConfirmPasswordMismatch" xml:space="preserve">
     <value>كلمة المرور الجديدة وتأكيد كلمة المرور غير متطابقتين.</value>
   </data>
@@ -127,9 +124,15 @@
     <value>اكبر عدد حروف هوا 20 حرف </value>
   </data>
   <data name="PasswordComplexity" xml:space="preserve">
-    <value> كلمة المرور يجب أن تحتوي على حرف كبير، حرف صغير، رقم، وأن تكون على الأقل 5 أحرف.</value>
+    <value>يجب أن تكون كلمة المرور بين 8 و20 حرفًا، وتحتوي على حرف كبير واحد على الأقل، وحرف صغير واحد على الأقل، ورقم واحد على الأقل، وحرف خاص واحد على الأقل.</value>
   </data>
   <data name="RequiredField" xml:space="preserve">
     <value>هذا الحقل مطلوب!</value>
+  </data>
+  <data name="CategoryRequired" xml:space="preserve">
+    <value>يجب ادخال اسم التصنيف.</value>
+  </data>
+  <data name="PasswordLength" xml:space="preserve">
+    <value>يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل وأن تحتوي على أحرف وأرقام.</value>
   </data>
 </root>

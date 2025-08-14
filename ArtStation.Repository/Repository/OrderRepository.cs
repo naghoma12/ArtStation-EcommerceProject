@@ -220,7 +220,7 @@ namespace ArtStation.Repository.Repository
                 .Count();
         }
 
-        public List<decimal> GetWeeklySales()
+        public List<int> GetWeeklySales()
         {
             var today = DateTime.Today;
             var weekStart = today.AddDays(-6); // 7 days including today
@@ -232,7 +232,7 @@ namespace ArtStation.Repository.Repository
                 .Select(g => new
                 {
                     Date = g.Key,
-                    TotalSales = g.Sum(x => x.SubTotal) // or Count() if you want order count
+                    TotalSales = g.Count() // or Count() if you want order count
                 })
                 .ToList();
 
@@ -247,7 +247,7 @@ namespace ArtStation.Repository.Repository
 
             return result;
         }
-        public List<decimal> GetWeeklySales(string phoneNumber)
+        public List<int> GetWeeklySales(string phoneNumber)
         {
             var today = DateTime.Today;
             var weekStart = today.AddDays(-6); // 7 days including today
@@ -260,7 +260,7 @@ namespace ArtStation.Repository.Repository
                 .Select(g => new
                 {
                     Date = g.Key,
-                    TotalSales = g.Sum(x => x.SubTotal) // or Count() if you want order count
+                    TotalSales = g.Count() // or Count() if you want order count
                 })
                 .ToList();
 

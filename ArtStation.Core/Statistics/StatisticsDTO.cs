@@ -14,7 +14,7 @@ namespace ArtStation.Core.Statistics
         public int ApplicationUsersCount { get; set; }
         public decimal DailyMoney { get; set; }
         public DailySales dailySales { get; set; }
-        public List<decimal> SalesData { get; set; } = new List<decimal>();
+        public List<int> SalesData { get; set; } = new List<int>();
 
     }
 

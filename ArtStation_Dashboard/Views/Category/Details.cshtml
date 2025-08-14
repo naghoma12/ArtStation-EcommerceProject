@@ -1,17 +1,43 @@
 ﻿@model CategoryProductsPagination
 
 @{
-    var language = ViewData["Language"] as string ?? "en";
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
+    var language = culture.Name;
     ViewData["Title"] = ("تفاصيل التصنيف" , "Category Details").Localize(language);
 }
 <div class="d-flex justify-content-between align-items-center my-4 ms-4 me-5">
     <h1 class="fw-bold mb-0">
         @(("تفاصيل التصنيف", "Category Details").Localize(language))
     </h1>
-    <a asp-action="Index" class="btn btn-outline-primary">
-        <i class="fa fa-arrow-left me-1"></i>
-        @(language == "en" ? "Back to List" : "العودة إلى القائمة")
-    </a>
+    <div class="d-flex gap-2">
+        <!-- Dropdown Actions -->
+        <div class="dropdown">
+            <button class="btn bg-gradient-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                @(("العمليات", "Actions").Localize(language))
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="dropdown-item" asp-action="Details" asp-controller="Category" asp-route-id="@Model.Id">
+                        @(("تفاصيل", "Details").Localize(language))
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-action="Edit" asp-controller="Category" asp-route-id="@Model.Id">
+                        @(("تعديل", "Edit").Localize(language))
+                    </a>
+                </li>
+
+                <li><a class="dropdown-item" asp-action="Delete" asp-controller="Category" asp-route-id="@Model.Id">@(("حذف", "Delete").Localize(language))</a></li>
+
+            </ul>
+        </div>
+
+        <!-- Back Button -->
+        <a asp-action="Index" class="btn btn-outline-primary">
+            <i class="fa fa-arrow-left me-1"></i>
+            @(language == "en" ? "Back to List" : "العودة إلى القائمة")
+        </a>
+    </div>
 </div>
 <style>
     .clickable-row:hover {
@@ -33,13 +59,7 @@
             </div>
             <div class="col-md-7 position-relative">
                 <div class="card-body p-5">
-                    <a asp-action="Edit" asp-route-id="@Model.Id"
-                       class="position-absolute top-0 end-0 m-4 text-primary "
-                       style="font-size:24px;"
-                       title="@(language == "en" ? "Edit" : "تعديل")">
-                        <i class="fa fa-edit fa-lg"></i>
-                    </a>
-
+                    
                     <h2 class="card-title mb-3">@Model.Name</h2>
 
                     <ul class="list-group list-group-flush mt-4">

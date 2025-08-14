@@ -28,6 +28,12 @@ namespace ArtStation_Dashboard.ViewModels.User
         public IFormFile? PhotoFile { get; set; }
         [Required(ErrorMessageResourceType = typeof(AnnotationMessages),
         ErrorMessageResourceName = "RequiredField")]
+       [ StringLength(20, MinimumLength = 8,
+    ErrorMessageResourceType = typeof(AnnotationMessages),
+    ErrorMessageResourceName = "PasswordLength")]
+    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?""{}|<>]).{8,20}$",
+        ErrorMessageResourceType = typeof(AnnotationMessages),
+        ErrorMessageResourceName = "PasswordComplexity")]
         public string Password { get; set; }
         public bool IsActive { get; set; }
         public string? InActiveMessage { get; set; }

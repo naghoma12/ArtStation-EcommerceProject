@@ -1,4 +1,5 @@
-﻿@model ArtStation.Core.Entities.Banner
+﻿@using NuGet.Protocol
+@model ArtStation.Core.Entities.Banner
 @{
     var culture = System.Globalization.CultureInfo.CurrentUICulture;
     var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
@@ -9,11 +10,37 @@
     <h1 class="fw-bold mb-0">
         @(("تفاصيل اللوحات الإعلانيه", "Banners Details").Localize(lang))
     </h1>
-    <a asp-action="Index" class="btn btn-outline-primary">
-        <i class="fa fa-arrow-left me-1"></i>
-        @(lang == "en" ? "Back to List" : "العودة إلى القائمة")
-    </a>
+
+    <div class="d-flex gap-2">
+        <!-- Dropdown Actions -->
+        <div class="dropdown">
+            <button class="btn bg-gradient-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                @(("العمليات", "Actions").Localize(lang))
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="dropdown-item" asp-action="Details" asp-controller="Banner" asp-route-id="@Model.Id">
+                        @(("تفاصيل", "Details").Localize(lang))
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-action="Edit" asp-controller="Banner" asp-route-id="@Model.Id">
+                        @(("تعديل", "Edit").Localize(lang))
+                    </a>
+                </li>
+                    <li><button class="dropdown-item btn-delete" data-id="@Model.Id">@(("حذف", "Delete").Localize(lang))</button></li>
+
+            </ul>
+        </div>
+
+        <!-- Back Button -->
+        <a asp-action="Index" class="btn btn-outline-primary">
+            <i class="fa fa-arrow-left me-1"></i>
+            @(lang == "en" ? "Back to List" : "العودة إلى القائمة")
+        </a>
+    </div>
 </div>
+
 
 <div class="container">
     <div class="card shadow-lg rounded-4 overflow-hidden">
@@ -25,18 +52,10 @@
                      alt="@Model.Title"
                      style="min-height: 300px;" />
             </div>
-
+           
             <!-- Details Section -->
             <div class="col-md-7 position-relative">
                 <div class="card-body p-5">
-                    <!-- Edit Icon -->
-                    <a asp-action="Edit" asp-route-id="@Model.Id"
-                       class="position-absolute top-0 end-0 m-4 text-primary"
-                       style="font-size:24px;"
-                       title="@(lang == "en" ? "Edit" : "تعديل")">
-                        <i class="fa fa-edit fa-lg"></i>
-                    </a>
-
                     <!-- Banner Info -->
                     <ul class="list-group list-group-flush mt-4">
                         <li class="list-group-item">
@@ -56,3 +75,57 @@
         </div>
     </div>
 </div>
+@section Scripts{
+    <script>
+         var lang = $('#currentLang').val();
+          const localized = {
+                      deleteSuccessTitle: @Html.Raw(("تم الحذف!", "Deleted!").Localize(lang).ToJson()),
+        deleteSuccessText: @Html.Raw(("تم حذف اللوحة بنجاح.", "Company deleted successfully.").Localize(lang).ToJson()),
+        deleteErrorTitle: @Html.Raw(("خطأ في الحذف", "Delete Error").Localize(lang).ToJson()),
+        deleteErrorText: @Html.Raw(("حدث خطأ أثناء الحذف.", "An error occurred while deleting.").Localize(lang).ToJson()),
+        confirmDeleteTitle: @Html.Raw(("هل أنت متأكد؟", "Are you sure?").Localize(lang).ToJson()),
+        confirmDeleteText: @Html.Raw(("لا يمكنك التراجع عن هذه العملية!", "This action cannot be undone!").Localize(lang).ToJson()),
+        confirmButtonText: @Html.Raw(("نعم، احذفها!", "Yes, delete it!").Localize(lang).ToJson()),
+        cancelButtonText: @Html.Raw(("إلغاء", "Cancel").Localize(lang).ToJson())
+          };
+        $(document).off("click", ".btn-delete").on("click", ".btn-delete", function (e) {
+                e.preventDefault();
+                const id = $(this).data('id');
+
+                Swal.fire({
+                    title: localized.confirmDeleteTitle,
+                    text: localized.confirmDeleteText,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: localized.confirmButtonText,
+                    cancelButtonText: localized.cancelButtonText
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/Banner/DeleteConfirmed/' + id,
+                            type: 'POST',
+                            headers: {
+                                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                            },
+                            success: function () {
+                                Swal.fire(localized.deleteSuccessTitle, localized.deleteSuccessText, 'success')
+                                    .then(() => {
+                                        loadBanners(currentPage, currentStatus);
+                                    });
+                            },
+                            error: function (xhr) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: localized.deleteErrorTitle,
+                                    text: xhr.responseJSON?.message || xhr.responseText || localized.deleteErrorText
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
+}
+  

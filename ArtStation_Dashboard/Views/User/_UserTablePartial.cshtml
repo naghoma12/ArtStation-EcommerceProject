@@ -6,22 +6,27 @@
     var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
     var lang = culture.Name;
 }
+<style>
 
+    .clickable-row:hover {
+        background-color: #f5f5f5;
+    }
+</style>
 <table class="table align-items-center mb-0">
-    <thead class="text-center">
+    <thead >
         <tr>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("اسم العميل", "Customer Name").Localize(lang))</th>
-            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("رقم العميل", "Customer Phone").Localize(lang))</th>
-            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("نشط", "Is Active").Localize(lang))</th>
+            <th class=" text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("رقم العميل", "Customer Phone").Localize(lang))</th>
+            <th class=" text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">@(("نشط", "Is Active").Localize(lang))</th>
             <th class="text-secondary opacity-7"></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody >
         @if (Model.Items.Any())
         {
             foreach (var item in Model.Items)
             {
-                <tr id="row_@item.Id" style="cursor:pointer;" class="text-center"
+                <tr id="row_@item.Id" style="cursor:pointer;" class="clickable-row" 
                     onclick="handleRowClick(event, '@Url.Action("Details", "User", new { id = item.Id })')">
                     <td>
                         <div class="d-flex px-2 py-2">
@@ -87,13 +92,3 @@
     </tbody>
 </table>
 
-<nav>
-    <ul class="pagination justify-content-center">
-        @for (int i = 1; i <= Model.TotalPages; i++)
-        {
-            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                <a class="page-link ajax-page" href="#" data-page="@i">@i</a>
-            </li>
-        }
-    </ul>
-</nav>

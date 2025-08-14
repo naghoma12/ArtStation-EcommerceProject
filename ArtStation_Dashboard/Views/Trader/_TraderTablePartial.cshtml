@@ -6,6 +6,12 @@
     var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
     var lang = culture.Name;
 }
+<style>
+
+    .clickable-row:hover {
+        background-color: #f5f5f5;
+    }
+</style>
 
 <table class="table align-items-center mb-0">
                             <thead>
@@ -22,7 +28,7 @@
         {
             @foreach (var item in Model.Items)
             {
-                <tr style="cursor:pointer;"
+                <tr style="cursor:pointer;" class="clickable-row"
                     onclick="handleRowClick(event, '@Url.Action("Details", "Trader", new { id = item.Id })')">
                                                     <td>
                                                         <div class="d-flex px-2 py-2">

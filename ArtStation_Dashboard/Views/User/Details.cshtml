@@ -1,11 +1,41 @@
 ﻿@using ArtStation_Dashboard.ViewModels.User
+@using NuGet.Protocol
 @model UserViewModel
 @{
     var culture = System.Globalization.CultureInfo.CurrentUICulture;
     var dir = culture.TextInfo.IsRightToLeft ? "rtl" : "ltr";
     var lang = culture.Name;
 }
-<div class="container py-5 ">
+<div class="d-flex justify-content-between align-items-center my-4 ms-4 me-5">
+    <h1 class="fw-bold mb-0">
+        @(("تفاصيل المستخدمين", "Users Details").Localize(lang))
+    </h1>
+
+    <div class="d-flex gap-2">
+        <!-- Dropdown Actions -->
+        <div class="dropdown">
+            <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                @(("العمليات", "Actions").Localize(lang))
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" asp-action="Details" asp-controller="User" asp-route-id="@Model.Id">@(("تفاصيل", "Details").Localize(lang))</a></li>
+                <li><a class="dropdown-item" asp-action="Edit" asp-controller="User" asp-route-id="@Model.Id">@(("تعديل", "Edit").Localize(lang))</a></li>
+                <li>
+                    <button class="dropdown-item btn-delete" data-id="@Model.Id">
+                        @(("حذف", "Delete").Localize(lang))
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Back Button -->
+        <a asp-action="Index" class="btn btn-outline-primary">
+            <i class="fa fa-arrow-left me-1"></i>
+            @(lang == "en" ? "Back to List" : "العودة إلى القائمة")
+        </a>
+    </div>
+</div>
+<div class="container ">
     <div class="card shadow-lg rounded-4 overflow-hidden">
         <div class="row g-0">
             <div class="col-md-5">
@@ -44,14 +74,65 @@
                             <li class="list-group-item"><strong>@(("عيد الميلاد", "Birthday").Localize(lang)) : </strong>@Model.BirthDay</li>
                         }
                     </ul>
-
-                    <div class="mt-5">
-                        <a asp-action="Index" class="btn btn-outline-primary">
-                            @(("Back to List", "العودة إلى القائمة").Localize(lang))
-                        </a>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@Html.AntiForgeryToken()
+
+@section Scripts
+{
+    <script>
+        var lang = $('#currentLang').val();
+        var localized = {
+            deleteSuccessTitle: @Html.Raw(("تم الحذف!", "Deleted!").Localize(lang).ToJson()),
+            deleteSuccessText: @Html.Raw(("تم حذف المستخدم بنجاح.", "User deleted successfully.").Localize(lang).ToJson()),
+            deleteErrorTitle: @Html.Raw(("خطأ في الحذف", "Delete Error").Localize(lang).ToJson()),
+            deleteErrorText: @Html.Raw(("حدث خطأ أثناء الحذف.", "An error occurred while deleting.").Localize(lang).ToJson()),
+            confirmDeleteTitle: @Html.Raw(("هل أنت متأكد؟", "Are you sure?").Localize(lang).ToJson()),
+            confirmDeleteText: @Html.Raw(("لا يمكنك التراجع عن هذه العملية!", "This action cannot be undone!").Localize(lang).ToJson()),
+            confirmButtonText: @Html.Raw(("نعم، احذفها!", "Yes, delete it!").Localize(lang).ToJson()),
+            cancelButtonText: @Html.Raw(("إلغاء", "Cancel").Localize(lang).ToJson())
+        };
+
+        $(document).off("click", ".btn-delete").on("click", ".btn-delete", function (e) {
+            e.preventDefault();
+            const id = $(this).data('id');
+
+            Swal.fire({
+                title: localized.confirmDeleteTitle,
+                text: localized.confirmDeleteText,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: localized.confirmButtonText,
+                cancelButtonText: localized.cancelButtonText
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/User/DeleteConfirmed/' + id,
+                        type: 'POST',
+                        headers: {
+                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function () {
+                            Swal.fire(localized.deleteSuccessTitle, localized.deleteSuccessText, 'success')
+                                .then(() => {
+                                    window.location.href = '/User/Index'; // redirect to list
+                                });
+                        },
+                        error: function (xhr) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: localized.deleteErrorTitle,
+                                text: xhr.responseJSON?.message || xhr.responseText || localized.deleteErrorText
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

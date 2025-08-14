@@ -36,12 +36,12 @@
                 <th class="text-secondary opacity-7"></th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="text-center">
             @if (Model.Items.Any())
             {
                 foreach (var item in Model.Items)
                 {
-                    <tr style="cursor:pointer;" onclick="handleRowClick(event, '@Url.Action("Details", "Banner", new { id = item.Id })')">
+                    <tr style="cursor:pointer;" class="clickable-row " onclick="handleRowClick(event, '@Url.Action("Details", "Banner", new { id = item.Id })')">
                         <td>
 
                             <div>

@@ -16,7 +16,7 @@
 
 <div id="saleSection" style="display:none;" class="row gy-2 gx-3 align-items-end">
     <div class="col-md-4">
-        <label class="form-label" for="SalePrice">@(("قيمة الخصم", "Discount").Localize(language))</label>
+        <label class="form-label" for="SalePrice">@(("قيمة الخصم (%)", "Discount (%)").Localize(language))</label>
         <input type="number" class="form-control ps-2" id="SalePrice" asp-for="Sale.Discount" step="0.01" min="0" max="100"/>
     </div>
     <div class="col-md-4">

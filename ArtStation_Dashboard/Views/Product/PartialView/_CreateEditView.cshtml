@@ -112,6 +112,13 @@
             </div>
         </div>
     }
+    <div class="col-md-6">
+        <div class="input-group input-group-static mb-4">
+            <label>@(("عدد المنتجات المتاحة", "Number of products available ").Localize(language))</label>
+            <input asp-for="StockCount" type="text" class="form-control">
+        </div>
+        <span asp-validation-for="StockCount" class="text-danger"></span>
+    </div>
     <p class="text-muted fw-bold nav-heading mt-4 mb-2 bol">
         <span>@(("الفئه الموجه لها المنتج", "For Whom is the product ").Localize(language))</span>
     </p>

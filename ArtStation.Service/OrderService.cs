@@ -182,27 +182,41 @@ namespace ArtStation.Services
         //Get All Orders For Admin
         public async Task<PagedResult<Order>> GetOrdersDashboardAsync(int page, int pageSize, string statusFilter)
         {
-            var query = await _unitOfWork.Repository<Order>().GetAllAsync(page, pageSize);
-           
+            // Get all orders (not paginated yet)
+            var allOrders = await _unitOfWork.Repository<Order>().GetAllAsync();
 
+            // Filter
+            var filteredOrders = allOrders.AsQueryable();
             if (!string.IsNullOrEmpty(statusFilter))
-                query = (PagedResult<Order>)query.Items.Where(o => o.Status.ToString() == statusFilter)
-                    .OrderByDescending(o => o.OrderDate);
+            {
+                filteredOrders = filteredOrders
+                    .Where(o => o.Status.ToString() == statusFilter);
+            }
 
-            return query;
-            //var totalItems = query.Count();
-            //var items =  query
-            //    .OrderByDescending(o => o.OrderDate)
-            //    .Skip((page - 1) * pageSize)
-            //    .Take(pageSize)
-            //    .ToList();
+            // Sort
+            filteredOrders = filteredOrders
+                .OrderByDescending(o => o.OrderDate);
 
-            //return new PagedResult<Order>
-            //{
-            //    TotalItems = totalItems,
-            //    Items = items
-            //};
+            // Count after filtering
+            var totalCount = filteredOrders.Count();
+
+            // Paging
+            var pagedItems = filteredOrders
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // Return new PagedResult
+            return new PagedResult<Order>
+            {
+                Items = pagedItems,
+                TotalItems = totalCount,
+                PageNumber = page,
+                PageSize = pageSize,
+                TotalPages=(int)Math.Ceiling((double)totalCount / pageSize),
+            };
         }
+
 
         // Get Order details with as invoice 
         public async Task<OrderInvoiceDto> GetOrderWithDetailsDashboardAsync(int id)

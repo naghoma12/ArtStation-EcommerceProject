@@ -25,8 +25,8 @@ namespace ArtStation.Core.Repository.Contract
         decimal GetDailyCompanyMoneyCount(string phoneNumber);
         int GetCompanyOrdersCount(string phoneNumber);
         int GetYesterdayOrdersCount(string phoneNumber);
-        List<decimal> GetWeeklySales();
-        List<decimal> GetWeeklySales(string phoneNumber);
+        List<int> GetWeeklySales();
+        List<int> GetWeeklySales(string phoneNumber);
 
 
         //For Company 

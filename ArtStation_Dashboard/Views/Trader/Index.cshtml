@@ -21,12 +21,18 @@
 }
 
 
-<div class="d-flex justify-content-center my-3">
-    <div class="input-group input-group-outline my-3 w-50">
 
-        <input type="text" id="searchInput" value="@ViewBag.Search" placeholder="@(("ابحث بالاسم أو اسم المستخدم او الايميل", "Search With Name , UserName ,Email").Localize(lang)) " class="form-control w-auto mx-1" />
+<div class="d-flex justify-content-center">
+    <div class="col-md-4">
+        <div class="input-group">
+            <input type="text" 
+                   style="border-radius:8px ; padding-left: 10px; padding-right: 10px;"
+                   class="form-control  bg-white text-secondary"
+                   id="searchInput" value="@ViewBag.Search" placeholder="@(("ابحث بالاسم أو اسم المستخدم او الايميل", "Search With Name, UserName, Email").Localize(lang)) " />
+        </div>
     </div>
 </div>
+
 <div class="d-flex justify-content-center my-3">
     <a href="#" class="btn btn-outline-primary mx-1 ajax-filter @(ViewBag.StatusFilter == null ? "active" : "")"
        data-status="">
@@ -45,7 +51,7 @@
 
 </div>
 
-<div class="container-fluid py-4">
+<div class="container-fluid">
   
    
     <form id="antiForgeryForm" method="post" style="display:none;">

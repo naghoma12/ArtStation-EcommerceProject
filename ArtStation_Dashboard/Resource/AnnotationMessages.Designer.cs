@@ -63,6 +63,15 @@ namespace ArtStation_Dashboard.Resource {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string AddBannerSucessfully {
+            get {
+                return ResourceManager.GetString("AddBannerSucessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string CategoryRequired {
             get {
                 return ResourceManager.GetString("CategoryRequired", resourceCulture);
@@ -77,16 +86,6 @@ namespace ArtStation_Dashboard.Resource {
                 return ResourceManager.GetString("ConfirmPasswordMismatch", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string AddBannerSucessfully {
-            get {
-                return ResourceManager.GetString("AddBannerSucessfully", resourceCulture);
-            }
-        }
-        
         
         /// <summary>
         ///   Looks up a localized string similar to .
@@ -139,6 +138,15 @@ namespace ArtStation_Dashboard.Resource {
         public static string PasswordComplexity {
             get {
                 return ResourceManager.GetString("PasswordComplexity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string PasswordLength {
+            get {
+                return ResourceManager.GetString("PasswordLength", resourceCulture);
             }
         }
         

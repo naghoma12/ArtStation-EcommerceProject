@@ -47,6 +47,8 @@ namespace ArtStation_Dashboard.ViewModels
         public string? TraderName { get; set; }
         public int ForWhomId { get; set; }
         public int SellersCount { get; set; }
+        [Required(ErrorMessageResourceType = typeof(AnnotationMessages), ErrorMessageResourceName = "RequiredField")]
+        public int StockCount { get; set; }
         public SaleVM Sale { get; set; } = new SaleVM();
         public IEnumerable<SimpleCategoryDTO> Categories { get; set; } = new List<SimpleCategoryDTO>();
         public IEnumerable<AppUser> Traders { get; set; } = new List<AppUser>();

@@ -34,10 +34,10 @@
                     <i class="fas fa-search text-secondary"></i>
                 </span>
                 <input type="text"
-                       id="categorySearch"
+                       id="searchInput"
                        class="form-control bg-white text-secondary border-start-0"
                        style="padding: 0.6rem 0.75rem;"
-                       placeholder="@(("ابحث باسم التصنيف", "Search by Category name").Localize(language))" />
+                       placeholder="@(("ابحث باسم المنتج", "Search by Product name").Localize(language))" />
             </div>
         </div>
 
@@ -131,7 +131,8 @@
 
         document.getElementById("categoryFilter").addEventListener("change", function () {
             let categoryId = this.value;
-            loadProducts(categoryId);
+            let brand = this.value;
+            loadProducts(categoryId,brand);
         });
          document.getElementById("brandFilter").addEventListener("change", function () {
             let brand = this.value;

@@ -23,6 +23,27 @@
     <h1 class="fw-bold mb-0">
         @(("تفاصيل المنتج", "Product Details").Localize(language))
     </h1>
+    <div class="d-flex gap-2">
+    <div class="dropdown">
+        <button class="btn bg-gradient-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            @(("العمليات", "Actions").Localize(language))
+        </button>
+        <ul class="dropdown-menu">
+            <li>
+                <a class="dropdown-item" asp-action="Details" asp-controller="Product" asp-route-id="@Model.Id">
+                    @(("تفاصيل", "Details").Localize(language))
+                </a>
+            </li>
+            <li>
+                    <a class="dropdown-item" asp-action="Edit" asp-controller="Product" asp-route-id="@Model.Id">
+                    @(("تعديل", "Edit").Localize(language))
+                </a>
+            </li>
+
+                <li><a class="dropdown-item" asp-action="Delete" asp-controller="Product" asp-route-id="@Model.Id">@(("حذف", "Delete").Localize(language))</a></li>
+
+        </ul>
+    </div>
     @if (User.IsInRole("Admin"))
     {
         <a asp-action="Index" class="btn btn-outline-primary">
@@ -37,6 +58,7 @@
             @(language == "en" ? "Back to My Products" : "العودة إلى منتجاتي")
         </a>
     }
+    </div>
 </div>
 <div class="container ">
     <div class="card shadow-lg rounded-4 overflow-hidden">
@@ -76,18 +98,14 @@
 
             <div class="col-md-7 position-relative">
                 <div class="card-body p-5">
-                    <a asp-action="Edit" asp-route-id="@Model.Id"
-                       class="position-absolute top-0 end-0 m-4 text-primary "
-                       style="font-size:24px;"
-                       title="@(language == "en" ? "Edit" : "تعديل")">
-                        <i class="fa fa-edit fa-lg"></i>
-                    </a>
+                  
                     <h2 class="card-title mb-3">@Model.Name</h2>
                     <p class="mb-2">@Model.Description</p>
 
                     <ul class="list-group list-group-flush mt-4">
                         <li class="list-group-item"><strong>@(language == "en" ? "ID" : "المعرف"):</strong> @Model.Id</li>
                         <li class="list-group-item"><strong>@(language == "en" ? "Brand" : "العلامة التجارية"):</strong> @Model.Brand</li>
+                        <li class="list-group-item"><strong>@(language == "en" ? "No. of Products" : "عدد المنتجات المتاحه"):</strong> @Model.StockCount</li>
 
                         <li class="list-group-item"><strong>@(language == "en" ? "Category" : "التصنيف"):</strong> @Model.Category</li>
                         <li class="list-group-item"><strong>@(language == "en" ? "Trader" : "التاجر"):</strong> @Model.Trader</li>

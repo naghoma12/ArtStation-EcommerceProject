@@ -33,7 +33,7 @@
                 <span class="input-group-text bg-white text-primary ">
                 </span>
                 <input type="text" id="searchInput"
-                       style="border-radius:8px ; padding-left: 10px;"
+                       style="border-radius:8px ; padding-left: 10px; padding-right:10px"
                        class="form-control  bg-white text-secondary"
                        placeholder="@(("ابحث باسم المنتج", "Search by product name").Localize(language))" />
             </div>
@@ -41,7 +41,7 @@
 
         <!-- Category Filter -->
         <div class="col-md-4">
-            <select id="categoryFilter" class="form-select filter-products">
+            <select id="categoryFilter" class="filter-products">
                 <option value="">@(("تصفية حسب الفئة", "Filter by category").Localize(language))</option>
                 @foreach (var cat in Model.Categories)
                 {
@@ -52,7 +52,7 @@
 
         <!-- Brand Filter -->
         <div class="col-md-4">
-            <select id="brandFilter" class="form-select filter-products">
+            <select id="brandFilter" class="filter-products">
                 <option value="">@(("تصفية حسب الماركه", "Filter by brand").Localize(language))</option>
                 @foreach (var brand in Model.Brands)
                 {
@@ -98,7 +98,22 @@
 
             return false; // prevent default <a> action
         }
+         function bindClickableRows() {
+            const rows = document.querySelectorAll(".clickable-row");
+            rows.forEach(row => {
+                row.addEventListener("click", function (e) {
+                    // Prevent click if the target is a link or a checkbox
+                    if (e.target.closest('a') || e.target.closest('button')) {
+                        return;
+                    }
 
+                    const url = this.getAttribute("data-url");
+                    if (url) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        }
         window.addEventListener("DOMContentLoaded", () => {
             loadProducts();
         });
@@ -113,7 +128,9 @@
 
          document.getElementById("categoryFilter").addEventListener("change", function () {
              let categoryId = this.value;
-             loadProducts(categoryId);
+             let brand = this.value;
+
+             loadProducts(categoryId,brand);
          });
           document.getElementById("brandFilter").addEventListener("change", function () {
              let brand = this.value;

@@ -428,6 +428,7 @@ namespace ArtStation.Repository.Repository
                     Brand = language == "en" ? p.BrandEN : p.BrandAR,
                     Category = language == "en" ? p.Category.NameEN : p.Category.NameAR,
                     Trader = p.User.FullName,
+                    StockCount = p.StockCount,
                     Images = p.ProductPhotos.Select(i => i.Photo).ToList(),
                     Colors = p.ProductColors.Select(c => language == "en" ? c.NameEN : c.NameAR).ToList(),
 

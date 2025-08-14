@@ -19,6 +19,12 @@
         <h1 class="fw-bold mb-0">
             @(("تفاصيل المنتج", "Product Details").Localize(language))
         </h1>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-danger"
+                    onclick="return confirm('@(language == "en" ? "Are you sure you want to delete this item?" : "هل أنت متأكد أنك تريد حذف هذا العنصر؟")');">
+                
+                @(language == "en" ? "Delete" : "حذف")
+            </button>
         @if (User.IsInRole("Admin"))
         {
             <a asp-action="Index" class="btn btn-outline-primary">
@@ -33,6 +39,7 @@
                 @(language == "en" ? "Back to My Products" : "العودة إلى منتجاتي")
             </a>
         }
+        </div>
     </div>
     <div class="container ">
         <div class="card shadow-lg rounded-4 overflow-hidden">
@@ -72,21 +79,14 @@
 
                 <div class="col-md-7 position-relative">
                     <div class="card-body p-5">
-                        <a asp-action="Delete" asp-route-id="@Model.Id"
-                           class="position-absolute top-0 end-0 m-4 text-danger"
-                           style="font-size:24px;"
-                           title="@(language == "en" ? "Delete" : "حذف")"
-                           onclick="return confirm('@(language == "en" ? "Are you sure you want to delete this item?" : "هل أنت متأكد أنك تريد حذف هذا العنصر؟")');">
-                            <i class="fa fa-trash fa-lg"></i>
-                        </a>
-
+                        
                         <h2 class="card-title mb-3">@Model.Name</h2>
                         <p class="mb-2">@Model.Description</p>
 
                         <ul class="list-group list-group-flush mt-4">
                             <li class="list-group-item"><strong>@(language == "en" ? "ID" : "المعرف"):</strong> @Model.Id</li>
                             <li class="list-group-item"><strong>@(language == "en" ? "Brand" : "العلامة التجارية"):</strong> @Model.Brand</li>
-
+                            <li class="list-group-item"><strong>@(language == "en" ? "No. of Products" : "عدد المنتجات المتاحه"):</strong> @Model.StockCount</li>
                             <li class="list-group-item"><strong>@(language == "en" ? "Category" : "التصنيف"):</strong> @Model.Category</li>
                             <li class="list-group-item"><strong>@(language == "en" ? "Trader" : "التاجر"):</strong> @Model.Trader</li>
                             <li class="list-group-item"><strong>@(language == "en" ? "Shipping Details" : "تفاصيل الشحن"):</strong> @Model.ShippingDetails</li>
