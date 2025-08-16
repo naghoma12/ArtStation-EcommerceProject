@@ -1,12 +1,14 @@
 ﻿using ArtStation.Core;
 using ArtStation.Core.Entities;
 using ArtStation.Core.Entities.Identity;
+using ArtStation.Core.Repository.Contract;
 using ArtStation.Core.Roles;
 using ArtStation.Repository;
 using ArtStation_Dashboard.Helper;
 using ArtStation_Dashboard.Resource;
 using ArtStation_Dashboard.ViewModels;
 using ArtStation_Dashboard.ViewModels.User;
+using AspNetCoreGeneratedDocument;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -25,10 +27,11 @@ namespace ArtStation_Dashboard.Controllers
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _environment;
         private readonly UserHelper _userHelper;
+        private readonly IProductRepository productRepo;
 
         public TraderController(UserManager<AppUser> userManager, IUnitOfWork unitOfWork,
             RoleManager<AppRole> roleManager, IMapper mapper, IWebHostEnvironment environment,
-            UserHelper userHelper)
+            UserHelper userHelper,IProductRepository _productRepo)
         {
 
             _userManager = userManager;
@@ -37,6 +40,7 @@ namespace ArtStation_Dashboard.Controllers
             _mapper = mapper;
             _environment = environment;
             _userHelper = userHelper;
+            productRepo = _productRepo;
         }
         public async Task<IActionResult> Index(string search, bool? statusFilter, int page = 1, int pageSize = 5)
         {
@@ -353,6 +357,13 @@ namespace ArtStation_Dashboard.Controllers
 
                 if (result.Succeeded)
                 {
+                    var products = await productRepo.GetCompanyProducts(id);
+                    foreach (var product in products)
+                    {
+                        product.IsActive = isActive;
+                       
+                    }
+                    var x= await unitOfWork.Complet();   
                     return Ok(new { success = true });
                 }
                 else

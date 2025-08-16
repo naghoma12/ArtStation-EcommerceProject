@@ -55,59 +55,60 @@ namespace ArtStation.Controllers
         }
 
 
-        //[Authorize(Roles =Roles.Customer)]
-        //[HttpPost]
-      
-        //public async Task<ActionResult> CreateOrder(OrderDto orderDto)
-        //{
-        //    try
-        //    {
-        //        var user = await _userManager.GetUserAsync(User);
-        //        if (user == null)
-        //        {
-        //            return Unauthorized(new { Message = "المستخدم غير مصرح له" });
-        //        }
+        [Authorize(Roles = Roles.Customer)]
+        [HttpPost]
 
-                
-        //        //var (order, redirectUrl, paymentToken) = await _orderService.CreateOrderAsync(
-        //        //    user,
-        //        //    orderDto.CartId,
-        //        //    orderDto.AddressId,
-        //        //    orderDto.PaymentType
-        //        //);
+        public async Task<ActionResult> CreateOrder(OrderDto orderDto)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Unauthorized(new { Message = "المستخدم غير مصرح له" });
+                }
 
-        //        if (order == null)
-        //        {
-        //            return BadRequest(new { Message = ControllerMessages.OrderFailed });
-        //        }
 
-                
-        //        var cart = await _cartRepository.GetCartAsync(orderDto.CartId);
-        //        var orderData = await _cartService.MapCartToReturnDto(cart, "");
-        //        await _cartRepository.DeleteCartAsync(orderDto.CartId);
+                var (order, redirectUrl, paymentToken) = await _orderService.CreateOrderAsync(
+                    user,
+                    orderDto.CartId,
+                    orderDto.AddressId,
+                    orderDto.PaymentType
+                );
 
-        //        return Ok(new
-        //        {
-        //            Message = ControllerMessages.OrderSuccesfully,
-        //            data = new {
-        //                OrderId = order.Id,
-        //                PaymentType = orderDto.PaymentType,
-                      
-        //                PaymentUrl = redirectUrl,
-                        
-        //                    orderData.CartSummary,
-        //                    orderData.Address
-               
-        //            }
-                   
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Error occurred while creating the order.");
-        //        return BadRequest(new { Message = "حدث خطأ غير متوقع. يرجى المحاولة لاحقًا." });
-        //    }
-        //}
+                if (order == null)
+                {
+                    return BadRequest(new { Message = ControllerMessages.OrderFailed });
+                }
+
+
+                var cart = await _cartRepository.GetCartAsync(orderDto.CartId);
+                var orderData = await _cartService.MapCartToReturnDto(cart, "");
+                await _cartRepository.DeleteCartAsync(orderDto.CartId);
+
+                return Ok(new
+                {
+                    Message = ControllerMessages.OrderSuccesfully,
+                    data = new
+                    {
+                        OrderId = order.Id,
+                        PaymentType = orderDto.PaymentType,
+
+                        PaymentUrl = redirectUrl,
+
+                        orderData.CartSummary,
+                        orderData.Address
+
+                    }
+
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while creating the order.");
+                return BadRequest(new { Message = "حدث خطأ غير متوقع. يرجى المحاولة لاحقًا." });
+            }
+        }
 
 
         [Authorize]

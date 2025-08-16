@@ -260,7 +260,12 @@ namespace ArtStation_Dashboard.Controllers
                         message = "لا يمكن تجهيز الطلب في حالته الحالية."
                     });
                 }
-
+                var orderCheck= await _orderService.GetOrderWithItemsAsync(orderid);
+                if (orderCheck.OrderItems.All(oi=>oi.OrderItemStatus==OrderItemStatus.Shipped))
+                {
+                    orderCheck.Status = OrderStatus.Shipped;
+                    _unitOfWork.Complet();
+                }
                 return Json(new
                 {
                     success = true,

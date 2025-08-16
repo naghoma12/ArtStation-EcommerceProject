@@ -44,6 +44,10 @@ namespace ArtStation.Core.Repository.Contract
 
         public Task<string> ReadyOrderForCompanyAsync(int OrderId, int traderid);
 
+        //Get order with items only 
+
+        public Task<Order> GetOrderWithItemAsync(int OrderId);
+
 
     }
 }

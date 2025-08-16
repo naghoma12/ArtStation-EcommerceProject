@@ -20,7 +20,7 @@ namespace ArtStation.Core.Repository.Contract
         Task<IEnumerable<SimpleProduct>> SearchByProductName(string productName, string
             language, int? userId = null);
 
-       Task<ProductWithPriceDto> GetProductWithPrice(int productId, int sizeId);
+       Task<ProductWithPriceDto> GetProductWithPrice(int productId, int sizeId,int quantity);
         Task<IEnumerable<SimpleProduct>> GetRelatedProducts(int productId, string language, int? userId = null);
         Task<IEnumerable<AIProducts>> GetAIProducts(string language);
         Task<IEnumerable<BrandDTO>> GetBrands(string language);
@@ -33,6 +33,11 @@ namespace ArtStation.Core.Repository.Contract
         Task<Product> GetProductAsync(int id);
         Task<IEnumerable<Product>> GetDeletedProducts();
         Task<IEnumerable<Product>> GetInActiveProducts();
-        
+
+
+        //trader product 
+
+        Task<IEnumerable<Product>> GetCompanyProducts(int traderId);
+
     }
 }

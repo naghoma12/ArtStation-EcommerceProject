@@ -209,7 +209,7 @@ namespace ArtStation.Repository.Repository
             return matchedProducts;
         }
 
-        public async Task<ProductWithPriceDto> GetProductWithPrice(int productId, int sizeId)
+        public async Task<ProductWithPriceDto> GetProductWithPrice(int productId, int sizeId, int quantity)
         {
             var product = await _context.Products
                .Where(p => p.IsActive && !p.IsDeleted && p.Id == productId)
@@ -217,6 +217,15 @@ namespace ArtStation.Repository.Repository
                .Include(p => p.ProductSizes)
                .FirstOrDefaultAsync();
 
+            if (product == null)
+            {
+                return new ProductWithPriceDto
+                {
+                    ErrorMessage = "المنتج غير موجود"
+                };
+            }
+
+         
             if (product == null)
                 return null;
 
@@ -228,6 +237,23 @@ namespace ArtStation.Repository.Repository
             var discount = activeSale?.Discount ?? 0;
             var size = product.ProductSizes.Where(s => s.Id == sizeId).FirstOrDefault();
             var priceAfterSale = size.Price - (size.Price * discount / 100m);
+            if (product.StockCount < quantity)
+            {
+                return new ProductWithPriceDto
+                {
+                    product = product,
+                    Price = size.Price,
+                    PriceAfterSale = priceAfterSale,
+                    UserId = product.UserId,
+                    ErrorMessage = $"الكمية المطلوبة غير متوفرة. المتاح فقط: {product.StockCount}"
+                };
+            }
+
+            // لو الكمية متاحة
+            product.SellersCount += quantity;
+            product.StockCount -= quantity;
+            await _context.SaveChangesAsync();
+
             return new ProductWithPriceDto()
             {
                 product = product,
@@ -498,6 +524,11 @@ namespace ArtStation.Repository.Repository
                 .ToListAsync();
         }
 
-        
+        public async Task<IEnumerable<Product>> GetCompanyProducts(int traderId)
+        {
+            return await _context.Products
+                    .Where(p=>p.UserId==traderId )
+                    .ToListAsync();
+        }
     }
 }

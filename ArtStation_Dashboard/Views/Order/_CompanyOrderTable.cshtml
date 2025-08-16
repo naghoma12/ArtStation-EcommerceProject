@@ -47,7 +47,9 @@
 
 
                     <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-warning">@item.SubTotal</span>
+                        <span class="badge badge-sm bg-gradient-warning">
+                       @item.OrderItems.Sum(a=>a.TotalPrice)
+                        </span>
                     </td>
                     <td class="align-middle">
                         <div class="dropdown">

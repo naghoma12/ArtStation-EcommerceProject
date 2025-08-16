@@ -14,21 +14,21 @@
 
     <div class="d-flex gap-2">
         <!-- Dropdown Actions -->
-        @* <div class="dropdown"> *@
-        @*     <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"> *@
-        @*         @(("العمليات", "Actions").Localize(lang)) *@
-        @*     </button> *@
-        @*     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton"> *@
-        @*         <li><a class="dropdown-item" asp-action="Details" asp-controller="Trader" asp-route-id="@Model.Id">@(("تفاصيل", "Details").Localize(lang))</a></li> *@
-        @*         <li><a class="dropdown-item" asp-action="Edit" asp-controller="Trader" asp-route-id="@Model.Id">@(("تعديل", "Edit").Localize(lang))</a></li> *@
-        @*         <li><a class="dropdown-item" asp-action="ChangePassword" asp-controller="Trader" asp-route-id="@Model.Id">@(("تغيير كلمه السر", "Change Password").Localize(lang))</a></li> *@
-        @*         <li> *@
-        @*             <button class="dropdown-item btn-delete" data-id="@Model.Id"> *@
-        @*                 @(("حذف", "Delete").Localize(lang)) *@
-        @*             </button> *@
-        @*         </li> *@
-        @*     </ul> *@
-        @* </div> *@
+        <div class="dropdown">
+            <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                @(("العمليات", "Actions").Localize(lang))
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" asp-action="Details" asp-controller="Trader" asp-route-id="@Model.Id">@(("تفاصيل", "Details").Localize(lang))</a></li>
+                <li><a class="dropdown-item" asp-action="Edit" asp-controller="Trader" asp-route-id="@Model.Id">@(("تعديل", "Edit").Localize(lang))</a></li>
+                <li><a class="dropdown-item" asp-action="ChangePassword" asp-controller="Trader" asp-route-id="@Model.Id">@(("تغيير كلمه السر", "Change Password").Localize(lang))</a></li>
+                <li>
+                    <button class="dropdown-item btn-delete" data-id="@Model.Id">
+                        @(("حذف", "Delete").Localize(lang))
+                    </button>
+                </li>
+            </ul>
+        </div>
 
         <!-- Back Button -->
         <a asp-action="Index" class="btn btn-outline-primary">
@@ -40,6 +40,10 @@
 <div class="container">
     <div class="card shadow-lg rounded-4 overflow-hidden">
         <div class="row g-0">
+
+            <form id="antiForgeryForm" method="post" style="display:none;">
+                @Html.AntiForgeryToken()
+            </form>
             <div class="col-md-5">
                 <img src="~/Uploads/Traders/@Model.Photo" class="img-fluid h-100 w-100 object-fit-cover" alt="@Model.DispalyName" style="min-height: 300px;" />
             </div>

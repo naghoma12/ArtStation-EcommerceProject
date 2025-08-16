@@ -13,7 +13,7 @@ namespace ArtStation.Core.Services.Contract
 {
     public interface IOrderService
     {
-       // Task<(Order? order, string? redirectUrl, string? paymentToken)> CreateOrderAsync(AppUser user, string CartId,int addressId,string paymentType);
+        Task<(Order? order, string? redirectUrl, string? paymentToken)> CreateOrderAsync(AppUser user, string CartId,int addressId,string paymentType);
         Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string PhoneNumber);
         Task<OrderWithItemsDto> GetOrderForUserAsync(int orderid);
 
@@ -35,6 +35,9 @@ namespace ArtStation.Core.Services.Contract
 
         //Ready Order
         public Task<string> ReadyOrderForCompanyAsync(int OrderId, int TraderId);
+
+        //Get Order With Items
+        public Task<Order> GetOrderWithItemsAsync(int OrderId);
 
     }
 }

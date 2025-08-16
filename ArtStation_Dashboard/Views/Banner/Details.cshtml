@@ -13,25 +13,28 @@
 
     <div class="d-flex gap-2">
         <!-- Dropdown Actions -->
-        @* <div class="dropdown"> *@
-        @*     <button class="btn bg-gradient-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"> *@
-        @*         @(("العمليات", "Actions").Localize(lang)) *@
-        @*     </button> *@
-        @*     <ul class="dropdown-menu"> *@
-        @*         <li> *@
-        @*             <a class="dropdown-item" asp-action="Details" asp-controller="Banner" asp-route-id="@Model.Id"> *@
-        @*                 @(("تفاصيل", "Details").Localize(lang)) *@
-        @*             </a> *@
-        @*         </li> *@
-        @*         <li> *@
-        @*             <a class="dropdown-item" asp-action="Edit" asp-controller="Banner" asp-route-id="@Model.Id"> *@
-        @*                 @(("تعديل", "Edit").Localize(lang)) *@
-        @*             </a> *@
-        @*         </li> *@
-        @*             <li><button class="dropdown-item btn-delete" data-id="@Model.Id">@(("حذف", "Delete").Localize(lang))</button></li> *@
-
-        @*     </ul> *@
-        @* </div> *@
+        <div class="dropdown">
+            <button class="btn bg-gradient-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                @(("العمليات", "Actions").Localize(lang))
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="dropdown-item" asp-action="Details" asp-controller="Banner" asp-route-id="@Model.Id">
+                        @(("تفاصيل", "Details").Localize(lang))
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-action="Edit" asp-controller="Banner" asp-route-id="@Model.Id">
+                        @(("تعديل", "Edit").Localize(lang))
+                    </a>
+                </li>
+                <li>
+                    <button class="dropdown-item btn-delete">
+                        @(("حذف", "Delete").Localize(lang))
+                    </button>
+                </li>
+            </ul>
+        </div>
 
         <!-- Back Button -->
         <a asp-action="Index" class="btn btn-outline-primary">
@@ -40,7 +43,6 @@
         </a>
     </div>
 </div>
-
 
 <div class="container">
     <div class="card shadow-lg rounded-4 overflow-hidden">
@@ -52,13 +54,19 @@
                      alt="@Model.Title"
                      style="min-height: 300px;" />
             </div>
-           
+
             <!-- Details Section -->
             <div class="col-md-7 position-relative">
                 <div class="card-body p-5">
-                    <!-- Banner Info -->
+                    <!-- Hidden Banner Id -->
                     <input type="hidden" id="bannerId" value="@Model.Id" />
 
+                    <!-- Anti-forgery token (form مخفي) -->
+                    <form id="af" method="post" class="d-none">
+                        @Html.AntiForgeryToken()
+                    </form>
+
+                    <!-- Banner Info -->
                     <ul class="list-group list-group-flush mt-4">
                         <li class="list-group-item">
                             <strong>@(("عنوان اللوحه", "Banner Title").Localize(lang)) :</strong> @Model.Title
@@ -71,32 +79,33 @@
                         </li>
                     </ul>
 
-                    
                 </div>
             </div>
         </div>
     </div>
 </div>
-@section Scripts{
+
+@section Scripts {
     <script>
-         var lang = $('#currentLang').val();
-          const localized = {
-                      deleteSuccessTitle: @Html.Raw(("تم الحذف!", "Deleted!").Localize(lang).ToJson()),
-        deleteSuccessText: @Html.Raw(("تم حذف اللوحة بنجاح.", "Company deleted successfully.").Localize(lang).ToJson()),
-        deleteErrorTitle: @Html.Raw(("خطأ في الحذف", "Delete Error").Localize(lang).ToJson()),
-        deleteErrorText: @Html.Raw(("حدث خطأ أثناء الحذف.", "An error occurred while deleting.").Localize(lang).ToJson()),
-        confirmDeleteTitle: @Html.Raw(("هل أنت متأكد؟", "Are you sure?").Localize(lang).ToJson()),
-        confirmDeleteText: @Html.Raw(("لا يمكنك التراجع عن هذه العملية!", "This action cannot be undone!").Localize(lang).ToJson()),
-        confirmButtonText: @Html.Raw(("نعم، احذفها!", "Yes, delete it!").Localize(lang).ToJson()),
-        cancelButtonText: @Html.Raw(("إلغاء", "Cancel").Localize(lang).ToJson())
-          };
+        var lang = $('#currentLang').val();
+        const localized = {
+            deleteSuccessTitle: @Html.Raw(("تم الحذف!", "Deleted!").Localize(lang).ToJson()),
+            deleteSuccessText: @Html.Raw(("تم حذف اللوحة بنجاح.", "Banner deleted successfully.").Localize(lang).ToJson()),
+            deleteErrorTitle: @Html.Raw(("خطأ في الحذف", "Delete Error").Localize(lang).ToJson()),
+            deleteErrorText: @Html.Raw(("حدث خطأ أثناء الحذف.", "An error occurred while deleting.").Localize(lang).ToJson()),
+            confirmDeleteTitle: @Html.Raw(("هل أنت متأكد؟", "Are you sure?").Localize(lang).ToJson()),
+            confirmDeleteText: @Html.Raw(("لا يمكنك التراجع عن هذه العملية!", "This action cannot be undone!").Localize(lang).ToJson()),
+            confirmButtonText: @Html.Raw(("نعم، احذفها!", "Yes, delete it!").Localize(lang).ToJson()),
+            cancelButtonText: @Html.Raw(("إلغاء", "Cancel").Localize(lang).ToJson())
+        };
 
-
-
-           $(document).off("click", ".btn-delete").on("click", ".btn-delete", function (e) {
+        // Delete click
+        $(document).off("click", ".btn-delete").on("click", ".btn-delete", function (e) {
             e.preventDefault();
-          
-            const id = $("#bannerId").val();
+
+            const id = $("#bannerId").val(); // خليه من الـ hidden input
+            const token = $('input[name="__RequestVerificationToken"]').val(); // من الـ form المخفي
+
             Swal.fire({
                 title: localized.confirmDeleteTitle,
                 text: localized.confirmDeleteText,
@@ -107,32 +116,28 @@
                 confirmButtonText: localized.confirmButtonText,
                 cancelButtonText: localized.cancelButtonText
             }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '/Banner/DeleteConfirmed/' + id,
-                        type: 'POST',
-                        headers: {
-                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-                        },
-                        success: function () {
-                            Swal.fire(localized.deleteSuccessTitle, localized.deleteSuccessText, 'success')
-                                .then(() => {
-                                    // Redirect after success
-                                    window.location.href = '/Banner/Index';
-                                });
-                        },
-                        error: function (xhr) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: localized.deleteErrorTitle,
-                                text: xhr.responseJSON?.message || xhr.responseText || localized.deleteErrorText
-                            });
-                        }
-                    });
-                }
+                if (!result.isConfirmed) return;
+
+                $.ajax({
+                    url: '@Url.Action("DeleteConfirmed", "Banner")', // مسار آمن عبر الرازر
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        __RequestVerificationToken: token // إرسال التوكن في الـ form body
+                    },
+                    success: function () {
+                        Swal.fire(localized.deleteSuccessTitle, localized.deleteSuccessText, 'success')
+                            .then(() => { window.location.href = '@Url.Action("Index", "Banner")'; });
+                    },
+                    error: function (xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: localized.deleteErrorTitle,
+                            text: xhr.responseJSON?.message || xhr.responseText || localized.deleteErrorText
+                        });
+                    }
+                });
             });
         });
-
-        </script>
+    </script>
 }
-  

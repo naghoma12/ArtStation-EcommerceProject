@@ -109,7 +109,14 @@ namespace ArtStation.Repository.Repository
             };
         }
 
-
+        public async Task<Order> GetOrderWithItemAsync(int OrderId)
+        {
+            var order = await _context.Set<Order>()
+               .Where(o => o.Id == OrderId)
+               .Include(o => o.OrderItems)
+               .FirstOrDefaultAsync();
+            return order;
+        }
 
         /// For Company Dashboard 
         public async Task<PagedResult<Order>> GetOrdersForSpecificCompanyAsync(
@@ -323,5 +330,7 @@ namespace ArtStation.Repository.Repository
             }
             return "Not Ready Order";
         }
+
+     
     }
 }

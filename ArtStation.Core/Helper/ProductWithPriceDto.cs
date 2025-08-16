@@ -13,6 +13,7 @@ namespace ArtStation.Core.Helper
         public decimal Price { get; set; }
         public decimal PriceAfterSale { get; set; }
         public int UserId { get; set; }
+        public string ErrorMessage { get; set; }
 
     }
 }

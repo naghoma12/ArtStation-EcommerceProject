@@ -66,8 +66,11 @@ namespace ArtStation.Services
                     ProductItemDetails productDetails = new ProductItemDetails();
                     var Photos = string.Empty;
 
-                    var product = await _productRepo.GetProductWithPrice(item.ProductId, (int)item.SizeId);
+
+                    var product = await _productRepo.GetProductWithPrice(item.ProductId, (int)item.SizeId,item.Quantity);
+
                     productDetails = new ProductItemDetails(product.product.Id, item.ColorId > 0 ? item.ColorId : null, item.SizeId, item.FlavourId > 0 ? item.FlavourId : null);
+
 
                     
 
@@ -165,7 +168,13 @@ namespace ArtStation.Services
 
         }
 
-
+        public async Task<Order> GetOrderWithItemsAsync(int OrderId)
+        {
+           var order=await _orderRepo.GetOrderWithItemAsync(OrderId);
+            if (order == null)
+                throw new Exception("Order not found");
+            return order;
+        }
         public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string PhoneNumber)
         {
             var orders = await _orderRepo.GetUserOrdersAsync(PhoneNumber);
@@ -256,5 +265,7 @@ namespace ArtStation.Services
            var msg =_orderRepo.ReadyOrderForCompanyAsync(OrderId, TraderId);
             return msg; 
         }
+
+        
     }
 }
