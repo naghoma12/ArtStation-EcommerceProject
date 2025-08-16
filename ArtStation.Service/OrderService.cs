@@ -69,6 +69,8 @@ namespace ArtStation.Services
                     var product = await _productRepo.GetProductWithPrice(item.ProductId, (int)item.SizeId);
                     productDetails = new ProductItemDetails(product.product.Id, item.ColorId > 0 ? item.ColorId : null, item.SizeId, item.FlavourId > 0 ? item.FlavourId : null);
 
+                    
+
                     //var orderitem = new OrderItem(productDetails, item.Quantity,1); //static userid
                     var orderitem = new OrderItem(productDetails, item.Quantity, product.UserId);
 

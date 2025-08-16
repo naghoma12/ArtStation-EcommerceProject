@@ -31,32 +31,40 @@
         </thead>
         <!-- headers omitted for brevity -->
         <tbody>
-               @if (Model != null)
+            @if (Model != null)
             {
-            @foreach (var item in Model)
-            {
-                    <tr data-order-id="@item.OrderNum"
+                @foreach (var item in Model)
+                {
+                    <tr id="row_@item.OrderNum"
                         style="cursor:pointer;"
                         class="clickable-row"
+                        data-order-id="@item.OrderNum"
                         onclick="handleRowClick(event, '@Url.Action("Details", "Order", new { id = item.OrderNum })')">
-                    <!-- other cells -->
+
+                        <!-- Order Number -->
                         <td class="align-middle text-center text-sm">
                             <span>@(item.OrderNum + 1000)</span>
+                        </td>
 
-                        </td>
+                        <!-- Customer Phone -->
                         <td class="align-middle text-center text-sm">
-                            <span class="">@item.CustomerPhone</span>
+                            <span>@item.CustomerPhone</span>
                         </td>
+
+                        <!-- Order Date -->
                         <td class="align-middle text-center text-sm">
-                            <span class="">@item.OrderDate</span>
+                            <span>@item.OrderDate</span>
                         </td>
-                    <td id="status-cell-@item.OrderNum" class="text-center">
-                        <button id="statusDropdown_@item.OrderNum"
-                                class="@statusClass(item.Status) dropdown-toggle"
-                                type="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                            @item.Status
-                        </button>
+
+                        <!-- Status Dropdown -->
+                        <td id="status-cell-@item.OrderNum" class="text-center">
+                            <button id="statusDropdown_@item.OrderNum"
+                                    class="@statusClass(item.Status) dropdown-toggle"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                @item.Status
+                            </button>
                             <ul class="dropdown-menu" aria-labelledby="statusDropdown_@item.OrderNum">
                                 @foreach (var st in new[] {
                         ("تم التسجيل", "Placed"),
@@ -65,7 +73,7 @@
                         })
                                 {
                                     var (ar, en) = st;
-                                    var statusKey = en; // data-status should remain English for server parsing
+                                    var statusKey = en; // server parsing uses English
                                     <li>
                                         <a class="dropdown-item status-change @(item.Status == statusKey ? "disabled fw-bold" : "")"
                                            href="#"
@@ -75,33 +83,47 @@
                                     </li>
                                 }
                             </ul>
-
-                    </td>
-                        <td class="align-middle text-center text-sm">
-                            <span class="badge badge-sm  bg-gradient-info">@item.PaymentStatus</span>
                         </td>
+
+                        <!-- Payment Status -->
+                        <td class="align-middle text-center text-sm">
+                            <span class="badge badge-sm bg-gradient-info">@item.PaymentStatus</span>
+                        </td>
+
+                        <!-- Payment Method -->
                         <td class="align-middle text-center text-sm">
                             <span class="badge badge-sm bg-gradient-danger">@item.PaymentMethod</span>
                         </td>
+
+                        <!-- SubTotal -->
                         <td class="align-middle text-center text-sm">
                             <span class="badge badge-sm bg-gradient-warning">@item.SubTotal</span>
                         </td>
+
+                        <!-- Actions -->
                         <td class="align-middle">
                             <div class="dropdown">
-                                <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button class="btn bg-gradient-primary dropdown-toggle"
+                                        type="button"
+                                        id="dropdownMenuButton"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
                                     @(("العمليات", "Actions").Localize(lang))
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="dropdown-item" asp-action="Details" asp-controller="Order" asp-route-id="@item.OrderNum">@(("تفاصيل", "Details").Localize(lang))</a></li>
-                                    @* <li><a class="dropdown-item" asp-action="Edit" asp-controller="Trader" asp-route-id="@item.OrderNum">@(("تعديل", "Edit").Localize(lang))</a></li> *@
-                                    @* <li><a class="dropdown-item" asp-action="ChangePassword" asp-controller="Trader" asp-route-id="@item.OrderNum">@(("تغيير كلمه السر", "Change Password").Localize(lang))</a></li> *@
-
-
+                                    <li>
+                                        <a class="dropdown-item"
+                                           asp-action="Details"
+                                           asp-controller="Order"
+                                           asp-route-id="@item.OrderNum">
+                                            @(("تفاصيل", "Details").Localize(lang))
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </td>
-                </tr>
-            }
+                    </tr>
+                }
             }
         </tbody>
     </table>

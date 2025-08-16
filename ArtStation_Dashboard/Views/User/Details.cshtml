@@ -13,20 +13,20 @@
 
     <div class="d-flex gap-2">
         <!-- Dropdown Actions -->
-        <div class="dropdown">
-            <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                @(("العمليات", "Actions").Localize(lang))
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li><a class="dropdown-item" asp-action="Details" asp-controller="User" asp-route-id="@Model.Id">@(("تفاصيل", "Details").Localize(lang))</a></li>
-                <li><a class="dropdown-item" asp-action="Edit" asp-controller="User" asp-route-id="@Model.Id">@(("تعديل", "Edit").Localize(lang))</a></li>
-                <li>
-                    <button class="dropdown-item btn-delete" data-id="@Model.Id">
-                        @(("حذف", "Delete").Localize(lang))
-                    </button>
-                </li>
-            </ul>
-        </div>
+        @* <div class="dropdown"> *@
+        @*     <button class="btn bg-gradient-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"> *@
+        @*         @(("العمليات", "Actions").Localize(lang)) *@
+        @*     </button> *@
+        @*     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton"> *@
+        @*         <li><a class="dropdown-item" asp-action="Details" asp-controller="User" asp-route-id="@Model.Id">@(("تفاصيل", "Details").Localize(lang))</a></li> *@
+        @*         <li><a class="dropdown-item" asp-action="Edit" asp-controller="User" asp-route-id="@Model.Id">@(("تعديل", "Edit").Localize(lang))</a></li> *@
+        @*         <li> *@
+        @*             <button class="dropdown-item btn-delete" data-id="@Model.Id"> *@
+        @*                 @(("حذف", "Delete").Localize(lang)) *@
+        @*             </button> *@
+        @*         </li> *@
+        @*     </ul> *@
+        @* </div> *@
 
         <!-- Back Button -->
         <a asp-action="Index" class="btn btn-outline-primary">

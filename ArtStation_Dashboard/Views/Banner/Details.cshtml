@@ -13,25 +13,25 @@
 
     <div class="d-flex gap-2">
         <!-- Dropdown Actions -->
-        <div class="dropdown">
-            <button class="btn bg-gradient-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                @(("العمليات", "Actions").Localize(lang))
-            </button>
-            <ul class="dropdown-menu">
-                <li>
-                    <a class="dropdown-item" asp-action="Details" asp-controller="Banner" asp-route-id="@Model.Id">
-                        @(("تفاصيل", "Details").Localize(lang))
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item" asp-action="Edit" asp-controller="Banner" asp-route-id="@Model.Id">
-                        @(("تعديل", "Edit").Localize(lang))
-                    </a>
-                </li>
-                    <li><button class="dropdown-item btn-delete" data-id="@Model.Id">@(("حذف", "Delete").Localize(lang))</button></li>
+        @* <div class="dropdown"> *@
+        @*     <button class="btn bg-gradient-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"> *@
+        @*         @(("العمليات", "Actions").Localize(lang)) *@
+        @*     </button> *@
+        @*     <ul class="dropdown-menu"> *@
+        @*         <li> *@
+        @*             <a class="dropdown-item" asp-action="Details" asp-controller="Banner" asp-route-id="@Model.Id"> *@
+        @*                 @(("تفاصيل", "Details").Localize(lang)) *@
+        @*             </a> *@
+        @*         </li> *@
+        @*         <li> *@
+        @*             <a class="dropdown-item" asp-action="Edit" asp-controller="Banner" asp-route-id="@Model.Id"> *@
+        @*                 @(("تعديل", "Edit").Localize(lang)) *@
+        @*             </a> *@
+        @*         </li> *@
+        @*             <li><button class="dropdown-item btn-delete" data-id="@Model.Id">@(("حذف", "Delete").Localize(lang))</button></li> *@
 
-            </ul>
-        </div>
+        @*     </ul> *@
+        @* </div> *@
 
         <!-- Back Button -->
         <a asp-action="Index" class="btn btn-outline-primary">
@@ -57,6 +57,8 @@
             <div class="col-md-7 position-relative">
                 <div class="card-body p-5">
                     <!-- Banner Info -->
+                    <input type="hidden" id="bannerId" value="@Model.Id" />
+
                     <ul class="list-group list-group-flush mt-4">
                         <li class="list-group-item">
                             <strong>@(("عنوان اللوحه", "Banner Title").Localize(lang)) :</strong> @Model.Title
@@ -88,44 +90,49 @@
         confirmButtonText: @Html.Raw(("نعم، احذفها!", "Yes, delete it!").Localize(lang).ToJson()),
         cancelButtonText: @Html.Raw(("إلغاء", "Cancel").Localize(lang).ToJson())
           };
-        $(document).off("click", ".btn-delete").on("click", ".btn-delete", function (e) {
-                e.preventDefault();
-                const id = $(this).data('id');
 
-                Swal.fire({
-                    title: localized.confirmDeleteTitle,
-                    text: localized.confirmDeleteText,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: localized.confirmButtonText,
-                    cancelButtonText: localized.cancelButtonText
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '/Banner/DeleteConfirmed/' + id,
-                            type: 'POST',
-                            headers: {
-                                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-                            },
-                            success: function () {
-                                Swal.fire(localized.deleteSuccessTitle, localized.deleteSuccessText, 'success')
-                                    .then(() => {
-                                        loadBanners(currentPage, currentStatus);
-                                    });
-                            },
-                            error: function (xhr) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: localized.deleteErrorTitle,
-                                    text: xhr.responseJSON?.message || xhr.responseText || localized.deleteErrorText
+
+
+           $(document).off("click", ".btn-delete").on("click", ".btn-delete", function (e) {
+            e.preventDefault();
+          
+            const id = $("#bannerId").val();
+            Swal.fire({
+                title: localized.confirmDeleteTitle,
+                text: localized.confirmDeleteText,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: localized.confirmButtonText,
+                cancelButtonText: localized.cancelButtonText
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Banner/DeleteConfirmed/' + id,
+                        type: 'POST',
+                        headers: {
+                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function () {
+                            Swal.fire(localized.deleteSuccessTitle, localized.deleteSuccessText, 'success')
+                                .then(() => {
+                                    // Redirect after success
+                                    window.location.href = '/Banner/Index';
                                 });
-                            }
-                        });
-                    }
-                });
+                        },
+                        error: function (xhr) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: localized.deleteErrorTitle,
+                                text: xhr.responseJSON?.message || xhr.responseText || localized.deleteErrorText
+                            });
+                        }
+                    });
+                }
             });
+        });
+
         </script>
 }
   
